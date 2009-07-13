@@ -6,6 +6,7 @@
 class QDialogButtonBox;
 class QTableView;
 class QLabel;
+class QPushButton;
 
 /*!
  * \brief The Main Window Form Class
@@ -38,11 +39,21 @@ class MainForm : public QWidget
 		 */
 		void createDataPanel();
 
+		/*!
+		 * \brief Create the button panel
+		 */
+		void createButtonPanel();
+
 		QTableView* patientView;  //!< The table that holds the patients
 		QLabel* patientLabel;  //!< The label of the patient panel
 
 		QTableView* dataView;  //!< The table for the patients data
 		QLabel* dataLabel;  //!< The label of the patients data
+
+		QPushButton* addPatient;  //!< Button for adding patients
+		QPushButton* editPatient;  //!< Button for editing patients
+		QPushButton* findPatient;  //!< Button for finding patients
+		QPushButton* deletePatient;  //!< Button for deleting patients
 };
 
 #endif
