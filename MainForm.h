@@ -23,6 +23,7 @@ class MainForm : public QWidget
 		MainForm();
 
 		QWidget* patientPanel;  //!< The upper panel that holds the patients
+		QWidget* dataPanel;  //!< The lower Panel for the patients data
 		QDialogButtonBox* buttonBox;  //!< The control button box
 
 	private:
@@ -32,8 +33,16 @@ class MainForm : public QWidget
 		 */
 		void createPatientPanel();
 
+		/*!
+		 * \brief Construct the patient data panel
+		 */
+		void createDataPanel();
+
 		QTableView* patientView;  //!< The table that holds the patients
 		QLabel* patientLabel;  //!< The label of the patient panel
+
+		QTableView* dataView;  //!< The table for the patients data
+		QLabel* dataLabel;  //!< The label of the patients data
 };
 
 #endif
