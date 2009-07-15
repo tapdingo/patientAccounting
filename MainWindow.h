@@ -1,19 +1,22 @@
 #ifndef MAINFORM_H
 #define MAINFORM_H
 
-#include <QWidget>
+#include <QMainWindow>
 
 class QDialogButtonBox;
 class QTableView;
 class QLabel;
 class QPushButton;
+class QToolBar;
+class QWidget;
+class QAction;
 
 /*!
  * \brief The Main Window Form Class
  *
  * This Form handles all UI related stuff
  */
-class MainForm : public QWidget
+class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
@@ -21,11 +24,11 @@ class MainForm : public QWidget
 		/*!
 		 * \brief Construct the Main Form Object
 		 */
-		MainForm();
+		MainWindow();
 
 		QWidget* patientPanel;  //!< The upper panel that holds the patients
 		QWidget* dataPanel;  //!< The lower Panel for the patients data
-		QDialogButtonBox* buttonBox;  //!< The control button box
+		QToolBar* toolbar;  //!< The toolbar
 
 	private:
 
@@ -42,18 +45,34 @@ class MainForm : public QWidget
 		/*!
 		 * \brief Create the button panel
 		 */
-		void createButtonPanel();
+		void createToolbar();
+
+		/*!
+		 * \brief Create the basic actions 
+		 */
+		void createActions();
+
+		/*!
+		 * \brief Create the patient overview
+		 */
+		void createPatientWidget();
+
+		void createStatusBar();
 
 		QTableView* patientView;  //!< The table that holds the patients
 		QLabel* patientLabel;  //!< The label of the patient panel
 
 		QTableView* dataView;  //!< The table for the patients data
 		QLabel* dataLabel;  //!< The label of the patients data
+		QWidget* patientWidget; //!< The patient data container
 
-		QPushButton* addPatient;  //!< Button for adding patients
-		QPushButton* editPatient;  //!< Button for editing patients
-		QPushButton* findPatient;  //!< Button for finding patients
-		QPushButton* deletePatient;  //!< Button for deleting patients
+		QStatusBar* m_statusBar;  //!< The main status bar
+
+		QAction* newAction;
+		QAction* editAction;
+		QAction* findAction;
+		QAction* deleteAction;
+		QAction* accountAction;
 };
 
 #endif

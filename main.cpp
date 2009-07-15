@@ -1,11 +1,11 @@
 #include <QApplication>
-#include "MainForm.h"
+#include "MainWindow.h"
 
 int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
-	MainForm mainForm;
-	mainForm.setWindowTitle("Patienten Abrechnung v0.1a");
-	mainForm.show();
+	MainWindow mainWindow;
+	mainWindow.setWindowTitle("Patienten Abrechnung v0.1a");
+	mainWindow.show();
 	return app.exec();
 }
