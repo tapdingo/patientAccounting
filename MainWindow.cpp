@@ -60,13 +60,11 @@ void MainWindow::createPatientPanel()
 	patientView->horizontalHeader()->setStretchLastSection(true);
 	patientView->verticalHeader()->hide();
 	patientView->setColumnHidden(0, true);
-	patientView->resize(800, 600);
 	patientView->setShowGrid(false);
 
 
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
-	patientPanel->resize(800, 600);
 }
 
 void MainWindow::createDataPanel()
