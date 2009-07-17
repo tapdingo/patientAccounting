@@ -1,9 +1,14 @@
 #include "MainWindow.h"
 
 #include <QtGui>
+#include <QtSql>
+#include <QSqlDatabase>
 
 MainWindow::MainWindow()
 {
+	//Connect to the database
+	connectToDB();
+
 	createPatientPanel();
 	createDataPanel();
 
@@ -31,6 +36,7 @@ MainWindow::MainWindow()
 	overall_layout->addLayout(lower_layout);
 
 	patientWidget->setLayout(overall_layout);
+
 }
 
 void MainWindow::createPatientPanel()
@@ -67,6 +73,7 @@ void MainWindow::createActions()
 {
 	newAction = new QAction(tr("&Neu"), this);
 	newAction->setStatusTip(tr("Legt einen neuen Patienten an"));
+	newAction->setIcon(QIcon(":/img/new.png"));
 
 	editAction = new QAction(tr("&Bearbeiten"), this);
 	editAction->setStatusTip(tr("Bearbeitet einen Patienten"));
@@ -79,6 +86,7 @@ void MainWindow::createActions()
 
 	accountAction = new QAction(tr("&Abrechnen"), this);
 	accountAction->setStatusTip(tr("Rechnet einen Patienten ab"));
+	accountAction->setIcon(QIcon(":/img/accounting.png"));
 }
 
 void MainWindow::createPatientWidget()
@@ -90,4 +98,17 @@ void MainWindow::createPatientWidget()
 void MainWindow::createStatusBar()
 {
 	m_statusBar = statusBar();
+}
+
+bool MainWindow::connectToDB()
+{
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+	db.setDatabaseName("data/patientdata");
+	if (!db.open())
+	{
+		QMessageBox::critical(0, QObject::tr("Datenbank Fehler!"),
+				db.lastError().text());
+		return false;
+	}
+	return true;
 }

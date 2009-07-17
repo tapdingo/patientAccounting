@@ -10,6 +10,7 @@ class QPushButton;
 class QToolBar;
 class QWidget;
 class QAction;
+class QSqlRelationalModel;
 
 /*!
  * \brief The Main Window Form Class
@@ -57,6 +58,14 @@ class MainWindow : public QMainWindow
 		 */
 		void createPatientWidget();
 
+		/*!
+		 * \brief Connect to the SQLite Database
+		 */
+		bool connectToDB();
+
+		/*!
+		 * \brief Crate the status bar
+		 */
 		void createStatusBar();
 
 		QTableView* patientView;  //!< The table that holds the patients
@@ -67,6 +76,8 @@ class MainWindow : public QMainWindow
 		QWidget* patientWidget; //!< The patient data container
 
 		QStatusBar* m_statusBar;  //!< The main status bar
+
+		QSqlRelationalModel* patientModel; //!< The model for patient data
 
 		QAction* newAction;
 		QAction* editAction;
