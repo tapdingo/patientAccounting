@@ -3,6 +3,7 @@
 #include <QtGui>
 #include <QtSql>
 #include <QSqlDatabase>
+#include <QSqlRelationalTableModel>
 
 MainWindow::MainWindow()
 {
@@ -37,16 +38,35 @@ MainWindow::MainWindow()
 
 	patientWidget->setLayout(overall_layout);
 
+	this->resize(800, 600);
+
 }
 
 void MainWindow::createPatientPanel()
 {
 	patientPanel = new QWidget();
 
+	patientModel= new QSqlRelationalTableModel(this);
+	patientModel->setTable("patients");
+	patientModel->select();
+
 	patientView = new QTableView();
+	patientView->setModel(patientModel);
+	patientView->resizeColumnsToContents();
+	patientView->setSelectionMode(
+			QAbstractItemView::SingleSelection);
+	patientView->setSelectionBehavior(
+			QAbstractItemView::SelectRows);
+	patientView->horizontalHeader()->setStretchLastSection(true);
+	patientView->verticalHeader()->hide();
+	patientView->setColumnHidden(0, true);
+	patientView->resize(800, 600);
+	patientView->setShowGrid(false);
+
 
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
+	patientPanel->resize(800, 600);
 }
 
 void MainWindow::createDataPanel()

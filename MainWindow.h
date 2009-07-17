@@ -10,7 +10,7 @@ class QPushButton;
 class QToolBar;
 class QWidget;
 class QAction;
-class QSqlRelationalModel;
+class QSqlRelationalTableModel;
 
 /*!
  * \brief The Main Window Form Class
@@ -77,7 +77,7 @@ class MainWindow : public QMainWindow
 
 		QStatusBar* m_statusBar;  //!< The main status bar
 
-		QSqlRelationalModel* patientModel; //!< The model for patient data
+		QSqlRelationalTableModel* patientModel; //!< The model for patient data
 
 		QAction* newAction;
 		QAction* editAction;
