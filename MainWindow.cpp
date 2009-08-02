@@ -71,7 +71,21 @@ void MainWindow::createDataPanel()
 {
 	dataPanel = new QWidget();
 
+	dataModel= new QSqlRelationalTableModel(this);
+	dataModel->setTable("treatments");
+	dataModel->setRelation(0, QSqlRelation("patients", "id", "vorname"));
+	dataModel->select();
+
 	dataView = new QTableView();
+	dataView->setModel(dataModel);
+	dataView->resizeColumnsToContents();
+	dataView->setSelectionMode(
+			QAbstractItemView::SingleSelection);
+	dataView->setSelectionBehavior(
+			QAbstractItemView::SelectRows);
+	dataView->horizontalHeader()->setStretchLastSection(true);
+	dataView->verticalHeader()->hide();
+	dataView->setShowGrid(false);
 
 	dataLabel = new QLabel(tr("Patienten&daten"));
 	dataLabel->setBuddy(patientView);

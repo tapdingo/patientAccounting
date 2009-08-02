@@ -78,6 +78,7 @@ class MainWindow : public QMainWindow
 		QStatusBar* m_statusBar;  //!< The main status bar
 
 		QSqlRelationalTableModel* patientModel; //!< The model for patient data
+		QSqlRelationalTableModel* dataModel; //!< The model for patient treatments
 
 		QAction* newAction;
 		QAction* editAction;
