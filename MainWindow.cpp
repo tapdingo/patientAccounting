@@ -65,6 +65,10 @@ void MainWindow::createPatientPanel()
 
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
+
+	connect(patientView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, 
+					const QModelIndex&)), 
+			this, SLOT(updateTreatmentView()));
 }
 
 void MainWindow::createDataPanel()
@@ -143,4 +147,20 @@ bool MainWindow::connectToDB()
 		return false;
 	}
 	return true;
+}
+
+
+void MainWindow::updateTreatmentView()
+{
+	QModelIndex index = patientView->currentIndex();
+
+	if(index.isValid())
+	{
+		QSqlRecord record = patientModel->record(index.row());
+		int id = record.value("id").toInt();
+		dataModel->setFilter(QString("patient_id = %1").arg(id));
+	}
+
+	dataModel->select();
+	dataView->horizontalHeader()->setVisible(dataModel->rowCount() > 0);
 }

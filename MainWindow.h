@@ -85,6 +85,9 @@ class MainWindow : public QMainWindow
 		QAction* findAction;
 		QAction* deleteAction;
 		QAction* accountAction;
+
+		private slots:
+			void updateTreatmentView();
 };
 
 #endif
