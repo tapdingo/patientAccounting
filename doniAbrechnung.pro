@@ -8,7 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += /home/tapion/projects/doniAbrechnung/. .
 
 # Input
-HEADERS += MainWindow.h
-SOURCES += main.cpp MainWindow.cpp
+HEADERS += MainWindow.h PatientForm.h
+SOURCES += main.cpp MainWindow.cpp PatientForm.cpp
 RESOURCES += res.qrc
 QT += sql
