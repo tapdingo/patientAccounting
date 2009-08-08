@@ -67,10 +67,11 @@ void MainWindow::createPatientPanel()
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
 
-	connect(patientView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, 
-					const QModelIndex&)), 
+	connect(patientView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&,
+					const QModelIndex&)),
 			this, SLOT(updateTreatmentView()));
 	connect(newAction, SIGNAL(triggered()), this, SLOT(addPatient()));
+	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deletePatient()));
 }
 
 void MainWindow::createDataPanel()
@@ -192,6 +193,43 @@ void MainWindow::addPatient()
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
 	}
+	patientModel->select();
+	updateTreatmentView();
+
+	//Send the new patient for editing purposes to the form
+	// \todo
+}
+
+void MainWindow::deletePatient()
+{
+	QModelIndex index = patientView->currentIndex();
+	if (!index.isValid())
+	{
+		return;
+	}
+
+	QSqlDatabase::database().transaction();
+	QSqlRecord record = patientModel->record(index.row());
+	int id = record.value(5).toInt();
+
+	int r = QMessageBox::warning(this, tr("Patient entfernen"),
+			tr("Patient %1 und alle Behandlungen wirklich entfernen?")
+			.arg(record.value(3).toString()),
+			QMessageBox::Yes | QMessageBox::No);
+
+	if (r == QMessageBox::No)
+	{
+		QSqlDatabase::database().rollback();
+		return;
+	}
+	QSqlQuery query;
+	query.exec(QString("DELETE FROM treatments "
+				"WHERE patient_id = %1").arg(id));
+
+	patientModel->removeRow(index.row());
+	patientModel->submitAll();
+	QSqlDatabase::database().commit();
+
 	patientModel->select();
 	updateTreatmentView();
 }

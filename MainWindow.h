@@ -88,7 +88,18 @@ class MainWindow : public QMainWindow
 
 		private slots:
 			void updateTreatmentView();
+
+		/*!
+		 * \brief Add a new Patient to the database
+		 *
+		 * \todo The new patient has to be edited!
+		 */
 			void addPatient();
+
+		/*!
+		 * \brief Delete a Patient from the database
+		 */
+			void deletePatient();
 };
 
 #endif
