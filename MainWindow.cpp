@@ -10,10 +10,11 @@ MainWindow::MainWindow()
 	//Connect to the database
 	connectToDB();
 
+	createActions();
+
 	createPatientPanel();
 	createDataPanel();
 
-	createActions();
 
 	createPatientWidget();
 	createStatusBar();
@@ -69,6 +70,7 @@ void MainWindow::createPatientPanel()
 	connect(patientView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, 
 					const QModelIndex&)), 
 			this, SLOT(updateTreatmentView()));
+	connect(newAction, SIGNAL(triggered()), this, SLOT(addPatient()));
 }
 
 void MainWindow::createDataPanel()
@@ -163,4 +165,33 @@ void MainWindow::updateTreatmentView()
 
 	dataModel->select();
 	dataView->horizontalHeader()->setVisible(dataModel->rowCount() > 0);
+}
+
+void MainWindow::addPatient()
+{
+	QSqlRecord rec;
+
+	int rc = patientModel->rowCount();
+	if (!patientModel->insertRow(rc))
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not insert row :(");
+		msgBox.exec();
+		return;
+	}
+
+	rec = patientModel->record(rc);
+	rec.setValue(QString("gender"), QString("m"));
+	patientModel->setRecord(rc, rec);
+
+	if (!patientModel->submitAll())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not submit model :(");
+		QSqlError last = QSqlDatabase::database().lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
+	patientModel->select();
+	updateTreatmentView();
 }

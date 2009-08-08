@@ -88,6 +88,7 @@ class MainWindow : public QMainWindow
 
 		private slots:
 			void updateTreatmentView();
+			void addPatient();
 };
 
 #endif
