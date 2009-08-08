@@ -2,6 +2,7 @@
 #define MAINFORM_H
 
 #include <QMainWindow>
+#include "PatientForm.h"
 
 class QDialogButtonBox;
 class QTableView;
@@ -100,6 +101,11 @@ class MainWindow : public QMainWindow
 		 * \brief Delete a Patient from the database
 		 */
 			void deletePatient();
+
+		/*!
+		 * \brief Edit a patient in the database
+		 */
+			void editPatient();
 };
 
 #endif

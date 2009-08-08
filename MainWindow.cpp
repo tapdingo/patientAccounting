@@ -5,6 +5,8 @@
 #include <QSqlDatabase>
 #include <QSqlRelationalTableModel>
 
+#include "definitions.h"
+
 MainWindow::MainWindow()
 {
 	//Connect to the database
@@ -14,7 +16,6 @@ MainWindow::MainWindow()
 
 	createPatientPanel();
 	createDataPanel();
-
 
 	createPatientWidget();
 	createStatusBar();
@@ -60,18 +61,18 @@ void MainWindow::createPatientPanel()
 			QAbstractItemView::SelectRows);
 	patientView->horizontalHeader()->setStretchLastSection(true);
 	patientView->verticalHeader()->hide();
-	patientView->setColumnHidden(0, true);
 	patientView->setShowGrid(false);
-
 
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
 
-	connect(patientView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&,
+	connect(patientView->selectionModel(), SIGNAL(currentRowChanged(
+					const QModelIndex&,
 					const QModelIndex&)),
 			this, SLOT(updateTreatmentView()));
 	connect(newAction, SIGNAL(triggered()), this, SLOT(addPatient()));
 	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deletePatient()));
+	connect(editAction, SIGNAL(triggered()), this, SLOT(editPatient()));
 }
 
 void MainWindow::createDataPanel()
@@ -80,7 +81,7 @@ void MainWindow::createDataPanel()
 
 	dataModel= new QSqlRelationalTableModel(this);
 	dataModel->setTable("treatments");
-	dataModel->setRelation(0, QSqlRelation("patients", "id", "vorname"));
+	dataModel->setRelation(PatientId, QSqlRelation("patients", "id", "vorname"));
 	dataModel->select();
 
 	dataView = new QTableView();
@@ -197,7 +198,8 @@ void MainWindow::addPatient()
 	updateTreatmentView();
 
 	//Send the new patient for editing purposes to the form
-	// \todo
+	PatientForm editPatient(patientModel, rc, this);
+	editPatient.exec();
 }
 
 void MainWindow::deletePatient()
@@ -210,11 +212,11 @@ void MainWindow::deletePatient()
 
 	QSqlDatabase::database().transaction();
 	QSqlRecord record = patientModel->record(index.row());
-	int id = record.value(5).toInt();
+	int id = record.value(ID).toInt();
 
 	int r = QMessageBox::warning(this, tr("Patient entfernen"),
-			tr("Patient %1 und alle Behandlungen wirklich entfernen?")
-			.arg(record.value(3).toString()),
+			tr("Patient %1 %2 und alle Behandlungen wirklich entfernen?")
+			.arg(record.value(FirstName).toString(), record.value(LastName).toString()),
 			QMessageBox::Yes | QMessageBox::No);
 
 	if (r == QMessageBox::No)
@@ -232,4 +234,20 @@ void MainWindow::deletePatient()
 
 	patientModel->select();
 	updateTreatmentView();
+}
+
+void MainWindow::editPatient()
+{
+	QModelIndex index = patientView->currentIndex();
+	if (!index.isValid())
+	{
+		return;
+	}
+	QSqlRecord record = patientModel->record(index.row());
+	int id = record.value(ID).toInt();
+
+	//Why this - 1 is needed, no one knows!
+	//Counting should always start at 0
+	PatientForm editPatient(patientModel, id - 1, this);
+	editPatient.exec();
 }

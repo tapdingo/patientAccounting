@@ -10,20 +10,30 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QDataWidgetMapper;
+class QDateEdit;
+class QComboBox;
 
 class PatientForm : public QDialog{
 
 	Q_OBJECT
 
 	public:
-		PatientForm(QSqlRelationalTableModel* model, QWidget* parent);
+		PatientForm(QSqlRelationalTableModel* model, int id, QWidget* parent);
 
 		private slots:
-			void addPatient();
-			void deletePatient();
+			void savePatient();
 	private:
 			QLabel* firstNameLabel;
 			QLineEdit* firstNameField;
+			QLabel* lastNameLabel;
+			QLineEdit* lastNameField;
+			QLabel* eMailLabel;
+			QLineEdit* eMailField;
+			QLabel* birthdayLabel;
+			QDateEdit* birthdayEdit;
+			QLabel* genderLabel;
+			QLineEdit* genderField;
+
 			QPushButton* saveButton;
 			QPushButton* closeButton;
 			QSqlRelationalTableModel* m_model;
