@@ -40,7 +40,7 @@ MainWindow::MainWindow()
 
 	patientWidget->setLayout(overall_layout);
 
-	this->resize(800, 600);
+	this->resize(1000, 600);
 
 }
 
@@ -97,6 +97,13 @@ void MainWindow::createDataPanel()
 
 	dataLabel = new QLabel(tr("Patienten&daten"));
 	dataLabel->setBuddy(patientView);
+
+	connect(newTreatmentAction, SIGNAL(triggered()),
+			this, SLOT(addTreatment()));
+	connect(editTreatmentAction, SIGNAL(triggered()),
+			this, SLOT(editTreatment()));
+	connect(deleteTreatmentAction, SIGNAL(triggered()),
+			this, SLOT(deleteTreatment()));
 }
 
 void MainWindow::createToolbar()
@@ -107,6 +114,9 @@ void MainWindow::createToolbar()
 	toolbar->addAction(findAction);
 	toolbar->addAction(deleteAction);
 	toolbar->addAction(accountAction);
+	toolbar->addAction(newTreatmentAction);
+	toolbar->addAction(editTreatmentAction);
+	toolbar->addAction(deleteTreatmentAction);
 }
 
 void MainWindow::createActions()
@@ -127,6 +137,15 @@ void MainWindow::createActions()
 	accountAction = new QAction(tr("&Abrechnen"), this);
 	accountAction->setStatusTip(tr("Rechnet einen Patienten ab"));
 	accountAction->setIcon(QIcon(":/img/accounting.png"));
+
+	newTreatmentAction = new QAction(tr("Behandlung Anlegen"), this);
+	newTreatmentAction->setStatusTip(tr("Legt eine Behandlung an"));
+
+	editTreatmentAction = new QAction(tr("Behandlung bearbeiten"), this);
+	editTreatmentAction->setStatusTip(tr("Bearbeitet eine Behandlung"));
+
+	deleteTreatmentAction = new QAction(tr("Behandlung entfernen"), this);
+	deleteTreatmentAction->setStatusTip(tr("Entfernt eine Behandlung"));
 }
 
 void MainWindow::createPatientWidget()
@@ -250,4 +269,16 @@ void MainWindow::editPatient()
 	//Counting should always start at 0
 	PatientForm editPatient(patientModel, id - 1, this);
 	editPatient.exec();
+}
+
+void MainWindow::addTreatment()
+{
+}
+
+void MainWindow::editTreatment()
+{
+}
+
+void MainWindow::deleteTreatment()
+{
 }

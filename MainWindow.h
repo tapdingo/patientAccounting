@@ -87,13 +87,16 @@ class MainWindow : public QMainWindow
 		QAction* deleteAction;
 		QAction* accountAction;
 
+		QAction* newTreatmentAction;
+		QAction* editTreatmentAction;
+		QAction* deleteTreatmentAction;
+
 		private slots:
 			void updateTreatmentView();
 
 		/*!
 		 * \brief Add a new Patient to the database
 		 *
-		 * \todo The new patient has to be edited!
 		 */
 			void addPatient();
 
@@ -106,6 +109,22 @@ class MainWindow : public QMainWindow
 		 * \brief Edit a patient in the database
 		 */
 			void editPatient();
+
+		/*!
+		 * \brief Add a new Patient to the database
+		 *
+		 */
+			void addTreatment();
+
+		/*!
+		 * \brief Delete a Patient from the database
+		 */
+			void deleteTreatment();
+
+		/*!
+		 * \brief Edit a patient in the database
+		 */
+			void editTreatment();
 };
 
 #endif
