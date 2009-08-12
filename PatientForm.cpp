@@ -95,6 +95,15 @@ PatientForm::PatientForm(
 
 void PatientForm::savePatient()
 {
-	m_mapper->submit();
+	int index = m_mapper->currentIndex();
+	if (!m_mapper->submit())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not submit Patient");
+		QSqlError last = m_model->lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
+	m_mapper->setCurrentIndex(index);
 }
 

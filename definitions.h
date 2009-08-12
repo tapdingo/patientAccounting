@@ -11,9 +11,10 @@ enum {
 };
 
 enum {
-	PatientId = 0,
-	Cost = 1,
-	TreatmentName = 2
+	TreatmentID = 0,
+	PatientId = 1,
+	Cost = 2,
+	TreatmentName = 3
 };
 
 #endif

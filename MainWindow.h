@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "PatientForm.h"
+#include "TreatmentForm.h"
 
 class QDialogButtonBox;
 class QTableView;

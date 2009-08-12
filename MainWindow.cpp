@@ -273,12 +273,114 @@ void MainWindow::editPatient()
 
 void MainWindow::addTreatment()
 {
+	QSqlTableModel* interimModel= new QSqlTableModel(this);
+	interimModel->setTable("treatments");
+	interimModel->select();
+	QModelIndex index = patientView->currentIndex();
+	if (!index.isValid())
+	{
+		return;
+	}
+	QSqlRecord patientRecord = patientModel->record(index.row());
+	int id = patientRecord.value(ID).toInt();
+
+	int rc = interimModel->rowCount();
+
+	if (!interimModel->insertRow(rc))
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not insert row :(");
+		msgBox.exec();
+		return;
+	}
+
+	QSqlRecord rec;
+	QString idString;
+	idString.setNum(id);
+	rec = interimModel->record(rc);
+
+	rec.setValue(QString("patient_id"), idString);
+
+	interimModel->setRecord(rc, rec);
+	if (!interimModel->submitAll())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not submit model :(");
+		QSqlError last = QSqlDatabase::database().lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
+	interimModel->select();
+	updateTreatmentView();
+
+	//Send the new patient for editing purposes to the form
+	dataModel->select();
+	TreatmentForm editTreatment(dataModel, rc, this);
+	editTreatment.exec();
+
+	dataModel->select();
+	patientModel->select();
+	updateTreatmentView();
 }
 
 void MainWindow::editTreatment()
 {
+	QModelIndex index = dataView->currentIndex();
+	if (!index.isValid())
+	{
+		return;
+	}
+	QSqlRecord record = dataModel->record(index.row());
+
+	//GET THE TREATMENTS A PRIMARY KEY
+	int id = record.value(TreatmentID).toInt();
+
+	//Why this - 1 is needed, no one knows!
+	//Counting should always start at 0
+	TreatmentForm editTreatment(dataModel, id - 1, this);
+	editTreatment.exec();
+
+	dataModel->select();
+	patientModel->select();
+	updateTreatmentView();
 }
 
 void MainWindow::deleteTreatment()
 {
+	QModelIndex index = dataView->currentIndex();
+	if (!index.isValid())
+	{
+		return;
+	}
+
+	QSqlDatabase::database().transaction();
+	QSqlRecord record = dataModel->record(index.row());
+	int id = record.value(ID).toInt();
+
+	int r = QMessageBox::warning(this, tr("Behandlung entfernen"),
+			tr("die Behandlug wirklich entfernen?"),
+			QMessageBox::Yes | QMessageBox::No);
+
+	if (r == QMessageBox::No)
+	{
+		QSqlDatabase::database().rollback();
+		return;
+	}
+	QSqlQuery query;
+	query.exec(QString("DELETE FROM treatments "
+				"WHERE id = %1").arg(id));
+
+	dataModel->removeRow(index.row());
+	dataModel->submitAll();
+	if (!dataModel->submitAll())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not submit model :(");
+		QSqlError last = QSqlDatabase::database().lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
+	QSqlDatabase::database().commit();
+	dataModel->select();
+	updateTreatmentView();
 }
