@@ -13,6 +13,7 @@ class QToolBar;
 class QWidget;
 class QAction;
 class QSqlRelationalTableModel;
+class QPrinter;
 
 /*!
  * \brief The Main Window Form Class
@@ -91,6 +92,7 @@ class MainWindow : public QMainWindow
 		QAction* newTreatmentAction;
 		QAction* editTreatmentAction;
 		QAction* deleteTreatmentAction;
+		QPrinter* printer;
 
 		private slots:
 			void updateTreatmentView();
@@ -126,6 +128,12 @@ class MainWindow : public QMainWindow
 		 * \brief Edit a patient in the database
 		 */
 			void editTreatment();
+
+		/*!
+		 * \brief Account a patient
+		 */
+		void accountPatient();
+
 };
 
 #endif

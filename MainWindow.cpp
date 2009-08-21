@@ -6,11 +6,14 @@
 #include <QSqlRelationalTableModel>
 
 #include "definitions.h"
+#include "Accounting.h"
 
 MainWindow::MainWindow()
 {
 	//Connect to the database
 	connectToDB();
+
+	printer = new QPrinter;
 
 	createActions();
 
@@ -73,6 +76,7 @@ void MainWindow::createPatientPanel()
 	connect(newAction, SIGNAL(triggered()), this, SLOT(addPatient()));
 	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deletePatient()));
 	connect(editAction, SIGNAL(triggered()), this, SLOT(editPatient()));
+	connect(accountAction, SIGNAL(triggered()), this, SLOT(accountPatient()));
 }
 
 void MainWindow::createDataPanel()
@@ -383,4 +387,17 @@ void MainWindow::deleteTreatment()
 	QSqlDatabase::database().commit();
 	dataModel->select();
 	updateTreatmentView();
+}
+
+void MainWindow::accountPatient()
+{
+	QModelIndex index = patientView->currentIndex();
+	if (!index.isValid())
+	{
+		return;
+	}
+	QSqlRecord record = patientModel->record(index.row());
+
+	PatientAccounter acc(record, *(dataModel));
+	acc.account();
 }
