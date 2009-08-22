@@ -2,8 +2,10 @@
 #include <QtGui>
 
 #include <QDataWidgetMapper>
+#include <iostream>
 
 TreatmentForm::TreatmentForm(
+		QSqlRelationalTableModel* model,
 		int id,
 		QWidget* parent) : QDialog(parent)
 {
@@ -11,6 +13,8 @@ TreatmentForm::TreatmentForm(
 	m_model = new QSqlRelationalTableModel(this);
 	m_model->setTable("treatments");
 	m_model->select();
+
+	std::cerr << "Treatment ID: " << id;
 
 	costLabel = new QLabel(tr("Kostenpunkt"));
 	costField = new QLineEdit;

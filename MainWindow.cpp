@@ -319,7 +319,7 @@ void MainWindow::addTreatment()
 
 	//Send the new patient for editing purposes to the form
 	dataModel->select();
-	TreatmentForm editTreatment( rc, this);
+	TreatmentForm editTreatment(dataModel, rc, this);
 	editTreatment.exec();
 
 	dataModel->select();
@@ -341,7 +341,7 @@ void MainWindow::editTreatment()
 
 	//Why this - 1 is needed, no one knows!
 	//Counting should always start at 0
-	TreatmentForm editTreatment( id - 1, this);
+	TreatmentForm editTreatment(dataModel, id , this);
 	editTreatment.exec();
 
 	dataModel->select();

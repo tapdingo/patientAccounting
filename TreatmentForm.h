@@ -19,7 +19,10 @@ class TreatmentForm : public QDialog
 	Q_OBJECT
 
 	public:
-		TreatmentForm(int id, QWidget* parent);
+		TreatmentForm(
+				QSqlRelationalTableModel* model,
+				int id,
+				QWidget* parent);
 
 		private slots:
 			void saveTreatment();
