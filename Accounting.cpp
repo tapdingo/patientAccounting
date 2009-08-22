@@ -18,10 +18,11 @@ void PatientAccounter::printBill()
 {
 	QPrinter printer;
 	QPrintDialog printDialog(&printer, 0);
+	QString Header("<div align='center'><b>Test</b></div>Test2");
 	if (printDialog.exec())
 	{
 		QTextDocument textDocument;
-		textDocument.setPlainText(form);
+		textDocument.setHtml(Header);
 		textDocument.print(&printer);
 	}
 }

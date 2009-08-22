@@ -4,7 +4,6 @@
 #include <QDataWidgetMapper>
 
 TreatmentForm::TreatmentForm(
-		QSqlRelationalTableModel* model,
 		int id,
 		QWidget* parent) : QDialog(parent)
 {
