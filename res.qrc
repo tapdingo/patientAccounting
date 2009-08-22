@@ -2,5 +2,6 @@
   <qresource>
     <file>img/accounting.png</file>
     <file>img/new.png</file>
+    <file>forms/header.html</file>
   </qresource>
 </RCC>
