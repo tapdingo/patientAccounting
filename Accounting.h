@@ -5,6 +5,7 @@
 
 class QSqlRecord;
 class QSqlRelationalTableModel;
+class QString;
 
 class PatientAccounter
 {
@@ -16,6 +17,8 @@ class PatientAccounter
 
 	private:
 		void printBill();
+		void addPatientHeader(QString& Document);
+		void addTreatments(QString& Document);
 		const QSqlRecord& m_patient;
 		QSqlRelationalTableModel& m_treats;
 };
