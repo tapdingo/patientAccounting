@@ -20,7 +20,6 @@ class TreatmentForm : public QDialog
 
 	public:
 		TreatmentForm(
-				QSqlRelationalTableModel* model,
 				int id,
 				QWidget* parent);
 

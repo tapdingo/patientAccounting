@@ -318,8 +318,11 @@ void MainWindow::addTreatment()
 	updateTreatmentView();
 
 	//Send the new patient for editing purposes to the form
+	//Bad Hack to get the new ID
+	rec = interimModel->record(rc-1);
+	int treatId = rec.value(TreatmentID).toInt() + 1;
 	dataModel->select();
-	TreatmentForm editTreatment(dataModel, rc, this);
+	TreatmentForm editTreatment(treatId, this);
 	editTreatment.exec();
 
 	dataModel->select();
@@ -339,9 +342,7 @@ void MainWindow::editTreatment()
 	//GET THE TREATMENTS A PRIMARY KEY
 	int id = record.value(TreatmentID).toInt();
 
-	//Why this - 1 is needed, no one knows!
-	//Counting should always start at 0
-	TreatmentForm editTreatment(dataModel, id , this);
+	TreatmentForm editTreatment(id, this);
 	editTreatment.exec();
 
 	dataModel->select();
@@ -362,7 +363,7 @@ void MainWindow::deleteTreatment()
 	int id = record.value(ID).toInt();
 
 	int r = QMessageBox::warning(this, tr("Behandlung entfernen"),
-			tr("die Behandlug wirklich entfernen?"),
+			tr("die Behandlung wirklich entfernen?"),
 			QMessageBox::Yes | QMessageBox::No);
 
 	if (r == QMessageBox::No)

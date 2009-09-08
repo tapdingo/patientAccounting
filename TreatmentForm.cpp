@@ -5,16 +5,14 @@
 #include <iostream>
 
 TreatmentForm::TreatmentForm(
-		QSqlRelationalTableModel* model,
 		int id,
 		QWidget* parent) : QDialog(parent)
 {
-	//m_model = model;
 	m_model = new QSqlRelationalTableModel(this);
 	m_model->setTable("treatments");
+	m_model->setSort(TreatmentID, Qt::AscendingOrder);
+	m_model->setFilter(QString("id = %1").arg(id));
 	m_model->select();
-
-	std::cerr << "Treatment ID: " << id;
 
 	costLabel = new QLabel(tr("Kostenpunkt"));
 	costField = new QLineEdit;
@@ -29,7 +27,7 @@ TreatmentForm::TreatmentForm(
 	m_mapper->setModel(m_model);
 	m_mapper->addMapping(costField, Cost);
 	m_mapper->addMapping(nameField, TreatmentName);
-	m_mapper->setCurrentIndex(id);
+	m_mapper->toFirst();
 
 	saveButton = new QPushButton(tr("&Speichern"));
 	saveButton->setEnabled(true);

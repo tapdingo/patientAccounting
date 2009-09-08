@@ -20,6 +20,7 @@ void PatientAccounter::printBill()
 	QPrintDialog printDialog(&printer, 0);
 	if (printDialog.exec())
 	{
+		QString Document;
 
 		//Get The document header
 		QString Header;
@@ -35,8 +36,9 @@ void PatientAccounter::printBill()
 			Header.append(in.readLine());
 		}
 
+		Document.append(Header);
 		QTextDocument textDocument;
-		textDocument.setHtml(Header);
+		textDocument.setHtml(Document);
 		textDocument.print(&printer);
 	}
 }
