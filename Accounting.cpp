@@ -113,7 +113,9 @@ void PatientAccounter::addTreatments(QString& Document)
 		costString.setNum(treatCost);
 		sum += treatCost;
 
-		Document.append("<td>Datum </td>");
+		QDate date = treatment.value(DateOfTreat).toDate();
+
+		Document.append("<td>" + date.toString(Qt::SystemLocaleShortDate) + "</td>");
 		Document.append("<td>1(2)</td>");
 		Document.append("<td>"
 				+ treatment.value(TreatmentName).toString()

@@ -13,6 +13,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QComboBox;
+class QDateEdit;
 
 class TreatmentForm : public QDialog
 {
@@ -27,6 +28,8 @@ class TreatmentForm : public QDialog
 			void saveTreatment();
 
 	private:
+		QLabel* dateLabel;
+		QDateEdit* dateEdit;
 		QLabel* patientIDLabel;
 		QLineEdit* idField;
 		QLabel* costLabel;

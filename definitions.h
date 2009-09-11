@@ -11,12 +11,13 @@ enum {
 };
 
 enum {
-	Paid = 0,
-	Accounted = 1,
-	TreatmentID = 2,
-	PatientId = 3,
-	Cost = 4,
-	TreatmentName = 5
+	DateOfTreat = 0,
+	Paid = 1,
+	Accounted = 2,
+	TreatmentID = 3,
+	PatientId = 4,
+	Cost = 5,
+	TreatmentName = 6
 };
 
 #endif

@@ -14,6 +14,12 @@ TreatmentForm::TreatmentForm(
 	m_model->setFilter(QString("id = %1").arg(id));
 	m_model->select();
 
+	dateLabel = new QLabel(tr("Behandlungsdatum"));
+	dateEdit = new QDateEdit;
+	dateEdit->setCalendarPopup(true);
+	dateEdit->setDisplayFormat("dd.MM.yyyy");
+	dateLabel->setBuddy(dateEdit);
+
 	costLabel = new QLabel(tr("Kostenpunkt"));
 	costField = new QLineEdit;
 	costLabel->setBuddy(costField);
@@ -25,6 +31,7 @@ TreatmentForm::TreatmentForm(
 	m_mapper = new QDataWidgetMapper(this);
 	m_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 	m_mapper->setModel(m_model);
+	m_mapper->addMapping(dateEdit, DateOfTreat);
 	m_mapper->addMapping(costField, Cost);
 	m_mapper->addMapping(nameField, TreatmentName);
 	m_mapper->toFirst();
@@ -37,6 +44,10 @@ TreatmentForm::TreatmentForm(
 
 	QVBoxLayout* fieldLayout = new QVBoxLayout;
 
+	QHBoxLayout* date = new QHBoxLayout;
+	date->addWidget(dateLabel);
+	date->addWidget(dateEdit);
+
 	QHBoxLayout* cost = new QHBoxLayout;
 	cost->addWidget(costLabel);
 	cost->addWidget(costField);
@@ -45,6 +56,7 @@ TreatmentForm::TreatmentForm(
 	name->addWidget(nameLabel);
 	name->addWidget(nameField);
 
+	fieldLayout->addLayout(date);
 	fieldLayout->addLayout(cost);
 	fieldLayout->addLayout(name);
 
