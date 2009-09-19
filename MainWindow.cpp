@@ -78,7 +78,7 @@ void MainWindow::createDataPanel()
 
 	dataModel= new QSqlRelationalTableModel(this);
 	dataModel->setTable("treatments");
-	dataModel->setRelation(PatientId, QSqlRelation("patients", "id", "vorname"));
+	dataModel->setRelation(PatientId, QSqlRelation("patients", "id", "firstname"));
 	dataModel->select();
 
 	dataView = new QTableView();
