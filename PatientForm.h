@@ -27,8 +27,8 @@ class PatientForm : public QDialog{
 			QLineEdit* firstNameField;
 			QLabel* lastNameLabel;
 			QLineEdit* lastNameField;
-			QLabel* eMailLabel;
-			QLineEdit* eMailField;
+			QLabel* phoneLabel;
+			QLineEdit* phoneField;
 			QLabel* birthdayLabel;
 			QDateEdit* birthdayEdit;
 			QLabel* genderLabel;

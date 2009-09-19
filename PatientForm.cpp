@@ -18,9 +18,9 @@ PatientForm::PatientForm(
 	lastNameField = new QLineEdit;
 	lastNameLabel->setBuddy(lastNameField);
 
-	eMailLabel = new QLabel(tr("Email"));;
-	eMailField = new QLineEdit;
-	eMailLabel->setBuddy(eMailField);
+	phoneLabel = new QLabel(tr("Telefon"));;
+	phoneField = new QLineEdit;
+	phoneLabel->setBuddy(phoneField);
 
 	birthdayLabel = new QLabel(tr("Geburtstag"));
 	birthdayEdit = new QDateEdit;
@@ -37,7 +37,7 @@ PatientForm::PatientForm(
 	m_mapper->setModel(m_model);
 	m_mapper->addMapping(firstNameField, FirstName);
 	m_mapper->addMapping(lastNameField, LastName);
-	m_mapper->addMapping(eMailField, EMail);
+	m_mapper->addMapping(phoneField, Phone);
 	m_mapper->addMapping(birthdayEdit, DateOfBirth);
 	m_mapper->addMapping(genderField, Gender);
 	m_mapper->setCurrentIndex(id);
@@ -58,9 +58,9 @@ PatientForm::PatientForm(
 	lastName->addWidget(lastNameLabel);
 	lastName->addWidget(lastNameField);
 
-	QHBoxLayout* eMail = new QHBoxLayout;
-	eMail->addWidget(eMailLabel);
-	eMail->addWidget(eMailField);
+	QHBoxLayout* phone = new QHBoxLayout;
+	phone->addWidget(phoneLabel);
+	phone->addWidget(phoneField);
 
 	QHBoxLayout* birthday = new QHBoxLayout;
 	birthday->addWidget(birthdayLabel);
@@ -72,7 +72,7 @@ PatientForm::PatientForm(
 
 	fieldLayout->addLayout(firstName);
 	fieldLayout->addLayout(lastName);
-	fieldLayout->addLayout(eMail);
+	fieldLayout->addLayout(phone);
 	fieldLayout->addLayout(birthday);
 	fieldLayout->addLayout(gender);
 

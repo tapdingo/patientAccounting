@@ -2,12 +2,17 @@
 #define DEFINITIONS_H
 
 enum {
-	Gender = 0,
-	EMail = 1,
-	DateOfBirth = 2,
-	FirstName = 3,
-	LastName = 4,
-	ID = 5
+	HouseNumber = 0,
+	Street = 1,
+	City = 2,
+	PostalCode = 3,
+	Parent = 4,
+	Gender = 5,
+	Phone = 6,
+	DateOfBirth = 7,
+	FirstName = 8,
+	LastName = 9,
+	ID = 10
 };
 
 enum {
