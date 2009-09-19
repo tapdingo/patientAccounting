@@ -16,13 +16,13 @@ MainWindow::MainWindow()
 	printer = new QPrinter;
 
 	createActions();
+	createMenus();
 
 	createPatientPanel();
 	createDataPanel();
 
 	createPatientWidget();
 	createStatusBar();
-	createToolbar();
 
 	//Upper section Layout
 	QVBoxLayout* upper_layout = new QVBoxLayout();
@@ -110,24 +110,10 @@ void MainWindow::createDataPanel()
 			this, SLOT(deleteTreatment()));
 }
 
-void MainWindow::createToolbar()
-{
-	toolbar = addToolBar(tr("&Patienten"));
-	toolbar->addAction(newAction);
-	toolbar->addAction(editAction);
-	toolbar->addAction(findAction);
-	toolbar->addAction(deleteAction);
-	toolbar->addAction(accountAction);
-	toolbar->addAction(newTreatmentAction);
-	toolbar->addAction(editTreatmentAction);
-	toolbar->addAction(deleteTreatmentAction);
-}
-
 void MainWindow::createActions()
 {
 	newAction = new QAction(tr("&Neu"), this);
 	newAction->setStatusTip(tr("Legt einen neuen Patienten an"));
-	newAction->setIcon(QIcon(":/img/new.png"));
 
 	editAction = new QAction(tr("&Bearbeiten"), this);
 	editAction->setStatusTip(tr("Bearbeitet einen Patienten"));
@@ -142,14 +128,27 @@ void MainWindow::createActions()
 	accountAction->setStatusTip(tr("Rechnet einen Patienten ab"));
 	accountAction->setIcon(QIcon(":/img/accounting.png"));
 
-	newTreatmentAction = new QAction(tr("Behandlung Anlegen"), this);
+	newTreatmentAction = new QAction(tr("&Anlegen"), this);
 	newTreatmentAction->setStatusTip(tr("Legt eine Behandlung an"));
 
-	editTreatmentAction = new QAction(tr("Behandlung bearbeiten"), this);
+	editTreatmentAction = new QAction(tr("&Bearbeiten"), this);
 	editTreatmentAction->setStatusTip(tr("Bearbeitet eine Behandlung"));
 
-	deleteTreatmentAction = new QAction(tr("Behandlung entfernen"), this);
+	deleteTreatmentAction = new QAction(tr("Entfernen"), this);
 	deleteTreatmentAction->setStatusTip(tr("Entfernt eine Behandlung"));
+
+	browseDiagnosesAction = new QAction(tr("&Diagnosen Browser"), this);
+	browseDiagnosesAction->setStatusTip(tr("Startet den Diagnosen Browser"));
+
+	aboutAction = new QAction(tr("About"), this);
+	aboutAction->setStatusTip(tr("Ueber dieses Programm..."));
+
+	//The AboutQT Action is connected here, since it is special ;)
+	aboutQTAction = new QAction(tr("About QT"), this);
+	aboutQTAction->setStatusTip(tr("Ueber QT..."));
+	connect(aboutQTAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
+
 }
 
 void MainWindow::createPatientWidget()
@@ -161,6 +160,29 @@ void MainWindow::createPatientWidget()
 void MainWindow::createStatusBar()
 {
 	m_statusBar = statusBar();
+}
+
+void MainWindow::createMenus()
+{
+	patientMenu = menuBar()->addMenu(tr("&Patienten"));
+	patientMenu->addAction(newAction);
+	patientMenu->addAction(editAction);
+	patientMenu->addAction(findAction);
+	patientMenu->addAction(deleteAction);
+
+	treatmentMenu = menuBar()->addMenu(tr("&Behandlungen"));
+	treatmentMenu->addAction(newTreatmentAction);
+	treatmentMenu->addAction(editTreatmentAction);
+	treatmentMenu->addAction(deleteTreatmentAction);
+	treatmentMenu->addAction(browseDiagnosesAction);
+
+	accountingMenu = menuBar()->addMenu(tr("&Abrechnung"));
+	accountingMenu->addAction(accountAction);
+
+	miscMenu = menuBar()->addMenu(tr("&Sonstiges"));
+	miscMenu->addAction(aboutAction);
+	miscMenu->addAction(aboutQTAction);
+
 }
 
 bool MainWindow::connectToDB()

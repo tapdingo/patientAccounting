@@ -32,7 +32,6 @@ class MainWindow : public QMainWindow
 
 		QWidget* patientPanel;  //!< The upper panel that holds the patients
 		QWidget* dataPanel;  //!< The lower Panel for the patients data
-		QToolBar* toolbar;  //!< The toolbar
 
 	private:
 
@@ -47,12 +46,7 @@ class MainWindow : public QMainWindow
 		void createDataPanel();
 
 		/*!
-		 * \brief Create the button panel
-		 */
-		void createToolbar();
-
-		/*!
-		 * \brief Create the basic actions 
+		 * \brief Create the basic actions
 		 */
 		void createActions();
 
@@ -71,6 +65,11 @@ class MainWindow : public QMainWindow
 		 */
 		void createStatusBar();
 
+		/*!
+		 * \brief Create the different Menus
+		 */
+		void createMenus();
+
 		QTableView* patientView;  //!< The table that holds the patients
 		QLabel* patientLabel;  //!< The label of the patient panel
 
@@ -83,11 +82,20 @@ class MainWindow : public QMainWindow
 		QSqlRelationalTableModel* patientModel; //!< The model for patient data
 		QSqlRelationalTableModel* dataModel; //!< The model for patient treatments
 
+
+		QMenu* patientMenu;  //!< The Menu to add/edit/delete Patients
+		QMenu* treatmentMenu;  //!< The Menu to add/edit/delete Treatments
+		QMenu* accountingMenu;  //!< The Menu to Account Patients
+		QMenu* miscMenu;  //!< Miscallenous Menu
+
 		QAction* newAction;
 		QAction* editAction;
 		QAction* findAction;
 		QAction* deleteAction;
+		QAction* browseDiagnosesAction;
 		QAction* accountAction;
+		QAction* aboutAction;
+		QAction* aboutQTAction;
 
 		QAction* newTreatmentAction;
 		QAction* editTreatmentAction;
@@ -95,6 +103,10 @@ class MainWindow : public QMainWindow
 		QPrinter* printer;
 
 		private slots:
+
+			/*!
+			 * \brief Update the patient Treatments view
+			 */
 			void updateTreatmentView();
 
 		/*!
