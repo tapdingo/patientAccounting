@@ -42,6 +42,7 @@ MainWindow::MainWindow()
 	overall_layout->addLayout(lower_layout);
 
 	patientWidget->setLayout(overall_layout);
+	connectSlots();
 
 	this->resize(1000, 600);
 
@@ -69,14 +70,6 @@ void MainWindow::createPatientPanel()
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
 
-	connect(patientView->selectionModel(), SIGNAL(currentRowChanged(
-					const QModelIndex&,
-					const QModelIndex&)),
-			this, SLOT(updateTreatmentView()));
-	connect(newAction, SIGNAL(triggered()), this, SLOT(addPatient()));
-	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deletePatient()));
-	connect(editAction, SIGNAL(triggered()), this, SLOT(editPatient()));
-	connect(accountAction, SIGNAL(triggered()), this, SLOT(accountPatient()));
 }
 
 void MainWindow::createDataPanel()
@@ -102,16 +95,11 @@ void MainWindow::createDataPanel()
 	dataLabel = new QLabel(tr("Patienten&daten"));
 	dataLabel->setBuddy(patientView);
 
-	connect(newTreatmentAction, SIGNAL(triggered()),
-			this, SLOT(addTreatment()));
-	connect(editTreatmentAction, SIGNAL(triggered()),
-			this, SLOT(editTreatment()));
-	connect(deleteTreatmentAction, SIGNAL(triggered()),
-			this, SLOT(deleteTreatment()));
 }
 
 void MainWindow::createActions()
 {
+	//Patient related Actions
 	newAction = new QAction(tr("&Neu"), this);
 	newAction->setStatusTip(tr("Legt einen neuen Patienten an"));
 
@@ -124,10 +112,7 @@ void MainWindow::createActions()
 	deleteAction = new QAction(tr("&Entfernen"), this);
 	deleteAction->setStatusTip(tr("Entfernt einen Patienten"));
 
-	accountAction = new QAction(tr("&Abrechnen"), this);
-	accountAction->setStatusTip(tr("Rechnet einen Patienten ab"));
-	accountAction->setIcon(QIcon(":/img/accounting.png"));
-
+	//Treatment related Actions
 	newTreatmentAction = new QAction(tr("&Anlegen"), this);
 	newTreatmentAction->setStatusTip(tr("Legt eine Behandlung an"));
 
@@ -140,15 +125,49 @@ void MainWindow::createActions()
 	browseDiagnosesAction = new QAction(tr("&Diagnosen Browser"), this);
 	browseDiagnosesAction->setStatusTip(tr("Startet den Diagnosen Browser"));
 
+	//Accounting related Actions
+	accountAction = new QAction(tr("&Abrechnen"), this);
+	accountAction->setStatusTip(tr("Rechnet einen Patienten ab"));
+	accountAction->setIcon(QIcon(":/img/accounting.png"));
+
+	//Misc related Actions
 	aboutAction = new QAction(tr("About"), this);
 	aboutAction->setStatusTip(tr("Ueber dieses Programm..."));
 
-	//The AboutQT Action is connected here, since it is special ;)
 	aboutQTAction = new QAction(tr("About QT"), this);
 	aboutQTAction->setStatusTip(tr("Ueber QT..."));
+
+}
+
+void MainWindow::connectSlots()
+{
+	//Patient related connections
+	connect(patientView->selectionModel(), SIGNAL(currentRowChanged(
+					const QModelIndex&,
+					const QModelIndex&)),
+			this, SLOT(updateTreatmentView()));
+	connect(newAction, SIGNAL(triggered()), this, SLOT(addPatient()));
+	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deletePatient()));
+	connect(editAction, SIGNAL(triggered()), this, SLOT(editPatient()));
+
+	//Treatment related connections
+	connect(newTreatmentAction, SIGNAL(triggered()),
+			this, SLOT(addTreatment()));
+	connect(editTreatmentAction, SIGNAL(triggered()),
+			this, SLOT(editTreatment()));
+	connect(deleteTreatmentAction, SIGNAL(triggered()),
+			this, SLOT(deleteTreatment()));
+	connect(deleteTreatmentAction, SIGNAL(triggered()),
+			this, SLOT(deleteTreatment()));
+	connect(browseDiagnosesAction, SIGNAL(triggered()),
+			this, SLOT(browseDiagnoses()));
+
+	//Accounting related connections
+	connect(accountAction, SIGNAL(triggered()), this, SLOT(accountPatient()));
+
+	//Misc related connections
+	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 	connect(aboutQTAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-
 }
 
 void MainWindow::createPatientWidget()
@@ -222,7 +241,7 @@ void MainWindow::addPatient()
 	if (!patientModel->insertRow(rc))
 	{
 		QMessageBox msgBox;
-		msgBox.setText("Could not insert row :(");
+		msgBox.setText("Fehler beim Anlegen des Patienten :(");
 		msgBox.exec();
 		return;
 	}
@@ -331,7 +350,7 @@ void MainWindow::addTreatment()
 	if (!interimModel->submitAll())
 	{
 		QMessageBox msgBox;
-		msgBox.setText("Could not submit model :(");
+		msgBox.setText("Fehler beim Anlegen der Behandlung :(");
 		QSqlError last = QSqlDatabase::database().lastError();
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
@@ -402,7 +421,7 @@ void MainWindow::deleteTreatment()
 	if (!dataModel->submitAll())
 	{
 		QMessageBox msgBox;
-		msgBox.setText("Could not submit model :(");
+		msgBox.setText("Fehler im DatenModell! :(");
 		QSqlError last = QSqlDatabase::database().lastError();
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
@@ -423,4 +442,18 @@ void MainWindow::accountPatient()
 
 	PatientAccounter acc(record, *(dataModel));
 	acc.account();
+}
+
+void MainWindow::browseDiagnoses()
+{
+		QMessageBox msgBox;
+		msgBox.setText("Der Diagnosen Browser ist noch nicht implementiert :(");
+		msgBox.exec();
+}
+
+void MainWindow::about()
+{
+		QMessageBox msgBox;
+		msgBox.setText("Der Diagnosen Browser ist noch nicht implementiert :(");
+		msgBox.exec();
 }

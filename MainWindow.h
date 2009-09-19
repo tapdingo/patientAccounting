@@ -70,6 +70,11 @@ class MainWindow : public QMainWindow
 		 */
 		void createMenus();
 
+		/*!
+		 * \brief Interlink the Actions with the slots
+		 */
+		void connectSlots();
+
 		QTableView* patientView;  //!< The table that holds the patients
 		QLabel* patientLabel;  //!< The label of the patient panel
 
@@ -145,6 +150,16 @@ class MainWindow : public QMainWindow
 		 * \brief Account a patient
 		 */
 		void accountPatient();
+
+		/*!
+		 * \brief Opens the Diagnose browser
+		 */
+		void browseDiagnoses();
+
+		/*!
+		 * \brief Opens the About Window
+		 */
+		void about();
 
 };
 
