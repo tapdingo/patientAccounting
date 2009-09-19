@@ -28,6 +28,8 @@ class TreatmentForm : public QDialog
 			void saveTreatment();
 
 	private:
+		QLabel* diagnoseLabel;
+		QComboBox* diagnoseComboBox;
 		QLabel* dateLabel;
 		QDateEdit* dateEdit;
 		QLabel* patientIDLabel;

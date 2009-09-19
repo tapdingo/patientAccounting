@@ -14,6 +14,15 @@ TreatmentForm::TreatmentForm(
 	m_model->setFilter(QString("id = %1").arg(id));
 	m_model->select();
 
+	QSqlTableModel* diagnose_model = new QSqlTableModel(this);
+	diagnose_model->setTable("diagnoses");
+	diagnose_model->select();
+	diagnoseLabel = new QLabel(tr("Diagnose"));
+	diagnoseComboBox = new QComboBox;
+	diagnoseComboBox->setModel(diagnose_model);
+	diagnoseComboBox->setModelColumn(0);
+
+
 	dateLabel = new QLabel(tr("Behandlungsdatum"));
 	dateEdit = new QDateEdit;
 	dateEdit->setCalendarPopup(true);
@@ -31,6 +40,7 @@ TreatmentForm::TreatmentForm(
 	m_mapper = new QDataWidgetMapper(this);
 	m_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 	m_mapper->setModel(m_model);
+	m_mapper->addMapping(diagnoseComboBox, Diagnose);
 	m_mapper->addMapping(dateEdit, DateOfTreat);
 	m_mapper->addMapping(costField, Cost);
 	m_mapper->addMapping(nameField, TreatmentName);
@@ -44,6 +54,10 @@ TreatmentForm::TreatmentForm(
 
 	QVBoxLayout* fieldLayout = new QVBoxLayout;
 
+	QHBoxLayout* diagnose = new QHBoxLayout;
+	diagnose->addWidget(diagnoseLabel);
+	diagnose->addWidget(diagnoseComboBox);
+
 	QHBoxLayout* date = new QHBoxLayout;
 	date->addWidget(dateLabel);
 	date->addWidget(dateEdit);
@@ -56,6 +70,7 @@ TreatmentForm::TreatmentForm(
 	name->addWidget(nameLabel);
 	name->addWidget(nameField);
 
+	fieldLayout->addLayout(diagnose);
 	fieldLayout->addLayout(date);
 	fieldLayout->addLayout(cost);
 	fieldLayout->addLayout(name);
@@ -80,6 +95,7 @@ TreatmentForm::TreatmentForm(
 void TreatmentForm::saveTreatment()
 {
 	int index = m_mapper->currentIndex();
+
 	if (!m_mapper->submit())
 	{
 		QMessageBox msgBox;
@@ -88,5 +104,18 @@ void TreatmentForm::saveTreatment()
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
 	}
+
+	QSqlRecord record = m_model->record(index);
+	record.setValue(Diagnose, diagnoseComboBox->currentText());
+	m_model->setRecord(index, record);
+	if (!m_model->submit())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not submit ComboBox");
+		QSqlError last = m_model->lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
+
 	m_mapper->setCurrentIndex(index);
 }
