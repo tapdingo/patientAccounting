@@ -454,6 +454,9 @@ void MainWindow::browseDiagnoses()
 void MainWindow::about()
 {
 		QMessageBox msgBox;
-		msgBox.setText("Der Diagnosen Browser ist noch nicht implementiert :(");
-		msgBox.exec();
+		msgBox.about(this, "About PatientAccounting",
+				"PatientAccounting is a programm to manage and account patients\n\n"
+				"It was developed open source. "
+				"The GPL applies\n\n"
+				"Support is not foressen ;)\n");
 }
