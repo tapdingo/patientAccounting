@@ -7,6 +7,7 @@
 
 #include "definitions.h"
 #include "Accounting.h"
+#include "diagnoseBrowser.h"
 
 MainWindow::MainWindow()
 {
@@ -183,21 +184,26 @@ void MainWindow::createStatusBar()
 
 void MainWindow::createMenus()
 {
+
+	//Patient Menu
 	patientMenu = menuBar()->addMenu(tr("&Patienten"));
 	patientMenu->addAction(newAction);
 	patientMenu->addAction(editAction);
 	patientMenu->addAction(findAction);
 	patientMenu->addAction(deleteAction);
 
+	//Treatment Menu
 	treatmentMenu = menuBar()->addMenu(tr("&Behandlungen"));
 	treatmentMenu->addAction(newTreatmentAction);
 	treatmentMenu->addAction(editTreatmentAction);
 	treatmentMenu->addAction(deleteTreatmentAction);
 	treatmentMenu->addAction(browseDiagnosesAction);
 
+	//Accounting Menu
 	accountingMenu = menuBar()->addMenu(tr("&Abrechnung"));
 	accountingMenu->addAction(accountAction);
 
+	//Misc Menu
 	miscMenu = menuBar()->addMenu(tr("&Sonstiges"));
 	miscMenu->addAction(aboutAction);
 	miscMenu->addAction(aboutQTAction);
@@ -446,9 +452,8 @@ void MainWindow::accountPatient()
 
 void MainWindow::browseDiagnoses()
 {
-		QMessageBox msgBox;
-		msgBox.setText("Der Diagnosen Browser ist noch nicht implementiert :(");
-		msgBox.exec();
+	DiagnoseBrowser browser(this);
+	browser.exec();
 }
 
 void MainWindow::about()
