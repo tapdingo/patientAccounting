@@ -21,6 +21,7 @@ TreatmentForm::TreatmentForm(
 	diagnoseComboBox = new QComboBox;
 	diagnoseComboBox->setModel(diagnose_model);
 	diagnoseComboBox->setModelColumn(0);
+	diagnoseComboBox->setEditable(true);
 
 
 	dateLabel = new QLabel(tr("Behandlungsdatum"));
