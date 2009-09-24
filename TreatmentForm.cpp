@@ -20,6 +20,7 @@ TreatmentForm::TreatmentForm(
 	diagnoseLabel = new QLabel(tr("Diagnose"));
 	diagnoseComboBox = new QComboBox;
 	diagnoseComboBox->setModel(diagnose_model);
+	diagnoseComboBox->setCompleter(diagnoseComboBox->completer());
 	diagnoseComboBox->setModelColumn(0);
 	diagnoseComboBox->setEditable(true);
 
