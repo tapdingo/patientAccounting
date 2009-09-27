@@ -31,6 +31,11 @@ TreatmentForm::TreatmentForm(
 	dateEdit->setDisplayFormat("dd.MM.yyyy");
 	dateLabel->setBuddy(dateEdit);
 
+	durationLabel = new QLabel(tr("Dauer (Minuten)"));
+	durationField = new QLineEdit;
+	durationLabel->setBuddy(durationField);
+	connect(durationField, SIGNAL(textChanged(QString)), this, SLOT(durChange()));
+
 	costLabel = new QLabel(tr("Kostenpunkt"));
 	costField = new QLineEdit;
 	costLabel->setBuddy(costField);
@@ -44,6 +49,7 @@ TreatmentForm::TreatmentForm(
 	m_mapper->setModel(m_model);
 	m_mapper->addMapping(diagnoseComboBox, Diagnose);
 	m_mapper->addMapping(dateEdit, DateOfTreat);
+	m_mapper->addMapping(durationField, Duration);
 	m_mapper->addMapping(costField, Cost);
 	m_mapper->addMapping(nameField, TreatmentName);
 	m_mapper->toFirst();
@@ -60,6 +66,10 @@ TreatmentForm::TreatmentForm(
 	diagnose->addWidget(diagnoseLabel);
 	diagnose->addWidget(diagnoseComboBox);
 
+	QHBoxLayout* duration = new QHBoxLayout;
+	duration->addWidget(durationLabel);
+	duration->addWidget(durationField);
+
 	QHBoxLayout* date = new QHBoxLayout;
 	date->addWidget(dateLabel);
 	date->addWidget(dateEdit);
@@ -74,6 +84,7 @@ TreatmentForm::TreatmentForm(
 
 	fieldLayout->addLayout(diagnose);
 	fieldLayout->addLayout(date);
+	fieldLayout->addLayout(duration);
 	fieldLayout->addLayout(cost);
 	fieldLayout->addLayout(name);
 
@@ -120,4 +131,12 @@ void TreatmentForm::saveTreatment()
 	}
 
 	m_mapper->setCurrentIndex(index);
+}
+
+void TreatmentForm::durChange()
+{
+	double new_cost = (double(durationField->text().toInt()) / 60) * 75;
+	QString newCost;
+	newCost.setNum(new_cost);
+	costField->setText(newCost);
 }

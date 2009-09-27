@@ -26,6 +26,7 @@ class TreatmentForm : public QDialog
 
 		private slots:
 			void saveTreatment();
+			void durChange();
 
 	private:
 		QLabel* diagnoseLabel;
@@ -34,6 +35,8 @@ class TreatmentForm : public QDialog
 		QDateEdit* dateEdit;
 		QLabel* patientIDLabel;
 		QLineEdit* idField;
+		QLabel* durationLabel;
+		QLineEdit* durationField;
 		QLabel* costLabel;
 		QLineEdit* costField;
 		QLabel* nameLabel;
