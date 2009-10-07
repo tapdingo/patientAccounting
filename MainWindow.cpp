@@ -8,6 +8,7 @@
 #include "definitions.h"
 #include "Accounting.h"
 #include "diagnoseBrowser.h"
+#include "patientModel.h"
 
 MainWindow::MainWindow()
 {
@@ -53,7 +54,7 @@ void MainWindow::createPatientPanel()
 {
 	patientPanel = new QWidget();
 
-	patientModel= new QSqlRelationalTableModel(this);
+	patientModel= new PatientModel();
 	patientModel->setTable("patients");
 	patientModel->select();
 

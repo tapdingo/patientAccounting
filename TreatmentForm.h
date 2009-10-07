@@ -7,6 +7,7 @@
 #include <QSqlRelationalTableModel>
 
 #include "definitions.h"
+#include "patientModel.h"
 
 class QDataWidgetMapper;
 class QLabel;
