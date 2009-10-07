@@ -8,7 +8,8 @@ class MainWindow;
 class ModelAbstraction : public QSqlRelationalTableModel
 {
 	public:
-	virtual void addNewRecord() = 0;
+	virtual int addNewRecord() = 0;
+	virtual void deleteRecord(const int& id) = 0;
 
 };
 

@@ -7,9 +7,10 @@ class MainWindow;
 
 class PatientModel : public ModelAbstraction
 {
-	virtual void addNewRecord();
-
 	public:
+	virtual int addNewRecord();
+	virtual void deleteRecord(const int& id);
+
 };
 
 #endif

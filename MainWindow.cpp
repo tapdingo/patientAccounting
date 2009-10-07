@@ -242,35 +242,15 @@ void MainWindow::updateTreatmentView()
 
 void MainWindow::addPatient()
 {
-	QSqlRecord rec;
-
-	int rc = patientModel->rowCount();
-	if (!patientModel->insertRow(rc))
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Fehler beim Anlegen des Patienten :(");
-		msgBox.exec();
-		return;
-	}
-
-	rec = patientModel->record(rc);
-	rec.setValue(QString("gender"), QString("m"));
-	patientModel->setRecord(rc, rec);
-
-	if (!patientModel->submitAll())
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Could not submit model :(");
-		QSqlError last = QSqlDatabase::database().lastError();
-		msgBox.setInformativeText(last.text());
-		msgBox.exec();
-	}
-	patientModel->select();
+	int rc = dynamic_cast<PatientModel*>(patientModel)->addNewRecord();
 	updateTreatmentView();
 
 	//Send the new patient for editing purposes to the form
-	PatientForm editPatient(patientModel, rc, this);
-	editPatient.exec();
+	if (rc)
+	{
+		PatientForm editPatient(patientModel, rc, this);
+		editPatient.exec();
+	}
 }
 
 void MainWindow::deletePatient()
@@ -285,25 +265,8 @@ void MainWindow::deletePatient()
 	QSqlRecord record = patientModel->record(index.row());
 	int id = record.value(ID).toInt();
 
-	int r = QMessageBox::warning(this, tr("Patient entfernen"),
-			tr("Patient %1 %2 und alle Behandlungen wirklich entfernen?")
-			.arg(record.value(FirstName).toString(), record.value(LastName).toString()),
-			QMessageBox::Yes | QMessageBox::No);
-
-	if (r == QMessageBox::No)
-	{
-		QSqlDatabase::database().rollback();
-		return;
-	}
-	QSqlQuery query;
-	query.exec(QString("DELETE FROM treatments "
-				"WHERE patient_id = %1").arg(id));
-
+	dynamic_cast<PatientModel*>(patientModel)->deleteRecord(id);
 	patientModel->removeRow(index.row());
-	patientModel->submitAll();
-	QSqlDatabase::database().commit();
-
-	patientModel->select();
 	updateTreatmentView();
 }
 
@@ -319,7 +282,7 @@ void MainWindow::editPatient()
 
 	//Why this - 1 is needed, no one knows!
 	//Counting should always start at 0
-	PatientForm editPatient(patientModel, id - 1, this);
+	PatientForm editPatient(patientModel, index.row(), this);
 	editPatient.exec();
 }
 
