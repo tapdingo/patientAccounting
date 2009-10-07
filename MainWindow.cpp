@@ -11,6 +11,8 @@
 #include "patientModel.h"
 #include "treatmentModel.h"
 
+#include <iostream>
+
 MainWindow::MainWindow()
 {
 	//Connect to the database
@@ -279,7 +281,6 @@ void MainWindow::editPatient()
 		return;
 	}
 	QSqlRecord record = patientModel->record(index.row());
-	int id = record.value(ID).toInt();
 
 	//Why this - 1 is needed, no one knows!
 	//Counting should always start at 0
@@ -289,9 +290,6 @@ void MainWindow::editPatient()
 
 void MainWindow::addTreatment()
 {
-	QSqlTableModel* interimModel= new QSqlTableModel(this);
-	interimModel->setTable("treatments");
-	interimModel->select();
 	QModelIndex index = patientView->currentIndex();
 	if (!index.isValid())
 	{
@@ -299,43 +297,16 @@ void MainWindow::addTreatment()
 	}
 	QSqlRecord patientRecord = patientModel->record(index.row());
 	int id = patientRecord.value(ID).toInt();
-
-	int rc = interimModel->rowCount();
-
-	if (!interimModel->insertRow(rc))
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Could not insert row :(");
-		msgBox.exec();
-		return;
-	}
-
-	QSqlRecord rec;
-	QString idString;
-	idString.setNum(id);
-	rec = interimModel->record(rc);
-
-	rec.setValue(QString("patient_id"), idString);
-
-	interimModel->setRecord(rc, rec);
-	if (!interimModel->submitAll())
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Fehler beim Anlegen der Behandlung :(");
-		QSqlError last = QSqlDatabase::database().lastError();
-		msgBox.setInformativeText(last.text());
-		msgBox.exec();
-	}
-	interimModel->select();
-	updateTreatmentView();
+	int treatId = dynamic_cast<TreatmentModel*>(dataModel)->addNewRelRecord(id);
 
 	//Send the new patient for editing purposes to the form
-	//Bad Hack to get the new ID
-	rec = interimModel->record(rc-1);
-	int treatId = rec.value(TreatmentID).toInt() + 1;
-	dataModel->select();
-	TreatmentForm editTreatment(treatId, this);
-	editTreatment.exec();
+	if (treatId)
+	{
+		std::cerr << treatId;
+		dataModel->select();
+		TreatmentForm editTreatment(treatId, this);
+		editTreatment.exec();
+	}
 
 	dataModel->select();
 	patientModel->select();
@@ -354,6 +325,7 @@ void MainWindow::editTreatment()
 	//GET THE TREATMENTS A PRIMARY KEY
 	int id = record.value(TreatmentID).toInt();
 
+	std::cerr << id;
 	TreatmentForm editTreatment(id, this);
 	editTreatment.exec();
 
@@ -370,34 +342,10 @@ void MainWindow::deleteTreatment()
 		return;
 	}
 
-	QSqlDatabase::database().transaction();
 	QSqlRecord record = dataModel->record(index.row());
 	int id = record.value(ID).toInt();
-
-	int r = QMessageBox::warning(this, tr("Behandlung entfernen"),
-			tr("die Behandlung wirklich entfernen?"),
-			QMessageBox::Yes | QMessageBox::No);
-
-	if (r == QMessageBox::No)
-	{
-		QSqlDatabase::database().rollback();
-		return;
-	}
-	QSqlQuery query;
-	query.exec(QString("DELETE FROM treatments "
-				"WHERE id = %1").arg(id));
-
+	dynamic_cast<TreatmentModel*>(dataModel)->deleteRecord(id);
 	dataModel->removeRow(index.row());
-	dataModel->submitAll();
-	if (!dataModel->submitAll())
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Fehler im DatenModell! :(");
-		QSqlError last = QSqlDatabase::database().lastError();
-		msgBox.setInformativeText(last.text());
-		msgBox.exec();
-	}
-	QSqlDatabase::database().commit();
 	dataModel->select();
 	updateTreatmentView();
 }
