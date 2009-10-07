@@ -9,6 +9,7 @@
 #include "Accounting.h"
 #include "diagnoseBrowser.h"
 #include "patientModel.h"
+#include "treatmentModel.h"
 
 MainWindow::MainWindow()
 {
@@ -78,7 +79,7 @@ void MainWindow::createDataPanel()
 {
 	dataPanel = new QWidget();
 
-	dataModel= new QSqlRelationalTableModel(this);
+	dataModel= new TreatmentModel();
 	dataModel->setTable("treatments");
 	dataModel->setRelation(PatientId, QSqlRelation("patients", "id", "firstname"));
 	dataModel->select();
