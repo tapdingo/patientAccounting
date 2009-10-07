@@ -4,11 +4,13 @@
 #include "definitions.h"
 
 PatientForm::PatientForm(
-		QSqlRelationalTableModel* model,
 		int id,
 		QWidget* parent) : QDialog(parent)
 {
-	m_model = model;
+	m_model = new QSqlRelationalTableModel(this);
+	m_model->setTable("patients");
+	m_model->setFilter(QString("id = %1").arg(id));
+	m_model->select();
 
 	firstNameLabel = new QLabel(tr("Vorname"));;
 	firstNameField = new QLineEdit;
@@ -40,7 +42,7 @@ PatientForm::PatientForm(
 	m_mapper->addMapping(phoneField, Phone);
 	m_mapper->addMapping(birthdayEdit, DateOfBirth);
 	m_mapper->addMapping(genderField, Gender);
-	m_mapper->setCurrentIndex(id);
+	m_mapper->toFirst();
 
 	saveButton = new QPushButton(tr("&Speichern"));
 	saveButton->setEnabled(true);

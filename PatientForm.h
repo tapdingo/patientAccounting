@@ -18,7 +18,7 @@ class PatientForm : public QDialog{
 	Q_OBJECT
 
 	public:
-		PatientForm(QSqlRelationalTableModel* model, int id, QWidget* parent);
+		PatientForm(int id, QWidget* parent);
 
 		private slots:
 			void savePatient();

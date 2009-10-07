@@ -251,9 +251,12 @@ void MainWindow::addPatient()
 	//Send the new patient for editing purposes to the form
 	if (rc)
 	{
-		PatientForm editPatient(patientModel, rc, this);
+		QSqlRecord record = patientModel->record(rc);
+		int id = record.value("id").toInt();
+		PatientForm editPatient(id, this);
 		editPatient.exec();
 	}
+	patientModel->select();
 }
 
 void MainWindow::deletePatient()
@@ -282,10 +285,13 @@ void MainWindow::editPatient()
 	}
 	QSqlRecord record = patientModel->record(index.row());
 
+	int id = record.value(ID).toInt();
+
 	//Why this - 1 is needed, no one knows!
 	//Counting should always start at 0
-	PatientForm editPatient(patientModel, index.row(), this);
+	PatientForm editPatient(id, this);
 	editPatient.exec();
+	patientModel->select();
 }
 
 void MainWindow::addTreatment()
