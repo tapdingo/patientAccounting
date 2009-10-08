@@ -75,6 +75,8 @@ class MainWindow : public QMainWindow
 		 */
 		void connectSlots();
 
+		void updateStatusBar();
+
 		QTableView* patientView;  //!< The table that holds the patients
 		QLabel* patientLabel;  //!< The label of the patient panel
 
@@ -106,6 +108,8 @@ class MainWindow : public QMainWindow
 		QAction* editTreatmentAction;
 		QAction* deleteTreatmentAction;
 		QPrinter* printer;
+
+		QLabel* unaccountedPatients;
 
 		private slots:
 

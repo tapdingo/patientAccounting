@@ -47,9 +47,17 @@ MainWindow::MainWindow()
 	overall_layout->addLayout(lower_layout);
 
 	patientWidget->setLayout(overall_layout);
+
+
+	unaccountedPatients = new QLabel("Offene Rechnungsbetraege: 000000000 ");
+	unaccountedPatients->setMinimumSize(unaccountedPatients->sizeHint());
+
+	statusBar()->addWidget(unaccountedPatients);
+
 	connectSlots();
 
 	this->resize(1000, 600);
+	updateStatusBar();
 
 }
 
@@ -274,6 +282,7 @@ void MainWindow::deletePatient()
 	dynamic_cast<PatientModel*>(patientModel)->deleteRecord(id);
 	patientModel->removeRow(index.row());
 	updateTreatmentView();
+	updateStatusBar();
 }
 
 void MainWindow::editPatient()
@@ -317,6 +326,7 @@ void MainWindow::addTreatment()
 	dataModel->select();
 	patientModel->select();
 	updateTreatmentView();
+	updateStatusBar();
 }
 
 void MainWindow::editTreatment()
@@ -338,6 +348,7 @@ void MainWindow::editTreatment()
 	dataModel->select();
 	patientModel->select();
 	updateTreatmentView();
+	updateStatusBar();
 }
 
 void MainWindow::deleteTreatment()
@@ -354,6 +365,7 @@ void MainWindow::deleteTreatment()
 	dataModel->removeRow(index.row());
 	dataModel->select();
 	updateTreatmentView();
+	updateStatusBar();
 }
 
 void MainWindow::accountPatient()
@@ -367,6 +379,7 @@ void MainWindow::accountPatient()
 
 	PatientAccounter acc(record, *(dataModel));
 	acc.account();
+	updateStatusBar();
 }
 
 void MainWindow::browseDiagnoses()
@@ -383,4 +396,15 @@ void MainWindow::about()
 				"It was developed open source. "
 				"The GPL applies\n\n"
 				"Support is not foressen ;)\n");
+}
+
+void MainWindow::updateStatusBar()
+{
+	double openBills = dynamic_cast<TreatmentModel*>(dataModel)->getOpenBills();
+	QString openBillsText;
+	openBillsText.setNum(openBills);
+	QString statusBarText("Offene Rechnungsbetraege: ");
+	statusBarText.append(openBillsText);
+	statusBarText.append(" Euro");
+	unaccountedPatients->setText(statusBarText);
 }
