@@ -14,6 +14,7 @@ class QWidget;
 class QAction;
 class QSqlRelationalTableModel;
 class QPrinter;
+class QCheckBox;
 
 /*!
  * \brief The Main Window Form Class
@@ -75,6 +76,11 @@ class MainWindow : public QMainWindow
 		 */
 		void connectSlots();
 
+		/*!
+		 * \brief Create the toolbar
+		 */
+		void createToolBar();
+
 		void updateStatusBar();
 
 		QTableView* patientView;  //!< The table that holds the patients
@@ -111,12 +117,15 @@ class MainWindow : public QMainWindow
 
 		QLabel* unaccountedPatients;
 
+		QToolBar* filtering;
+		QCheckBox* accCheckbox;
+
 		private slots:
 
 			/*!
 			 * \brief Update the patient Treatments view
 			 */
-			void updateTreatmentView();
+			void updateTreatmentView(int state = Qt::Unchecked);
 
 		/*!
 		 * \brief Add a new Patient to the database
@@ -164,6 +173,11 @@ class MainWindow : public QMainWindow
 		 * \brief Opens the About Window
 		 */
 		void about();
+
+		/*!
+		 * \brief Set the accounted patient filter
+		 */
+		void setAccFilter(int state);
 
 };
 

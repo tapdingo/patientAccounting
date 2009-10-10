@@ -29,6 +29,8 @@ MainWindow::MainWindow()
 	createPatientWidget();
 	createStatusBar();
 
+	createToolBar();
+
 	//Upper section Layout
 	QVBoxLayout* upper_layout = new QVBoxLayout();
 	upper_layout->addWidget(patientPanel);
@@ -181,6 +183,8 @@ void MainWindow::connectSlots()
 	//Misc related connections
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 	connect(aboutQTAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+	connect(accCheckbox, SIGNAL(stateChanged(int)), this,
+			SLOT(setAccFilter(int)));
 }
 
 void MainWindow::createPatientWidget()
@@ -219,7 +223,14 @@ void MainWindow::createMenus()
 	miscMenu = menuBar()->addMenu(tr("&Sonstiges"));
 	miscMenu->addAction(aboutAction);
 	miscMenu->addAction(aboutQTAction);
+}
 
+void MainWindow::createToolBar()
+{
+	QToolBar* fileToolBar = new QToolBar("Filtering");
+	addToolBar(Qt::BottomToolBarArea, fileToolBar);
+	accCheckbox = new QCheckBox("Nur nicht abgerechnete anzeigen", this);
+	fileToolBar->addWidget(accCheckbox);
 }
 
 bool MainWindow::connectToDB()
@@ -236,7 +247,7 @@ bool MainWindow::connectToDB()
 }
 
 
-void MainWindow::updateTreatmentView()
+void MainWindow::updateTreatmentView(int state)
 {
 	QModelIndex index = patientView->currentIndex();
 
@@ -244,7 +255,30 @@ void MainWindow::updateTreatmentView()
 	{
 		QSqlRecord record = patientModel->record(index.row());
 		int id = record.value("id").toInt();
-		dataModel->setFilter(QString("patient_id = %1").arg(id));
+
+		//Get the treatment view state
+		QString filterString;
+		dataModel->setFilter(QString("1"));
+		if (state == Qt::Checked)
+		{
+			filterString = "accounted = 0";
+		}
+		else
+		{
+			//Set the filter to something stupid to disable it
+			//I know it's lame...
+			filterString = "accounted != 2";
+		}
+
+
+		//construct the filter string
+		QString patientId;
+		patientId.setNum(id);
+		QString filter("patient_id = ");
+		filter.append(patientId);
+		filter.append(" AND ");
+		filter.append(filterString);
+		dataModel->setFilter(filter);
 	}
 
 	dataModel->select();
@@ -407,4 +441,9 @@ void MainWindow::updateStatusBar()
 	statusBarText.append(openBillsText);
 	statusBarText.append(" Euro");
 	unaccountedPatients->setText(statusBarText);
+}
+
+void MainWindow::setAccFilter(int state)
+{
+	updateTreatmentView(state);
 }
