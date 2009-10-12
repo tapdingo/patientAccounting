@@ -15,6 +15,7 @@ class QAction;
 class QSqlRelationalTableModel;
 class QPrinter;
 class QCheckBox;
+class QDateEdit;
 
 /*!
  * \brief The Main Window Form Class
@@ -119,13 +120,18 @@ class MainWindow : public QMainWindow
 
 		QToolBar* filtering;
 		QCheckBox* accCheckbox;
+		QCheckBox* monthCheckbox;
+		QDateEdit* month;
+
+		int m_acc_state;
+		int m_month_state;
 
 		private slots:
 
 			/*!
 			 * \brief Update the patient Treatments view
 			 */
-			void updateTreatmentView(int state = Qt::Unchecked);
+			void updateTreatmentView();
 
 		/*!
 		 * \brief Add a new Patient to the database
@@ -178,6 +184,11 @@ class MainWindow : public QMainWindow
 		 * \brief Set the accounted patient filter
 		 */
 		void setAccFilter(int state);
+
+		/*!
+		 * \brief Set the Month filter
+		 */
+		void setMonthFilter(int state);
 
 };
 

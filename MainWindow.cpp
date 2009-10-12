@@ -185,6 +185,8 @@ void MainWindow::connectSlots()
 	connect(aboutQTAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 	connect(accCheckbox, SIGNAL(stateChanged(int)), this,
 			SLOT(setAccFilter(int)));
+	connect(monthCheckbox, SIGNAL(stateChanged(int)), this,
+			SLOT(setMonthFilter(int)));
 }
 
 void MainWindow::createPatientWidget()
@@ -231,6 +233,13 @@ void MainWindow::createToolBar()
 	addToolBar(Qt::BottomToolBarArea, fileToolBar);
 	accCheckbox = new QCheckBox("Nur nicht abgerechnete anzeigen", this);
 	fileToolBar->addWidget(accCheckbox);
+
+	monthCheckbox = new QCheckBox("Nur angegebenen Monat anzeigen", this);
+	fileToolBar->addWidget(monthCheckbox);
+
+	month = new QDateEdit();
+	month->setDisplayFormat(QString("MM.yyyy"));
+	fileToolBar->addWidget(month);
 }
 
 bool MainWindow::connectToDB()
@@ -247,7 +256,7 @@ bool MainWindow::connectToDB()
 }
 
 
-void MainWindow::updateTreatmentView(int state)
+void MainWindow::updateTreatmentView()
 {
 	QModelIndex index = patientView->currentIndex();
 
@@ -259,7 +268,7 @@ void MainWindow::updateTreatmentView(int state)
 		//Get the treatment view state
 		QString filterString;
 		dataModel->setFilter(QString("1"));
-		if (state == Qt::Checked)
+		if (m_acc_state == Qt::Checked)
 		{
 			filterString = "accounted = 0";
 		}
@@ -268,6 +277,10 @@ void MainWindow::updateTreatmentView(int state)
 			//Set the filter to something stupid to disable it
 			//I know it's lame...
 			filterString = "accounted != 2";
+		}
+
+		if (m_month_state == Qt::Checked)
+		{
 		}
 
 
@@ -445,5 +458,12 @@ void MainWindow::updateStatusBar()
 
 void MainWindow::setAccFilter(int state)
 {
-	updateTreatmentView(state);
+	m_acc_state = state;
+	updateTreatmentView();
+}
+
+void MainWindow::setMonthFilter(int state)
+{
+	m_month_state = state;
+	updateTreatmentView();
 }
