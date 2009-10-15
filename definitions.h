@@ -37,4 +37,9 @@ enum {
 	BillNumber = 0,
 };
 
+enum{
+	Telephone = 0,
+	Practice = 1,
+};
+
 #endif

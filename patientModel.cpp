@@ -35,7 +35,7 @@ int PatientModel::addNewRecord()
 	return rc;
 }
 
-void PatientModel::deleteRecord(const int& id)
+bool PatientModel::deleteRecord(const int& id)
 {
 	//QSqlRecord record = this->record(index.row());
 	int r = QMessageBox::warning(0, tr("Patient entfernen"),
@@ -45,7 +45,7 @@ void PatientModel::deleteRecord(const int& id)
 	if (r == QMessageBox::No)
 	{
 		QSqlDatabase::database().rollback();
-		return;
+		return false;
 	}
 	QSqlQuery query;
 	query.exec(QString("DELETE FROM treatments "
@@ -56,4 +56,5 @@ void PatientModel::deleteRecord(const int& id)
 	QSqlDatabase::database().commit();
 
 	this->select();
+	return true;
 }

@@ -331,8 +331,11 @@ void MainWindow::deletePatient()
 	QSqlRecord record = patientModel->record(index.row());
 	int id = record.value(ID).toInt();
 
-	dynamic_cast<PatientModel*>(patientModel)->deleteRecord(id);
-	patientModel->removeRow(index.row());
+	PatientModel* int_model = dynamic_cast<PatientModel*>(patientModel);
+	if (int_model->deleteRecord(id))
+	{
+		patientModel->removeRow(index.row());
+	}
 	updateTreatmentView();
 	updateStatusBar();
 }
@@ -370,7 +373,6 @@ void MainWindow::addTreatment()
 	//Send the new patient for editing purposes to the form
 	if (treatId)
 	{
-		std::cerr << treatId;
 		dataModel->select();
 		TreatmentForm editTreatment(treatId, this);
 		editTreatment.exec();
@@ -416,8 +418,10 @@ void MainWindow::deleteTreatment()
 
 	QSqlRecord record = dataModel->record(index.row());
 	int id = record.value(ID).toInt();
-	dynamic_cast<TreatmentModel*>(dataModel)->deleteRecord(id);
-	dataModel->removeRow(index.row());
+	if (dynamic_cast<TreatmentModel*>(dataModel)->deleteRecord(id))
+	{
+		dataModel->removeRow(index.row());
+	}
 	dataModel->select();
 	updateTreatmentView();
 	updateStatusBar();

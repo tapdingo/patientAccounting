@@ -56,6 +56,8 @@ class TreatmentForm : public QDialog
 
 		QPushButton* saveButton;
 		QPushButton* closeButton;
+
+		void createLayout();
 };
 
 #endif

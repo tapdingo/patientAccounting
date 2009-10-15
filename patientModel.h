@@ -9,7 +9,7 @@ class PatientModel : public ModelAbstraction
 {
 	public:
 	virtual int addNewRecord();
-	virtual void deleteRecord(const int& id);
+	virtual bool deleteRecord(const int& id);
 	virtual ~PatientModel() {};
 
 };

@@ -8,7 +8,7 @@ class TreatmentModel : public ModelAbstraction
 	public:
 		virtual int addNewRecord();
 		virtual int addNewRelRecord(const int& id);
-		virtual void deleteRecord(const int& id);
+		virtual bool deleteRecord(const int& id);
 		virtual double getOpenBills();
 		virtual ~TreatmentModel() {};
 

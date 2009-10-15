@@ -12,7 +12,7 @@ int TreatmentModel::addNewRecord()
 	return 0;
 }
 
-void TreatmentModel::deleteRecord(const int& id)
+bool TreatmentModel::deleteRecord(const int& id)
 {
 	QSqlDatabase::database().transaction();
 	int r = QMessageBox::warning(0, tr("Behandlung entfernen"),
@@ -22,7 +22,7 @@ void TreatmentModel::deleteRecord(const int& id)
 	if (r == QMessageBox::No)
 	{
 		QSqlDatabase::database().rollback();
-		return;
+		return false;
 	}
 	QSqlQuery query;
 	query.exec(QString("DELETE FROM treatments "
@@ -38,6 +38,7 @@ void TreatmentModel::deleteRecord(const int& id)
 		msgBox.exec();
 	}
 	QSqlDatabase::database().commit();
+	return true;
 }
 
 int TreatmentModel::addNewRelRecord(const int& id)

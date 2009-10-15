@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
 	MainWindow mainWindow;
-	mainWindow.setWindowTitle("Patienten Abrechnung v0.1a");
+	mainWindow.setWindowTitle("Patienten Abrechnung v0.11");
 	mainWindow.show();
 	return app.exec();
 }

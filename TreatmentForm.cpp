@@ -4,6 +4,8 @@
 #include <QDataWidgetMapper>
 #include <iostream>
 
+#include <definitions.h>
+
 TreatmentForm::TreatmentForm(
 		int id,
 		QWidget* parent) : QDialog(parent)
@@ -14,6 +16,75 @@ TreatmentForm::TreatmentForm(
 	m_model->setFilter(QString("id = %1").arg(id));
 	m_model->select();
 
+
+	createLayout();
+
+	m_mapper = new QDataWidgetMapper(this);
+	m_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+	m_mapper->setModel(m_model);
+	m_mapper->addMapping(diagnoseComboBox, Diagnose);
+	m_mapper->addMapping(dateEdit, DateOfTreat);
+	m_mapper->addMapping(durationField, Duration);
+	m_mapper->addMapping(costField, Cost);
+	m_mapper->addMapping(nameField, TreatmentName);
+	m_mapper->toFirst();
+
+	//Set unmappable values
+	QSqlRecord record = m_model->record(m_mapper->currentIndex());
+	if (record.value(Type) == Telephone)
+	{
+		telephone->setChecked(true);
+	}
+	else
+	{
+		practice->setChecked(true);
+	}
+
+	connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
+	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveTreatment()));
+}
+
+void TreatmentForm::saveTreatment()
+{
+	int index = m_mapper->currentIndex();
+
+	if (!m_mapper->submit())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not submit treatment");
+		QSqlError last = m_model->lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
+
+
+	//Explicitly set some values not coveres by the Mapper
+	QSqlRecord record = m_model->record(index);
+	record.setValue(Diagnose, diagnoseComboBox->currentText());
+	record.setValue(Type, typeButtons->checkedId());
+
+	m_model->setRecord(index, record);
+	if (!m_model->submit())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Could not submit ComboBox");
+		QSqlError last = m_model->lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
+	m_mapper->setCurrentIndex(index);
+}
+
+void TreatmentForm::durChange()
+{
+	double new_cost = (double(durationField->text().toInt()) / 60) * 75;
+	QString newCost;
+	newCost.setNum(new_cost);
+	costField->setText(newCost);
+}
+
+void TreatmentForm::createLayout()
+{
 	QSqlTableModel* diagnose_model = new QSqlTableModel(this);
 	diagnose_model->setTable("diagnoses");
 	diagnose_model->select();
@@ -47,18 +118,8 @@ TreatmentForm::TreatmentForm(
 	telephone = new QRadioButton(tr("Telefonisch"));
 	practice = new QRadioButton(tr("Praxis"));
 	typeButtons = new QButtonGroup();
-	typeButtons->addButton(telephone);
-	typeButtons->addButton(practice);
-
-	m_mapper = new QDataWidgetMapper(this);
-	m_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
-	m_mapper->setModel(m_model);
-	m_mapper->addMapping(diagnoseComboBox, Diagnose);
-	m_mapper->addMapping(dateEdit, DateOfTreat);
-	m_mapper->addMapping(durationField, Duration);
-	m_mapper->addMapping(costField, Cost);
-	m_mapper->addMapping(nameField, TreatmentName);
-	m_mapper->toFirst();
+	typeButtons->addButton(telephone, Telephone);
+	typeButtons->addButton(practice, Practice);
 
 	saveButton = new QPushButton(tr("&Speichern"));
 	saveButton->setEnabled(true);
@@ -111,42 +172,4 @@ TreatmentForm::TreatmentForm(
 
 	setWindowTitle(tr("Behandlung bearbeiten..."));
 	setFixedHeight(sizeHint().height());
-
-	connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
-	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveTreatment()));
-}
-
-void TreatmentForm::saveTreatment()
-{
-	int index = m_mapper->currentIndex();
-
-	if (!m_mapper->submit())
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Could not submit treatment");
-		QSqlError last = m_model->lastError();
-		msgBox.setInformativeText(last.text());
-		msgBox.exec();
-	}
-
-	QSqlRecord record = m_model->record(index);
-	record.setValue(Diagnose, diagnoseComboBox->currentText());
-	m_model->setRecord(index, record);
-	if (!m_model->submit())
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Could not submit ComboBox");
-		QSqlError last = m_model->lastError();
-		msgBox.setInformativeText(last.text());
-		msgBox.exec();
-	}
-	m_mapper->setCurrentIndex(index);
-}
-
-void TreatmentForm::durChange()
-{
-	double new_cost = (double(durationField->text().toInt()) / 60) * 75;
-	QString newCost;
-	newCost.setNum(new_cost);
-	costField->setText(newCost);
 }

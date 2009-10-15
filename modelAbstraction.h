@@ -9,7 +9,7 @@ class ModelAbstraction : public QSqlRelationalTableModel
 {
 	public:
 	virtual int addNewRecord() = 0;
-	virtual void deleteRecord(const int& id) = 0;
+	virtual bool deleteRecord(const int& id) = 0;
 	virtual ~ModelAbstraction() {};
 
 };
