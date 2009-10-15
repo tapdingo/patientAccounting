@@ -94,6 +94,7 @@ void MainWindow::createDataPanel()
 	dataModel= new TreatmentModel();
 	dataModel->setTable("treatments");
 	dataModel->setRelation(PatientId, QSqlRelation("patients", "id", "firstname"));
+	dataModel->setSort(DateOfTreat, Qt::DescendingOrder);
 	dataModel->select();
 
 	dataView = new QTableView();
@@ -234,7 +235,7 @@ void MainWindow::createToolBar()
 	accCheckbox = new QCheckBox("Nur nicht abgerechnete anzeigen", this);
 	fileToolBar->addWidget(accCheckbox);
 
-	monthCheckbox = new QCheckBox("Nur angegebenen Monat anzeigen", this);
+	monthCheckbox = new QCheckBox("Nur ab angegebenem Monat anzeigen", this);
 	fileToolBar->addWidget(monthCheckbox);
 
 	month = new QDateEdit();
@@ -266,21 +267,25 @@ void MainWindow::updateTreatmentView()
 		int id = record.value("id").toInt();
 
 		//Get the treatment view state
-		QString filterString;
+		QString filterString(" AND ");
 		dataModel->setFilter(QString("1"));
 		if (m_acc_state == Qt::Checked)
 		{
-			filterString = "accounted = 0";
+			filterString.append("accounted = 0");
 		}
 		else
 		{
 			//Set the filter to something stupid to disable it
 			//I know it's lame...
-			filterString = "accounted != 2";
+			filterString.append("accounted != 2");
 		}
 
 		if (m_month_state == Qt::Checked)
 		{
+			filterString.append(" AND ");
+			filterString.append("dateoftreat > '");
+			filterString.append(month->date().toString("yyyy-MM-dd"));
+			filterString.append("'");
 		}
 
 
@@ -289,13 +294,13 @@ void MainWindow::updateTreatmentView()
 		patientId.setNum(id);
 		QString filter("patient_id = ");
 		filter.append(patientId);
-		filter.append(" AND ");
 		filter.append(filterString);
 		dataModel->setFilter(filter);
 	}
 
 	dataModel->select();
 	dataView->horizontalHeader()->setVisible(dataModel->rowCount() > 0);
+	patientView->setCurrentIndex(index);
 }
 
 void MainWindow::addPatient()
@@ -352,6 +357,7 @@ void MainWindow::editPatient()
 
 void MainWindow::addTreatment()
 {
+	QModelIndex patient = patientView->currentIndex();
 	QModelIndex index = patientView->currentIndex();
 	if (!index.isValid())
 	{
@@ -374,10 +380,12 @@ void MainWindow::addTreatment()
 	patientModel->select();
 	updateTreatmentView();
 	updateStatusBar();
+	patientView->setCurrentIndex(patient);
 }
 
 void MainWindow::editTreatment()
 {
+	QModelIndex patient = patientView->currentIndex();
 	QModelIndex index = dataView->currentIndex();
 	if (!index.isValid())
 	{
@@ -388,7 +396,6 @@ void MainWindow::editTreatment()
 	//GET THE TREATMENTS A PRIMARY KEY
 	int id = record.value(TreatmentID).toInt();
 
-	std::cerr << id;
 	TreatmentForm editTreatment(id, this);
 	editTreatment.exec();
 
@@ -396,6 +403,7 @@ void MainWindow::editTreatment()
 	patientModel->select();
 	updateTreatmentView();
 	updateStatusBar();
+	patientView->setCurrentIndex(patient);
 }
 
 void MainWindow::deleteTreatment()
@@ -413,6 +421,8 @@ void MainWindow::deleteTreatment()
 	dataModel->select();
 	updateTreatmentView();
 	updateStatusBar();
+	QModelIndex patient = patientView->currentIndex();
+	patientView->setCurrentIndex(patient);
 }
 
 void MainWindow::accountPatient()

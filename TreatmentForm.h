@@ -15,6 +15,8 @@ class QLineEdit;
 class QPushButton;
 class QComboBox;
 class QDateEdit;
+class QRadioButton;
+class QButtonGroup;
 
 class TreatmentForm : public QDialog
 {
@@ -44,6 +46,10 @@ class TreatmentForm : public QDialog
 		QLineEdit* nameField;
 		QLabel* patientLabel;
 		QLineEdit* patientBox;
+
+		QRadioButton* telephone;
+		QRadioButton* practice;
+		QButtonGroup* typeButtons;
 
 		QSqlRelationalTableModel* m_model;
 		QDataWidgetMapper* m_mapper;

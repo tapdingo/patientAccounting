@@ -44,6 +44,12 @@ TreatmentForm::TreatmentForm(
 	nameField = new QLineEdit;
 	nameLabel->setBuddy(nameField);
 
+	telephone = new QRadioButton(tr("Telefonisch"));
+	practice = new QRadioButton(tr("Praxis"));
+	typeButtons = new QButtonGroup();
+	typeButtons->addButton(telephone);
+	typeButtons->addButton(practice);
+
 	m_mapper = new QDataWidgetMapper(this);
 	m_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 	m_mapper->setModel(m_model);
@@ -82,11 +88,16 @@ TreatmentForm::TreatmentForm(
 	name->addWidget(nameLabel);
 	name->addWidget(nameField);
 
+	QHBoxLayout* type = new QHBoxLayout;
+	name->addWidget(telephone);
+	name->addWidget(practice);
+
 	fieldLayout->addLayout(diagnose);
 	fieldLayout->addLayout(date);
 	fieldLayout->addLayout(duration);
 	fieldLayout->addLayout(cost);
 	fieldLayout->addLayout(name);
+	fieldLayout->addLayout(type);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout;
 	buttonLayout->addWidget(saveButton);
@@ -129,7 +140,6 @@ void TreatmentForm::saveTreatment()
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
 	}
-
 	m_mapper->setCurrentIndex(index);
 }
 
