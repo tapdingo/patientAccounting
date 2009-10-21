@@ -16,17 +16,18 @@ enum {
 };
 
 enum {
-	Type = 0,
-	Duration = 1,
-	Diagnose = 2,
-	DurationOfTreat = 3,
-	DateOfTreat = 4,
-	Paid = 5,
-	Accounted = 6,
-	TreatmentID = 7,
-	PatientId = 8,
-	Cost = 9,
-	TreatmentName = 10
+	Details = 0,
+	Type = 1,
+	Duration = 2,
+	Diagnose = 3,
+	DurationOfTreat = 4,
+	DateOfTreat = 5,
+	Paid = 6,
+	Accounted = 7,
+	TreatmentID = 8,
+	PatientId = 9,
+	Cost = 10,
+	TreatmentName = 11
 };
 
 enum {

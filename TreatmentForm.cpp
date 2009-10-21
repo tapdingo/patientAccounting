@@ -8,14 +8,13 @@
 
 TreatmentForm::TreatmentForm(
 		int id,
-		QWidget* parent) : QDialog(parent)
+		QWidget* parent) : QDialog(parent, Qt::Window)
 {
 	m_model = new QSqlRelationalTableModel(this);
 	m_model->setTable("treatments");
 	m_model->setSort(TreatmentID, Qt::AscendingOrder);
 	m_model->setFilter(QString("id = %1").arg(id));
 	m_model->select();
-
 
 	createLayout();
 
@@ -42,6 +41,16 @@ TreatmentForm::TreatmentForm(
 
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveTreatment()));
+	connect(
+			details,
+			SIGNAL(stateChanged(int)),
+			this,
+			SLOT(expandHideDetails(int)));
+	connect(
+			noOfDetails,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(noDetailsChanged(int)));
 }
 
 void TreatmentForm::saveTreatment()
@@ -85,6 +94,9 @@ void TreatmentForm::durChange()
 
 void TreatmentForm::createLayout()
 {
+	mainLayout = new QGridLayout(this);
+	setLayout(mainLayout);
+
 	QSqlTableModel* diagnose_model = new QSqlTableModel(this);
 	diagnose_model->setTable("diagnoses");
 	diagnose_model->select();
@@ -94,6 +106,9 @@ void TreatmentForm::createLayout()
 	diagnoseComboBox->setCompleter(diagnoseComboBox->completer());
 	diagnoseComboBox->setModelColumn(0);
 	diagnoseComboBox->setEditable(true);
+	mainLayout->addWidget(diagnoseLabel, 0, 0);
+	mainLayout->addWidget(diagnoseComboBox, 0, 1);
+	mainLayout->setSizeConstraint(QLayout::SetFixedSize);
 
 
 	dateLabel = new QLabel(tr("Behandlungsdatum"));
@@ -101,75 +116,134 @@ void TreatmentForm::createLayout()
 	dateEdit->setCalendarPopup(true);
 	dateEdit->setDisplayFormat("dd.MM.yyyy");
 	dateLabel->setBuddy(dateEdit);
+	mainLayout->addWidget(dateLabel, 1, 0);
+	mainLayout->addWidget(dateEdit, 1, 1);
 
 	durationLabel = new QLabel(tr("Dauer (Minuten)"));
 	durationField = new QLineEdit;
 	durationLabel->setBuddy(durationField);
 	connect(durationField, SIGNAL(textChanged(QString)), this, SLOT(durChange()));
+	mainLayout->addWidget(durationLabel, 2, 0);
+	mainLayout->addWidget(durationField, 2, 1);
 
 	costLabel = new QLabel(tr("Kostenpunkt"));
 	costField = new QLineEdit;
 	costLabel->setBuddy(costField);
+	mainLayout->addWidget(costLabel, 3, 0);
+	mainLayout->addWidget(costField, 3, 1);
 
 	nameLabel = new QLabel(tr("Beschreibung"));
 	nameField = new QLineEdit;
 	nameLabel->setBuddy(nameField);
+	mainLayout->addWidget(nameLabel, 4, 0);
+	mainLayout->addWidget(nameField, 4, 1);
 
 	telephone = new QRadioButton(tr("Telefonisch"));
 	practice = new QRadioButton(tr("Praxis"));
 	typeButtons = new QButtonGroup();
 	typeButtons->addButton(telephone, Telephone);
 	typeButtons->addButton(practice, Practice);
+	mainLayout->addWidget(telephone, 5, 0);
+	mainLayout->addWidget(practice, 5, 1);
+
+	details = new QCheckBox("Genauere Behandlungsangeben");
+	numLabel = new QLabel(tr("Anzahl Detailfelder"));
+	noOfDetails = new QSpinBox();
+	mainLayout->addWidget(details, 6, 0);
+
+	mainLayout->addWidget(noOfDetails, 6, 1);
+	noOfDetails->hide();
+
+	detailsLabel = new QLabel("Details");
+	detailsLabel->hide();
+	mainLayout->addWidget(detailsLabel, 7, 0);
+
+	costDetailLabel = new QLabel("Kosten-Details");
+	costDetailLabel->hide();
+	mainLayout->addWidget(costDetailLabel, 7, 1);
+
+	detailFields = new QVBoxLayout;
+	mainLayout->addLayout(detailFields, 8, 0);
+
+	costDetailFields = new QVBoxLayout;
+	mainLayout->addLayout(costDetailFields, 8, 1);
 
 	saveButton = new QPushButton(tr("&Speichern"));
 	saveButton->setEnabled(true);
+	mainLayout->addWidget(saveButton, 9, 0);
 
 	closeButton = new QPushButton(tr("Schliessen"));
 	closeButton->setDefault(true);
-
-	QVBoxLayout* fieldLayout = new QVBoxLayout;
-
-	QHBoxLayout* diagnose = new QHBoxLayout;
-	diagnose->addWidget(diagnoseLabel);
-	diagnose->addWidget(diagnoseComboBox);
-
-	QHBoxLayout* duration = new QHBoxLayout;
-	duration->addWidget(durationLabel);
-	duration->addWidget(durationField);
-
-	QHBoxLayout* date = new QHBoxLayout;
-	date->addWidget(dateLabel);
-	date->addWidget(dateEdit);
-
-	QHBoxLayout* cost = new QHBoxLayout;
-	cost->addWidget(costLabel);
-	cost->addWidget(costField);
-
-	QHBoxLayout* name = new QHBoxLayout;
-	name->addWidget(nameLabel);
-	name->addWidget(nameField);
-
-	QHBoxLayout* type = new QHBoxLayout;
-	name->addWidget(telephone);
-	name->addWidget(practice);
-
-	fieldLayout->addLayout(diagnose);
-	fieldLayout->addLayout(date);
-	fieldLayout->addLayout(duration);
-	fieldLayout->addLayout(cost);
-	fieldLayout->addLayout(name);
-	fieldLayout->addLayout(type);
-
-	QHBoxLayout* buttonLayout = new QHBoxLayout;
-	buttonLayout->addWidget(saveButton);
-	buttonLayout->addWidget(closeButton);
-
-	QVBoxLayout* mainLayout = new QVBoxLayout;
-	mainLayout->addLayout(fieldLayout);
-	mainLayout->addLayout(buttonLayout);
+	mainLayout->addWidget(closeButton, 9, 1);
 
 	setLayout(mainLayout);
-
 	setWindowTitle(tr("Behandlung bearbeiten..."));
-	setFixedHeight(sizeHint().height());
+}
+
+void TreatmentForm::expandHideDetails(int state)
+{
+	if (state == Qt::Checked)
+	{
+		//Show some stuff
+		noOfDetails->show();
+		diagnoseLabel->show();
+		detailsLabel->show();
+		costDetailLabel->show();
+
+		//Create a new tuple for showing
+		LayoutTuple* n_tuple = new LayoutTuple;
+		n_tuple->detField = new QLineEdit;
+		n_tuple->costDetField = new QLineEdit;
+		detailFieldsDesc.push_back(n_tuple);
+		detailFields->addWidget(n_tuple->detField);
+		costDetailFields->addWidget(n_tuple->costDetField);
+
+		//Set the correct value
+		noOfDetails->setValue(1);
+	}
+	else
+	{
+		noOfDetails->hide();
+		detailsLabel->hide();
+		costDetailLabel->hide();
+
+		//Throw all the crap away
+		std::vector<LayoutTuple*>::iterator it;
+		for (it = detailFieldsDesc.begin(); it != detailFieldsDesc.end(); it++)
+		{
+			(*it)->detField->hide();
+			(*it)->costDetField->hide();
+			delete *it;
+		}
+		detailFieldsDesc.clear();
+	}
+}
+
+void TreatmentForm::noDetailsChanged(int number)
+{
+	if (detailFieldsDesc.size() < number)
+	{
+		//Create a new tuple for showing
+		LayoutTuple* n_tuple = new LayoutTuple;
+		n_tuple->detField = new QLineEdit;
+		n_tuple->costDetField = new QLineEdit;
+		detailFieldsDesc.push_back(n_tuple);
+		detailFields->addWidget(n_tuple->detField);
+		costDetailFields->addWidget(n_tuple->costDetField);
+
+		//RECURSION ALERT!
+		noDetailsChanged(number);
+	}
+	else if (detailFieldsDesc.size() > number)
+	{
+
+		LayoutTuple* n_tuple = detailFieldsDesc.back();
+		n_tuple->detField->hide();
+		n_tuple->costDetField->hide();
+		delete n_tuple;
+		detailFieldsDesc.pop_back();
+
+		//RECURSION ALERT!
+		noDetailsChanged(number);
+	}
 }

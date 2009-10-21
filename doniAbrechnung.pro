@@ -10,7 +10,7 @@ INCLUDEPATH += /home/tapion/projects/doniAbrechnung/. .
 # Input
 HEADERS += definitions.h MainWindow.h PatientForm.h
 HEADERS += TreatmentForm.h Accounting.h diagnoseBrowser.h patientModel.h modelAbstraction.h
-HEADERS += treatmentModel.h
+HEADERS += treatmentModel.h datatypes.h
 SOURCES += main.cpp MainWindow.cpp PatientForm.cpp TreatmentForm.cpp 
 SOURCES += Accounting.cpp diagnoseBrowser.cpp patientModel.cpp modelAbstraction.cpp
 SOURCES += treatmentModel.cpp

@@ -5,9 +5,12 @@
 #include <QtSql>
 #include <QSqlDatabase>
 #include <QSqlRelationalTableModel>
+#include <QVector>
 
 #include "definitions.h"
 #include "patientModel.h"
+#include "datatypes.h"
+#include <vector>
 
 class QDataWidgetMapper;
 class QLabel;
@@ -17,6 +20,12 @@ class QComboBox;
 class QDateEdit;
 class QRadioButton;
 class QButtonGroup;
+class QCheckBox;
+class QSpinBox;
+class QGridLayout;
+class QVBoxLayout;
+class QWidget;
+
 
 class TreatmentForm : public QDialog
 {
@@ -30,6 +39,8 @@ class TreatmentForm : public QDialog
 		private slots:
 			void saveTreatment();
 			void durChange();
+			void expandHideDetails(int state);
+			void noDetailsChanged(int number);
 
 	private:
 		QLabel* diagnoseLabel;
@@ -47,6 +58,13 @@ class TreatmentForm : public QDialog
 		QLabel* patientLabel;
 		QLineEdit* patientBox;
 
+		QCheckBox* details;
+		QLabel* numLabel;
+		QSpinBox* noOfDetails;
+		QLabel* detailsLabel;
+		QLabel* costDetailLabel;
+		QVBoxLayout* detailLayout;
+
 		QRadioButton* telephone;
 		QRadioButton* practice;
 		QButtonGroup* typeButtons;
@@ -56,6 +74,16 @@ class TreatmentForm : public QDialog
 
 		QPushButton* saveButton;
 		QPushButton* closeButton;
+
+		QVector<DetailTuple> detailVector;
+		QVector<LayoutTuple> layouts;
+
+		QVBoxLayout* detailFields;
+		QVBoxLayout* costDetailFields;
+		QGridLayout* mainLayout;
+		QWidget* extension;
+
+		std::vector<LayoutTuple*> detailFieldsDesc;
 
 		void createLayout();
 };
