@@ -10,12 +10,14 @@ TreatmentForm::TreatmentForm(
 		int id,
 		QWidget* parent) : QDialog(parent, Qt::Window)
 {
+	//Database and stuff...
 	m_model = new QSqlRelationalTableModel(this);
 	m_model->setTable("treatments");
 	m_model->setSort(TreatmentID, Qt::AscendingOrder);
 	m_model->setFilter(QString("id = %1").arg(id));
 	m_model->select();
 
+	//Nice and cosy...
 	createLayout();
 
 	m_mapper = new QDataWidgetMapper(this);
@@ -28,17 +30,8 @@ TreatmentForm::TreatmentForm(
 	m_mapper->addMapping(nameField, TreatmentName);
 	m_mapper->toFirst();
 
-	//Set unmappable values
-	QSqlRecord record = m_model->record(m_mapper->currentIndex());
-	if (record.value(Type) == Telephone)
-	{
-		telephone->setChecked(true);
-	}
-	else
-	{
-		practice->setChecked(true);
-	}
 
+	//Pretty signalling dude!
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveTreatment()));
 	connect(
@@ -51,6 +44,9 @@ TreatmentForm::TreatmentForm(
 			SIGNAL(valueChanged(int)),
 			this,
 			SLOT(noDetailsChanged(int)));
+
+	//Set unmappable values
+	initialUpdate();
 }
 
 void TreatmentForm::saveTreatment()
@@ -71,6 +67,12 @@ void TreatmentForm::saveTreatment()
 	QSqlRecord record = m_model->record(index);
 	record.setValue(Diagnose, diagnoseComboBox->currentText());
 	record.setValue(Type, typeButtons->checkedId());
+
+	//DATABASE RAPE AHOY
+	//Push the damn detail vector into the poor database
+	QString dumpedDetails;
+	dumpDetails(dumpedDetails);
+	record.setValue(Details, dumpedDetails);
 
 	m_model->setRecord(index, record);
 	if (!m_model->submit())
@@ -245,5 +247,66 @@ void TreatmentForm::noDetailsChanged(int number)
 
 		//RECURSION ALERT!
 		noDetailsChanged(number);
+	}
+}
+
+void TreatmentForm::dumpDetails(QString& result)
+{
+	std::vector<LayoutTuple*>::iterator it;
+
+	for (it = detailFieldsDesc.begin(); it != detailFieldsDesc.end(); it++)
+	{
+		result.append((*it)->detField->text());
+		result.append(" ");
+		result.append((*it)->costDetField->text());
+		result.append(";");
+	}
+}
+
+void TreatmentForm::reconstructDetailVector(QString& data)
+{
+	QStringList splitted = data.split(";", QString::SkipEmptyParts);
+
+	for (int i = 0; i < splitted.size(); i++)
+	{
+		QStringList line_details = splitted[i].split(" ", QString::SkipEmptyParts);
+		if ( line_details.size() > 0)
+		{
+			DetailTuple* n_tuple = new DetailTuple;
+			n_tuple->detail = line_details[0];
+			n_tuple->cost = line_details[1].toInt();
+			detailVector.push_back(n_tuple);
+		}
+	}
+
+	details->setChecked(Qt::Checked);
+	noOfDetails->setValue(splitted.size());
+}
+
+void TreatmentForm::initialUpdate()
+{
+	QSqlRecord record = m_model->record(m_mapper->currentIndex());
+	if (record.value(Type) == Telephone)
+	{
+		telephone->setChecked(true);
+	}
+	else
+	{
+		practice->setChecked(true);
+	}
+
+	QString details_raw = record.value(Details).toString();
+	reconstructDetailVector(details_raw);
+
+	std::vector<DetailTuple*>::iterator it;
+
+	int i = 0;
+	for (it = detailVector.begin(); it != detailVector.end(); it ++)
+	{
+		QString cost;
+		cost.setNum((*it)->cost);
+		detailFieldsDesc[i]->detField->setText((*it)->detail);
+		detailFieldsDesc[i]->costDetField->setText(cost);
+		i++;
 	}
 }

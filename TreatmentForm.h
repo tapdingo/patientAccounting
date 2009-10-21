@@ -75,17 +75,18 @@ class TreatmentForm : public QDialog
 		QPushButton* saveButton;
 		QPushButton* closeButton;
 
-		QVector<DetailTuple> detailVector;
-		QVector<LayoutTuple> layouts;
-
 		QVBoxLayout* detailFields;
 		QVBoxLayout* costDetailFields;
 		QGridLayout* mainLayout;
 		QWidget* extension;
 
+		std::vector<DetailTuple*> detailVector;
 		std::vector<LayoutTuple*> detailFieldsDesc;
 
 		void createLayout();
-};
 
+		void dumpDetails(QString& result);
+		void reconstructDetailVector(QString& data);
+		void initialUpdate();
+};
 #endif
