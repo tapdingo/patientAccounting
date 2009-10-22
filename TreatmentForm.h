@@ -88,5 +88,6 @@ class TreatmentForm : public QDialog
 		void dumpDetails(QString& result);
 		void reconstructDetailVector(QString& data);
 		void initialUpdate();
+		bool checkForDetails();
 };
 #endif

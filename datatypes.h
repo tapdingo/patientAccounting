@@ -7,7 +7,7 @@ class QLineEdit;
 
 struct DetailTuple
 {
-	int cost;
+	float cost;
 	QString detail;
 };
 

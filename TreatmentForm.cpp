@@ -51,7 +51,19 @@ TreatmentForm::TreatmentForm(
 
 void TreatmentForm::saveTreatment()
 {
+
+	if (!checkForDetails())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Fehler: Die Detailkosten passen nicht zu den Gesamtkosten!");
+		QSqlError last = m_model->lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+		return;
+	}
+
 	int index = m_mapper->currentIndex();
+
 
 	if (!m_mapper->submit())
 	{
@@ -78,7 +90,7 @@ void TreatmentForm::saveTreatment()
 	if (!m_model->submit())
 	{
 		QMessageBox msgBox;
-		msgBox.setText("Could not submit ComboBox");
+		msgBox.setText("Fehler beim Speichern!");
 		QSqlError last = m_model->lastError();
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
@@ -257,7 +269,7 @@ void TreatmentForm::dumpDetails(QString& result)
 	for (it = detailFieldsDesc.begin(); it != detailFieldsDesc.end(); it++)
 	{
 		result.append((*it)->detField->text());
-		result.append(" ");
+		result.append("||");
 		result.append((*it)->costDetField->text());
 		result.append(";");
 	}
@@ -269,18 +281,21 @@ void TreatmentForm::reconstructDetailVector(QString& data)
 
 	for (int i = 0; i < splitted.size(); i++)
 	{
-		QStringList line_details = splitted[i].split(" ", QString::SkipEmptyParts);
+		QStringList line_details = splitted[i].split("||", QString::SkipEmptyParts);
 		if ( line_details.size() > 0)
 		{
 			DetailTuple* n_tuple = new DetailTuple;
 			n_tuple->detail = line_details[0];
-			n_tuple->cost = line_details[1].toInt();
+			n_tuple->cost = line_details[1].toFloat();
 			detailVector.push_back(n_tuple);
 		}
 	}
 
-	details->setChecked(Qt::Checked);
-	noOfDetails->setValue(splitted.size());
+	if (splitted.size() != 0)
+	{
+		details->setChecked(Qt::Checked);
+		noOfDetails->setValue(splitted.size());
+	}
 }
 
 void TreatmentForm::initialUpdate()
@@ -309,4 +324,26 @@ void TreatmentForm::initialUpdate()
 		detailFieldsDesc[i]->costDetField->setText(cost);
 		i++;
 	}
+}
+
+bool TreatmentForm::checkForDetails()
+{
+	if (details->checkState() != Qt::Checked)
+	{
+		return true;
+	}
+	std::vector<LayoutTuple*>::iterator it;
+
+	float total_cost = 0;
+
+	for (it = detailFieldsDesc.begin(); it != detailFieldsDesc.end(); it++)
+	{
+		total_cost += (*it)->costDetField->text().toFloat();
+	}
+
+	if (costField->text().toFloat() == total_cost)
+	{
+		return true;
+	}
+	return false;
 }
