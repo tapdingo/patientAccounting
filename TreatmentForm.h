@@ -41,6 +41,8 @@ class TreatmentForm : public QDialog
 			void durChange();
 			void expandHideDetails(int state);
 			void noDetailsChanged(int number);
+			void warnPaid(int state);
+			void warnAccounted(int state);
 
 	private:
 		QLabel* diagnoseLabel;
@@ -92,5 +94,9 @@ class TreatmentForm : public QDialog
 		void reconstructDetailVector(QString& data);
 		void initialUpdate();
 		bool checkForDetails();
+		void restorePaid();
+
+		int paidState;
+		int accountedState;
 };
 #endif

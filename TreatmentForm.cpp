@@ -47,6 +47,15 @@ TreatmentForm::TreatmentForm(
 
 	//Set unmappable values
 	initialUpdate();
+
+	connect(paid,
+			SIGNAL(stateChanged(int)),
+			this,
+			SLOT(warnPaid(int)));
+	connect(accounted,
+			SIGNAL(stateChanged(int)),
+			this,
+			SLOT(warnAccounted(int)));
 }
 
 void TreatmentForm::saveTreatment()
@@ -318,6 +327,8 @@ void TreatmentForm::initialUpdate()
 		practice->setChecked(true);
 	}
 
+	paidState = record.value(Paid).toInt();
+	accountedState = record.value(Accounted).toInt();
 	paid->setChecked(record.value(Paid).toInt());
 	accounted->setChecked(record.value(Accounted).toInt());
 
@@ -357,4 +368,18 @@ bool TreatmentForm::checkForDetails()
 		return true;
 	}
 	return false;
+}
+
+void TreatmentForm::warnPaid(int state)
+{
+	QMessageBox::warning(0, tr("Achtung"),
+			tr("Achtung, dieser Wert hat Einfluss auf die Abrechnung!"),
+			QMessageBox::Ok);
+}
+
+void TreatmentForm::warnAccounted(int state)
+{
+	QMessageBox::warning(0, tr("Wert aendern"),
+			tr("Achtung, dieser Wert hat Einfluss auf die Abrechnung!"),
+			QMessageBox::Ok);
 }
