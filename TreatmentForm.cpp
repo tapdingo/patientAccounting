@@ -79,6 +79,8 @@ void TreatmentForm::saveTreatment()
 	QSqlRecord record = m_model->record(index);
 	record.setValue(Diagnose, diagnoseComboBox->currentText());
 	record.setValue(Type, typeButtons->checkedId());
+	record.setValue(Accounted, accounted->checkState());
+	record.setValue(Paid, paid->checkState());
 
 	//DATABASE RAPE AHOY
 	//Push the damn detail vector into the poor database
@@ -160,35 +162,41 @@ void TreatmentForm::createLayout()
 	mainLayout->addWidget(telephone, 5, 0);
 	mainLayout->addWidget(practice, 5, 1);
 
+	paid = new QCheckBox("Bereits abgerechnet");
+	mainLayout->addWidget(paid, 6, 0);
+
+	accounted = new QCheckBox("Bereits bezahlt");
+	mainLayout->addWidget(accounted, 6, 1);
+
 	details = new QCheckBox("Genauere Behandlungsangeben");
 	numLabel = new QLabel(tr("Anzahl Detailfelder"));
 	noOfDetails = new QSpinBox();
-	mainLayout->addWidget(details, 6, 0);
+	mainLayout->addWidget(details, 7, 0);
 
-	mainLayout->addWidget(noOfDetails, 6, 1);
+	mainLayout->addWidget(noOfDetails, 7, 1);
 	noOfDetails->hide();
 
 	detailsLabel = new QLabel("Details");
 	detailsLabel->hide();
-	mainLayout->addWidget(detailsLabel, 7, 0);
+	mainLayout->addWidget(detailsLabel, 8, 0);
 
 	costDetailLabel = new QLabel("Kosten-Details");
 	costDetailLabel->hide();
-	mainLayout->addWidget(costDetailLabel, 7, 1);
+	mainLayout->addWidget(costDetailLabel, 8, 1);
 
 	detailFields = new QVBoxLayout;
-	mainLayout->addLayout(detailFields, 8, 0);
+	mainLayout->addLayout(detailFields, 9, 0);
 
 	costDetailFields = new QVBoxLayout;
-	mainLayout->addLayout(costDetailFields, 8, 1);
+	mainLayout->addLayout(costDetailFields, 9, 1);
 
 	saveButton = new QPushButton(tr("&Speichern"));
 	saveButton->setEnabled(true);
-	mainLayout->addWidget(saveButton, 9, 0);
+	mainLayout->addWidget(saveButton, 10, 0);
 
 	closeButton = new QPushButton(tr("Schliessen"));
 	closeButton->setDefault(true);
-	mainLayout->addWidget(closeButton, 9, 1);
+	mainLayout->addWidget(closeButton, 10, 1);
 
 	setLayout(mainLayout);
 	setWindowTitle(tr("Behandlung bearbeiten..."));
@@ -235,7 +243,7 @@ void TreatmentForm::expandHideDetails(int state)
 
 void TreatmentForm::noDetailsChanged(int number)
 {
-	if (detailFieldsDesc.size() < number)
+	if (detailFieldsDesc.size() < static_cast<uint32_t>(number))
 	{
 		//Create a new tuple for showing
 		LayoutTuple* n_tuple = new LayoutTuple;
@@ -248,7 +256,7 @@ void TreatmentForm::noDetailsChanged(int number)
 		//RECURSION ALERT!
 		noDetailsChanged(number);
 	}
-	else if (detailFieldsDesc.size() > number)
+	else if (detailFieldsDesc.size() > static_cast<uint32_t>(number))
 	{
 
 		LayoutTuple* n_tuple = detailFieldsDesc.back();
@@ -309,6 +317,9 @@ void TreatmentForm::initialUpdate()
 	{
 		practice->setChecked(true);
 	}
+
+	paid->setChecked(record.value(Paid).toInt());
+	accounted->setChecked(record.value(Accounted).toInt());
 
 	QString details_raw = record.value(Details).toString();
 	reconstructDetailVector(details_raw);

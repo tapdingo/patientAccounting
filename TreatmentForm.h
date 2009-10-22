@@ -65,6 +65,9 @@ class TreatmentForm : public QDialog
 		QLabel* costDetailLabel;
 		QVBoxLayout* detailLayout;
 
+		QCheckBox* paid;
+		QCheckBox* accounted;
+
 		QRadioButton* telephone;
 		QRadioButton* practice;
 		QButtonGroup* typeButtons;
