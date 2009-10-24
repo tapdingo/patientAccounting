@@ -10,6 +10,7 @@
 #include "diagnoseBrowser.h"
 #include "patientModel.h"
 #include "treatmentModel.h"
+#include "AccountingForm.h"
 
 #include <iostream>
 
@@ -438,8 +439,13 @@ void MainWindow::accountPatient()
 	}
 	QSqlRecord record = patientModel->record(index.row());
 
-	PatientAccounter acc(record, *(dataModel));
-	acc.account();
+	int patient_id = record.value(ID).toInt();
+	AccountingForm* acc_window = new AccountingForm(patient_id);
+	acc_window->exec();
+
+	//Dunno if i have to delete this here...
+	delete acc_window;
+
 	updateStatusBar();
 }
 
