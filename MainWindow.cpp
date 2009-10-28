@@ -439,8 +439,7 @@ void MainWindow::accountPatient()
 	}
 	QSqlRecord record = patientModel->record(index.row());
 
-	int patient_id = record.value(ID).toInt();
-	AccountingForm* acc_window = new AccountingForm(patient_id);
+	AccountingForm* acc_window = new AccountingForm(index.row());
 	acc_window->exec();
 
 	//Dunno if i have to delete this here...

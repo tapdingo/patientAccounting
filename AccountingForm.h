@@ -17,12 +17,13 @@ class AccountingForm : public QDialog
 	Q_OBJECT
 
 	public:
-		AccountingForm(const int& pat_id);
+		AccountingForm(const int& pat_row);
 
 	private:
 		void createLayout();
 		void makeConnections();
 		void accPatient();
+		bool accountPatient(const int patientRow);
 
 		QProgressBar* m_progBar;
 		QGridLayout* m_layout;
