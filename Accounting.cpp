@@ -2,11 +2,18 @@
 #include <QtGui>
 #include <QtSql>
 #include <iostream>
+#include <fstream>
 
 PatientAccounter::PatientAccounter(
 		const QSqlRecord& patient, QSqlRelationalTableModel& treats)
 : m_patient(patient), m_treats(treats)
 {
+	QSqlTableModel* miscTable = new QSqlTableModel;
+	miscTable->setTable("misc");
+	miscTable->select();
+	QSqlRecord miscRecord = miscTable->record(0);
+	m_billNumber = miscRecord.value(BillNumber).toInt();
+	delete miscTable;
 }
 
 void PatientAccounter::account()
@@ -16,10 +23,6 @@ void PatientAccounter::account()
 
 void PatientAccounter::printBill()
 {
-	QPrinter printer;
-	QPrintDialog printDialog(&printer, 0);
-	if (printDialog.exec())
-	{
 		QString Document;
 
 		//Get The document header
@@ -57,10 +60,33 @@ void PatientAccounter::printBill()
 
 		addTreatments(Document);
 
-		QTextDocument textDocument;
-		textDocument.setHtml(Document);
-		textDocument.print(&printer);
-	}
+
+		//Create the bill RTF for this patient
+		QString billFile("Abrechnungen/");
+		billFile.append(m_patient.value(FirstName).toString());
+		billFile.append(m_patient.value(LastName).toString());
+
+		QString monthString;
+		monthString.setNum(QDate::currentDate().month());
+		QString yearString;
+		yearString.setNum(QDate::currentDate().year());
+
+		billFile.append(yearString);
+		billFile.append(monthString);
+		billFile.append(".rtf");
+		std::ofstream outStream;
+		outStream.open(billFile.toStdString().c_str());
+		outStream << Document.toStdString();
+
+		//Optionally print the document
+		QPrinter printer;
+		QPrintDialog printDialog(&printer, 0);
+		if (printDialog.exec())
+		{
+			QTextDocument textDocument;
+			textDocument.setHtml(Document);
+			textDocument.print(&printer);
+		}
 }
 
 void PatientAccounter::addPatientHeader(QString& Document)
@@ -96,7 +122,7 @@ void PatientAccounter::addTreatments(QString& Document)
 	{
 		QSqlRecord treatment = m_treats.record(i);
 
-		if (treatment.value(Accounted) == 1)
+		if (treatment.value(Accounted).toInt() == 1)
 		{
 			continue;
 		}

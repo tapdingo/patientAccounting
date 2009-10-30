@@ -21,6 +21,8 @@ class PatientAccounter
 		void addTreatments(QString& Document);
 		const QSqlRecord& m_patient;
 		QSqlRelationalTableModel& m_treats;
+
+		unsigned int m_billNumber;
 };
 
 #endif
