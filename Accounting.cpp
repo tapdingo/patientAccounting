@@ -60,7 +60,6 @@ void PatientAccounter::printBill()
 
 	addTreatments(Document);
 
-
 	//Create the bill RTF for this patient
 	QString billFile("Abrechnungen/");
 	billFile.append(m_patient.value(FirstName).toString());
@@ -102,7 +101,22 @@ void PatientAccounter::printBill()
 void PatientAccounter::addPatientHeader(QString& Document)
 {
 	Document.append("<table width=100%><tr>");
-	Document.append("<td>Rechnungs Nummer: </td>");
+	Document.append("<td>Rechnungs Nummer: ");
+	QString IdString;
+	QString billNumber;
+	billNumber.setNum(m_billNumber);
+	QString curMonth;
+	curMonth.setNum(QDate::currentDate().month());
+	QString curYear;
+	curYear.setNum(QDate::currentDate().year());
+
+	IdString.append(curMonth);
+	IdString.append(curYear);
+	IdString.append("/");
+	IdString.append(billNumber);
+	Document.append(IdString);
+
+	Document.append("<td>");
 	Document.append("<td>Datum: "
 			+ QDate::currentDate().toString(Qt::SystemLocaleShortDate)
 			+ " </td>");
