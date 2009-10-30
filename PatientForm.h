@@ -25,14 +25,30 @@ class PatientForm : public QDialog{
 	private:
 			QLabel* firstNameLabel;
 			QLineEdit* firstNameField;
+
 			QLabel* lastNameLabel;
 			QLineEdit* lastNameField;
+
 			QLabel* phoneLabel;
 			QLineEdit* phoneField;
+
 			QLabel* birthdayLabel;
 			QDateEdit* birthdayEdit;
+
 			QLabel* genderLabel;
 			QLineEdit* genderField;
+
+			QLabel* houseNumLabel;
+			QLineEdit* houseNumField;
+
+			QLabel* streetLabel;
+			QLineEdit* streetField;
+
+			QLabel* postalLabel;
+			QLineEdit* postalField;
+
+			QLabel* cityLabel;
+			QLineEdit* cityField;
 
 			QPushButton* saveButton;
 			QPushButton* closeButton;
