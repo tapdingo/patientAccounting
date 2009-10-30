@@ -115,6 +115,24 @@ void TreatmentForm::durChange()
 	QString newCost;
 	newCost.setNum(new_cost);
 	costField->setText(newCost);
+
+
+	double diagCost = new_cost * 0.25;
+	double anamCost = new_cost * 0.5;
+	double treatCost = new_cost * 0.25;
+
+	if (detailFieldsDesc.size() > 2)
+	{
+		QString cost;
+		cost.setNum(diagCost);
+		detailFieldsDesc[0]->costDetField->setText(cost);
+
+		cost.setNum(anamCost);
+		detailFieldsDesc[1]->costDetField->setText(cost);
+
+		cost.setNum(treatCost);
+		detailFieldsDesc[2]->costDetField->setText(cost);
+	}
 }
 
 void TreatmentForm::createLayout()
@@ -345,6 +363,16 @@ void TreatmentForm::initialUpdate()
 		detailFieldsDesc[i]->detField->setText((*it)->detail);
 		detailFieldsDesc[i]->costDetField->setText(cost);
 		i++;
+	}
+
+	//Set the default values for a new treatment
+	if (detailVector.empty())
+	{
+		details->setChecked(Qt::Checked);
+		noOfDetails->setValue(3);
+		detailFieldsDesc[0]->detField->setText("Anamese");
+		detailFieldsDesc[1]->detField->setText("Diagnose");
+		detailFieldsDesc[2]->detField->setText("Mittelfindung");
 	}
 }
 
