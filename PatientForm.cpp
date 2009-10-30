@@ -58,6 +58,10 @@ PatientForm::PatientForm(
 	m_mapper->addMapping(phoneField, Phone);
 	m_mapper->addMapping(birthdayEdit, DateOfBirth);
 	m_mapper->addMapping(genderField, Gender);
+	m_mapper->addMapping(houseNumField, HouseNumber);
+	m_mapper->addMapping(streetField, Street);
+	m_mapper->addMapping(cityField, City);
+	m_mapper->addMapping(postalField, PostalCode);
 	m_mapper->toFirst();
 
 	saveButton = new QPushButton(tr("&Speichern"));
