@@ -107,6 +107,9 @@ void TreatmentForm::saveTreatment()
 		msgBox.exec();
 	}
 	m_mapper->setCurrentIndex(index);
+
+	//Close the window
+	accept();
 }
 
 void TreatmentForm::durChange()
@@ -221,7 +224,7 @@ void TreatmentForm::createLayout()
 	saveButton->setEnabled(true);
 	mainLayout->addWidget(saveButton, 10, 0);
 
-	closeButton = new QPushButton(tr("Schliessen"));
+	closeButton = new QPushButton(tr("&Abbrecchen"));
 	closeButton->setDefault(true);
 	mainLayout->addWidget(closeButton, 10, 1);
 
