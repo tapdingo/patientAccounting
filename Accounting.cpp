@@ -23,70 +23,80 @@ void PatientAccounter::account()
 
 void PatientAccounter::printBill()
 {
-		QString Document;
+	QString Document;
 
-		//Get The document header
-		QString Header;
-		QFile header(":forms/header.html");
-		if (!header.open(QIODevice::ReadOnly | QIODevice::Text))
-		{
-			return;
-		}
+	//Get The document header
+	QString Header;
+	QFile header(":forms/header.html");
+	if (!header.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		return;
+	}
 
-		QTextStream in(&header);
-		while (!in.atEnd())
-		{
-			Header.append(in.readLine());
-		}
+	QTextStream in(&header);
+	while (!in.atEnd())
+	{
+		Header.append(in.readLine());
+	}
 
-		Document.append(Header);
+	Document.append(Header);
 
-		//Add the patient Address
-		Document.append("<br>");
-		QString patientAddress("Adresse: ");
-		Document.append("<br>");
-		Document.append("<br>");
+	//Add the patient Address
+	Document.append("<br>");
+	QString patientAddress("Adresse: ");
+	Document.append("<br>");
+	Document.append("<br>");
 
-		Document.append(patientAddress);
+	Document.append(patientAddress);
 
-		addPatientHeader(Document);
+	addPatientHeader(Document);
 
-		Document.append("<br><br>");
-		Document.append("F&uuml;r meine Bem&uuml;hungen erlaube ich mir nach \
-				der Geb&uuml;hrenordnung f&uuml;r Heilpraktiker \
-				(in Anlehnung an die \
-				Geb&uuml;hrenordnung f&uuml;r &Auml;rzte) \
-				zu berechnen:<br>");
+	Document.append("<br><br>");
+	Document.append("F&uuml;r meine Bem&uuml;hungen erlaube ich mir nach \
+			der Geb&uuml;hrenordnung f&uuml;r Heilpraktiker \
+			(in Anlehnung an die \
+			 Geb&uuml;hrenordnung f&uuml;r &Auml;rzte) \
+			zu berechnen:<br>");
 
-		addTreatments(Document);
+	addTreatments(Document);
 
 
-		//Create the bill RTF for this patient
-		QString billFile("Abrechnungen/");
-		billFile.append(m_patient.value(FirstName).toString());
-		billFile.append(m_patient.value(LastName).toString());
+	//Create the bill RTF for this patient
+	QString billFile("Abrechnungen/");
+	billFile.append(m_patient.value(FirstName).toString());
+	billFile.append(m_patient.value(LastName).toString());
 
-		QString monthString;
-		monthString.setNum(QDate::currentDate().month());
-		QString yearString;
-		yearString.setNum(QDate::currentDate().year());
+	QString monthString;
+	monthString.setNum(QDate::currentDate().month());
+	QString yearString;
+	yearString.setNum(QDate::currentDate().year());
 
-		billFile.append(yearString);
-		billFile.append(monthString);
-		billFile.append(".rtf");
-		std::ofstream outStream;
-		outStream.open(billFile.toStdString().c_str());
-		outStream << Document.toStdString();
+	billFile.append(yearString);
+	billFile.append(monthString);
+	billFile.append(".rtf");
+	std::ofstream outStream;
+	outStream.open(billFile.toStdString().c_str());
+	outStream << Document.toStdString();
 
-		//Optionally print the document
-		QPrinter printer;
-		QPrintDialog printDialog(&printer, 0);
-		if (printDialog.exec())
-		{
-			QTextDocument textDocument;
-			textDocument.setHtml(Document);
-			textDocument.print(&printer);
-		}
+	//Optionally print the document
+	//QPrinter printer;
+	//QPrintDialog printDialog(&printer, 0);
+	//if (printDialog.exec())
+	//{
+		//QTextDocument textDocument;
+		//textDocument.setHtml(Document);
+		//textDocument.print(&printer);
+	//}
+
+	//Increment the Bill Identifier
+	QSqlTableModel* miscTable = new QSqlTableModel;
+	miscTable->setTable("misc");
+	miscTable->select();
+	QSqlRecord miscRecord = miscTable->record(0);
+	miscRecord.setValue(BillNumber, m_billNumber + 1);
+	miscTable->setRecord(0, miscRecord);
+	miscTable->submit();
+	delete miscTable;
 }
 
 void PatientAccounter::addPatientHeader(QString& Document)
