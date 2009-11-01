@@ -302,6 +302,7 @@ void MainWindow::updateTreatmentView()
 	dataModel->select();
 	dataView->horizontalHeader()->setVisible(dataModel->rowCount() > 0);
 	patientView->setCurrentIndex(index);
+
 }
 
 void MainWindow::addPatient()
