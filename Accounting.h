@@ -18,7 +18,7 @@ class PatientAccounter
 	private:
 		void printBill();
 		void addPatientHeader(QString& Document);
-		void addTreatments(QString& Document);
+		bool addTreatments(QString& Document);
 		const QSqlRecord& m_patient;
 		QSqlRelationalTableModel& m_treats;
 

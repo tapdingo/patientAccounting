@@ -18,6 +18,11 @@ PatientAccounter::PatientAccounter(
 
 void PatientAccounter::account()
 {
+	if (m_treats.rowCount() == 0)
+	{
+		//Nothing to account, simple return
+		return;
+	}
 	printBill();
 }
 
@@ -58,7 +63,11 @@ void PatientAccounter::printBill()
 			 Geb&uuml;hrenordnung f&uuml;r &Auml;rzte) \
 			zu berechnen:<br>");
 
-	addTreatments(Document);
+	if (!addTreatments(Document))
+	{
+		//Again nothing to account, simple return
+		return;
+	}
 
 	//Create the bill RTF for this patient
 	QString billFile("Abrechnungen/");
@@ -134,8 +143,9 @@ void PatientAccounter::addPatientHeader(QString& Document)
 	Document.append("</tr></table>");
 }
 
-void PatientAccounter::addTreatments(QString& Document)
+bool PatientAccounter::addTreatments(QString& Document)
 {
+	bool treated = false;
 	Document.append("<table width=100%><tr>");
 
 	uint32_t sum = 0;
@@ -152,6 +162,7 @@ void PatientAccounter::addTreatments(QString& Document)
 		}
 		treatment.setValue(QString("accounted"), 1);
 		m_treats.setRecord(i, treatment);
+		treated = true;
 
 		if (!m_treats.submit())
 		{
@@ -182,4 +193,5 @@ void PatientAccounter::addTreatments(QString& Document)
 	Document.append("<td></td>");
 	Document.append("<td>" + sumString + " &euro;</td>");
 	Document.append("</tr></table>");
+	return treated;
 }
