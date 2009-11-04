@@ -192,11 +192,11 @@ void TreatmentForm::createLayout()
 	mainLayout->addWidget(telephone, 5, 0);
 	mainLayout->addWidget(practice, 5, 1);
 
-	paid = new QCheckBox("Bereits abgerechnet");
-	mainLayout->addWidget(paid, 6, 0);
+	accounted = new QCheckBox("Bereits abgerechnet");
+	mainLayout->addWidget(accounted, 6, 0);
 
-	accounted = new QCheckBox("Bereits bezahlt");
-	mainLayout->addWidget(accounted, 6, 1);
+	paid = new QCheckBox("Bereits bezahlt");
+	mainLayout->addWidget(paid, 6, 1);
 
 	details = new QCheckBox("Genauere Behandlungsangeben");
 	numLabel = new QLabel(tr("Anzahl Detailfelder"));
