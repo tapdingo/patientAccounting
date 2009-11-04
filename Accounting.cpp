@@ -3,6 +3,7 @@
 #include <QtSql>
 #include <iostream>
 #include <fstream>
+#include "Parser.h"
 
 PatientAccounter::PatientAccounter(
 		const QSqlRecord& patient, QSqlRelationalTableModel& treats)
@@ -138,7 +139,7 @@ void PatientAccounter::addPatientHeader(QString& Document)
 			+ m_patient.value(DateOfBirth).toString()
 			+ " </td>");
 	Document.append("</tr><tr>");
-	Document.append("<td>Letzte Diagnose: </td>");
+	Document.append("<td></td>");
 	Document.append("<td></td>");
 	Document.append("</tr></table>");
 }
@@ -151,7 +152,6 @@ bool PatientAccounter::addTreatments(QString& Document)
 	uint32_t sum = 0;
 
 	//Iterate over all Treatments
-	//\todo Block out already accounted treatments
 	for (int i = 0; i < m_treats.rowCount(); i++)
 	{
 		QSqlRecord treatment = m_treats.record(i);
@@ -169,20 +169,10 @@ bool PatientAccounter::addTreatments(QString& Document)
 			std::cerr << "Failed to update Treatment! \n";
 		}
 
-		int treatCost = treatment.value(Cost).toInt();
-		QString costString;
-		costString.setNum(treatCost);
-		sum += treatCost;
 
-		QDate date = treatment.value(DateOfTreat).toDate();
+		Document.append(addTreatmentRow(treatment, sum));
 
-		Document.append("<td>" + date.toString(Qt::SystemLocaleShortDate) + "</td>");
-		Document.append("<td>1(2)</td>");
-		Document.append("<td>"
-				+ treatment.value(TreatmentName).toString()
-				+ "</td>");
-		Document.append("<td>" + costString + "&euro;</td>");
-		Document.append("</tr><tr>");
+
 	}
 
 	//Create the Final Sum Row
@@ -193,5 +183,59 @@ bool PatientAccounter::addTreatments(QString& Document)
 	Document.append("<td></td>");
 	Document.append("<td>" + sumString + " &euro;</td>");
 	Document.append("</tr></table>");
+
+
 	return treated;
+}
+
+QString PatientAccounter::addTreatmentRow(
+		const QSqlRecord& treatment,
+		uint32_t& sum)
+{
+	QString treatmentRow;
+	int treatCost = treatment.value(Cost).toInt();
+	QString costString;
+	costString.setNum(treatCost);
+	sum += treatCost;
+
+	QDate date = treatment.value(DateOfTreat).toDate();
+
+	//Get The Details of this treatments
+	std::vector<DetailTuple*> details;
+	Parser::reconstructDetails(treatment.value(Details).toString(), details);
+
+	QString typeString("undefined");
+
+	if (treatment.value(Type).toInt() == Telephone)
+	{
+		typeString = "Telefonische Behandlung";
+	}
+	else
+	{
+		typeString = "Praxis Behandlung";
+	}
+
+	treatmentRow.append("<td>" + date.toString(Qt::SystemLocaleShortDate) + "</td>");
+	treatmentRow.append("<td>1(2)</td>");
+	treatmentRow.append("<td>");
+	treatmentRow.append(treatment.value(Diagnose).toString());
+	treatmentRow.append(", ");
+
+	//Add all the lovely details
+	std::vector<DetailTuple*>::iterator it;
+	for (it = details.begin(); it != details.end(); it++)
+	{
+		treatmentRow.append((*it)->detail);
+		treatmentRow.append(", ");
+	}
+	treatmentRow.append(typeString);
+
+	treatmentRow.append("</td>");
+	treatmentRow.append("<td>" + costString + "&euro;</td>");
+	treatmentRow.append("</tr><tr>");
+
+	//Clean up the mess...
+	Parser::clearDetails(details);
+
+	return treatmentRow;
 }

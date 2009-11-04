@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <definitions.h>
+#include "Parser.h"
 
 TreatmentForm::TreatmentForm(
 		int id,
@@ -354,8 +355,9 @@ void TreatmentForm::initialUpdate()
 	accounted->setChecked(record.value(Accounted).toInt());
 
 	QString details_raw = record.value(Details).toString();
-	reconstructDetailVector(details_raw);
 
+	//TODO: USE THE ACTUAL PARSER!
+	reconstructDetailVector(details_raw);
 	std::vector<DetailTuple*>::iterator it;
 
 	int i = 0;

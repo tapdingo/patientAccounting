@@ -2,6 +2,7 @@
 #define ACCOUNTING_H
 
 #include "definitions.h"
+#include <inttypes.h>
 
 class QSqlRecord;
 class QSqlRelationalTableModel;
@@ -21,6 +22,9 @@ class PatientAccounter
 		bool addTreatments(QString& Document);
 		const QSqlRecord& m_patient;
 		QSqlRelationalTableModel& m_treats;
+		QString addTreatmentRow(
+				const QSqlRecord& treatment,
+				uint32_t& sum);
 
 		unsigned int m_billNumber;
 };
