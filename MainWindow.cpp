@@ -61,7 +61,7 @@ MainWindow::MainWindow()
 
 	this->resize(1000, 600);
 	updateStatusBar();
-
+	patientView->selectRow(0);
 }
 
 void MainWindow::createPatientPanel()
