@@ -26,6 +26,8 @@ class PatientAccounter
 				const QSqlRecord& treatment,
 				uint32_t& sum);
 
+		QString generatePatientAddress();
+
 		unsigned int m_billNumber;
 };
 

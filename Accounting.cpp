@@ -50,6 +50,7 @@ void PatientAccounter::printBill()
 	//Add the patient Address
 	Document.append("<br>");
 	QString patientAddress("Adresse: ");
+	patientAddress.append(generatePatientAddress());
 	Document.append("<br>");
 	Document.append("<br>");
 
@@ -151,6 +152,14 @@ bool PatientAccounter::addTreatments(QString& Document)
 
 	uint32_t sum = 0;
 
+	Document.append("<br>");
+	Document.append("<td><b>Datum </b></td>");
+	Document.append("<td></td>");
+	Document.append("<td><b>Diagnose</b></td>");
+	Document.append("<td><b>Behandlungsdetails</b></td>");
+	Document.append("<td><b>Kostenpunkt</b></td>");
+	Document.append("</tr>");
+
 	//Iterate over all Treatments
 	for (int i = 0; i < m_treats.rowCount(); i++)
 	{
@@ -179,6 +188,7 @@ bool PatientAccounter::addTreatments(QString& Document)
 	QString sumString;
 	sumString.setNum(sum);
 	Document.append("<td><b>Endsumme: </b></td>");
+	Document.append("<td></td>");
 	Document.append("<td></td>");
 	Document.append("<td></td>");
 	Document.append("<td>" + sumString + " &euro;</td>");
@@ -219,7 +229,7 @@ QString PatientAccounter::addTreatmentRow(
 	treatmentRow.append("<td>1(2)</td>");
 	treatmentRow.append("<td>");
 	treatmentRow.append(treatment.value(Diagnose).toString());
-	treatmentRow.append(", ");
+	treatmentRow.append("</td><td>");
 
 	//Add all the lovely details
 	std::vector<DetailTuple*>::iterator it;
@@ -238,4 +248,19 @@ QString PatientAccounter::addTreatmentRow(
 	Parser::clearDetails(details);
 
 	return treatmentRow;
+}
+
+QString PatientAccounter::generatePatientAddress()
+{
+	QString address;
+
+	address.append(m_patient.value(Street).toString());
+	address.append(" ");
+	address.append(m_patient.value(HouseNumber).toString());
+	address.append(", ");
+	address.append(m_patient.value(PostalCode).toString());
+	address.append(" ");
+	address.append(m_patient.value(City).toString());
+
+	return address;
 }
