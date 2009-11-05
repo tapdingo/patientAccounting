@@ -49,12 +49,7 @@ void PatientAccounter::printBill()
 
 	//Add the patient Address
 	Document.append("<br>");
-	QString patientAddress("Adresse: ");
-	patientAddress.append(generatePatientAddress());
 	Document.append("<br>");
-	Document.append("<br>");
-
-	Document.append(patientAddress);
 
 	addPatientHeader(Document);
 
@@ -128,19 +123,32 @@ void PatientAccounter::addPatientHeader(QString& Document)
 	Document.append(IdString);
 
 	Document.append("<td>");
+
+	//Current Date
 	Document.append("<td>Datum: "
 			+ QDate::currentDate().toString(Qt::SystemLocaleShortDate)
 			+ " </td>");
 	Document.append("</tr><tr>");
+
+	//Patient Name
 	Document.append("<td>Patient: "
 			+ m_patient.value(FirstName).toString() + " "
 			+ m_patient.value(LastName).toString() +
 			"</td>");
+
+	//Patient Birth Date
 	Document.append("<td>Geb. Datum: "
 			+ m_patient.value(DateOfBirth).toString()
 			+ " </td>");
 	Document.append("</tr><tr>");
-	Document.append("<td></td>");
+
+	//Patient Address
+	QString patientAddress("Adresse: ");
+	patientAddress.append(generatePatientAddress());
+	Document.append("<td>");
+	Document.append(patientAddress);
+
+	Document.append("</td>");
 	Document.append("<td></td>");
 	Document.append("</tr></table>");
 }
