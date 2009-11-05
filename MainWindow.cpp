@@ -70,9 +70,11 @@ void MainWindow::createPatientPanel()
 
 	patientModel= new PatientModel();
 	patientModel->setTable("patients");
+	patientModel->setSort(LastName, Qt::AscendingOrder);
 	patientModel->select();
 
 	patientView = new QTableView();
+
 	patientView->setModel(patientModel);
 	patientView->resizeColumnsToContents();
 	patientView->setSelectionMode(
@@ -86,6 +88,8 @@ void MainWindow::createPatientPanel()
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
 
+	//Disable Editing in the View
+	patientView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void MainWindow::createDataPanel()
@@ -111,6 +115,9 @@ void MainWindow::createDataPanel()
 
 	dataLabel = new QLabel(tr("Patienten&daten"));
 	dataLabel->setBuddy(patientView);
+
+	//Disable Editing in the View
+	dataView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 }
 
