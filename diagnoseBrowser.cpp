@@ -2,10 +2,13 @@
 
 #include <QtGui>
 
-DiagnoseBrowser::DiagnoseBrowser(QWidget* parent)
+#include "definitions.h"
+
+DiagnoseBrowser::DiagnoseBrowser(QWidget* parent) : QDialog(parent)
 {
 	diagnoseModel = new QSqlTableModel(this);
 	diagnoseModel->setTable("diagnoses");
+	diagnoseModel->setSort(DiagnoseName, Qt::AscendingOrder);
 	diagnoseModel->select();
 
 	diagnoseView = new QTableView();

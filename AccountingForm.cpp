@@ -73,6 +73,8 @@ void AccountingForm::performAccounting()
 	if (m_thisPatient->isChecked())
 	{
 		accountPatient(m_patient);
+		m_progBar->setMaximum(1);
+		m_progBar->setValue(1);
 	}
 	else
 	{
@@ -84,9 +86,7 @@ void AccountingForm::performAccounting()
 			patName.append(" ");
 			patName.append(curPat.value(LastName).toString());
 			m_progLabel->setText(patName);
-
 			accountPatient(i);
-
 			m_progBar->setValue(i + 1);
 		}
 	}
@@ -94,7 +94,6 @@ void AccountingForm::performAccounting()
 	m_progLabel->setText("Abrechnung beendet");
 	m_cancelButton->setEnabled(true);
 	m_cancelButton->setText("Beenden");
-
 }
 
 void AccountingForm::makeConnections()
@@ -128,4 +127,6 @@ bool AccountingForm::accountPatient(const int patientRow)
 	PatientAccounter* accounter = new PatientAccounter(patient, *m_treats);
 	accounter->account();
 	delete accounter;
+
+	return true;
 }

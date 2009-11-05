@@ -405,6 +405,10 @@ bool TreatmentForm::checkForDetails()
 
 void TreatmentForm::warnPaid(int state)
 {
+
+	//I know editing stuff to quiet the compiler is lame, but i can't use the
+	//state here -.-
+	state = 0;
 	QMessageBox::warning(0, tr("Achtung"),
 			tr("Achtung, dieser Wert hat Einfluss auf die Abrechnung!"),
 			QMessageBox::Ok);
@@ -412,7 +416,10 @@ void TreatmentForm::warnPaid(int state)
 
 void TreatmentForm::warnAccounted(int state)
 {
-	QMessageBox::warning(0, tr("Wert aendern"),
+	//I know editing stuff to quiet the compiler is lame, but i can't use the
+	//state here -.-
+	state = 0;
+	QMessageBox::warning(0, tr("Achtung"),
 			tr("Achtung, dieser Wert hat Einfluss auf die Abrechnung!"),
 			QMessageBox::Ok);
 }
