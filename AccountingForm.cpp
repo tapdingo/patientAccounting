@@ -9,7 +9,7 @@
 #include "Accounting.h"
 #include "definitions.h"
 
-AccountingForm::AccountingForm(const int& pat_row) : m_patient(pat_row)
+AccountingForm::AccountingForm(const int& pat_id) : m_patient(pat_id)
 {
 	createLayout();
 	makeConnections();
@@ -21,6 +21,7 @@ AccountingForm::AccountingForm(const int& pat_row) : m_patient(pat_row)
 	m_treats = new QSqlRelationalTableModel();
 	m_treats->setTable("treatments");
 	m_treats->select();
+	std::cerr << pat_id << std::endl;
 }
 
 
@@ -72,7 +73,14 @@ void AccountingForm::performAccounting()
 
 	if (m_thisPatient->isChecked())
 	{
-		accountPatient(m_patient);
+		QString filter("id = ");
+		QString patId;
+		patId.setNum(m_patient);
+		filter.append(patId);
+		m_patients->setFilter(filter);
+		m_patients->select();
+
+		accountPatient(0);
 		m_progBar->setMaximum(1);
 		m_progBar->setValue(1);
 	}
@@ -107,7 +115,6 @@ bool AccountingForm::accountPatient(const int patientRow)
 	QSqlRecord patient = m_patients->record(patientRow);
 	QString filter("patient_id = ");
 	filter.append(patient.value(ID).toString());
-
 
 	QDate curDate = m_dateEdit->date();
 	QDate futDate;

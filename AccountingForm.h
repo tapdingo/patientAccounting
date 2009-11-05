@@ -17,7 +17,7 @@ class AccountingForm : public QDialog
 	Q_OBJECT
 
 	public:
-		AccountingForm(const int& pat_row);
+		AccountingForm(const int& pat_id);
 
 	private:
 		void createLayout();

@@ -177,6 +177,7 @@ bool PatientAccounter::addTreatments(QString& Document)
 		{
 			continue;
 		}
+
 		treatment.setValue(QString("accounted"), 1);
 		m_treats.setRecord(i, treatment);
 		treated = true;
@@ -186,10 +187,7 @@ bool PatientAccounter::addTreatments(QString& Document)
 			std::cerr << "Failed to update Treatment! \n";
 		}
 
-
 		Document.append(addTreatmentRow(treatment, sum));
-
-
 	}
 
 	//Create the Final Sum Row

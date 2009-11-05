@@ -482,12 +482,13 @@ void MainWindow::accountPatient()
 	}
 	QSqlRecord record = patientModel->record(index.row());
 
-	AccountingForm* acc_window = new AccountingForm(index.row());
+	AccountingForm* acc_window = new AccountingForm(record.value(ID).toInt());
 	acc_window->exec();
 
 	//Dunno if i have to delete this here...
 	delete acc_window;
 
+	updateTreatmentView();
 	updateStatusBar();
 }
 
