@@ -71,6 +71,12 @@ void MainWindow::createPatientPanel()
 	patientModel= new PatientModel();
 	patientModel->setTable("patients");
 	patientModel->setSort(LastName, Qt::AscendingOrder);
+
+	//Nice Header Info
+	patientModel->setHeaderData(FirstName, Qt::Horizontal, tr("Vorname"));
+	patientModel->setHeaderData(LastName, Qt::Horizontal, tr("Nachname"));
+	patientModel->setHeaderData(DateOfBirth, Qt::Horizontal, tr("Geburtsdatum"));
+
 	patientModel->select();
 
 	patientView = new QTableView();
@@ -84,6 +90,16 @@ void MainWindow::createPatientPanel()
 	patientView->horizontalHeader()->setStretchLastSection(true);
 	patientView->verticalHeader()->hide();
 	patientView->setShowGrid(false);
+
+	//Hide some unneccessary info here
+	patientView->setColumnHidden(HouseNumber, true);
+	patientView->setColumnHidden(Street, true);
+	patientView->setColumnHidden(City, true);
+	patientView->setColumnHidden(PostalCode, true);
+	patientView->setColumnHidden(Parent, true);
+	patientView->setColumnHidden(Gender, true);
+	patientView->setColumnHidden(Phone, true);
+	patientView->setColumnHidden(ID, true);
 
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
@@ -100,6 +116,14 @@ void MainWindow::createDataPanel()
 	dataModel->setTable("treatments");
 	dataModel->setRelation(PatientId, QSqlRelation("patients", "id", "firstname"));
 	dataModel->setSort(DateOfTreat, Qt::DescendingOrder);
+
+	//Nice header info ahead!
+	dataModel->setHeaderData(Diagnose, Qt::Horizontal, tr("Diagnose"));
+	dataModel->setHeaderData(DateOfTreat, Qt::Horizontal, tr("Datum"));
+	dataModel->setHeaderData(Paid, Qt::Horizontal, tr("Bezahlt?"));
+	dataModel->setHeaderData(Accounted, Qt::Horizontal, tr("Abgerechnet?"));
+	dataModel->setHeaderData(Cost, Qt::Horizontal, tr("Kostenpunkt"));
+
 	dataModel->select();
 
 	dataView = new QTableView();
@@ -115,6 +139,15 @@ void MainWindow::createDataPanel()
 
 	dataLabel = new QLabel(tr("Patienten&daten"));
 	dataLabel->setBuddy(patientView);
+
+	//Hide some unneccessary info here
+	dataView->setColumnHidden(Details, true);
+	dataView->setColumnHidden(Type, true);
+	dataView->setColumnHidden(Duration, true);
+	dataView->setColumnHidden(DurationOfTreat, true);
+	dataView->setColumnHidden(TreatmentID, true);
+	dataView->setColumnHidden(PatientId, true);
+	dataView->setColumnHidden(TreatmentName, true);
 
 	//Disable Editing in the View
 	dataView->setEditTriggers(QAbstractItemView::NoEditTriggers);
