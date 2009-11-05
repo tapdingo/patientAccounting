@@ -353,7 +353,9 @@ void MainWindow::addPatient()
 	//Send the new patient for editing purposes to the form
 	if (rc)
 	{
-		QSqlRecord record = patientModel->record(rc);
+		//WARNING! As long as the patients are sorted by name, the new record
+		//will always be row 0
+		QSqlRecord record = patientModel->record(0);
 		int id = record.value("id").toInt();
 		PatientForm editPatient(id, this);
 		editPatient.exec();

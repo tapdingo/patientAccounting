@@ -3,6 +3,8 @@
 
 #include "definitions.h"
 
+#include <iostream>
+
 PatientForm::PatientForm(
 		int id,
 		QWidget* parent) : QDialog(parent)
@@ -69,7 +71,6 @@ PatientForm::PatientForm(
 
 	closeButton = new QPushButton(tr("Schliessen"));
 	closeButton->setDefault(true);
-
 
 	QGridLayout* mainLayout = new QGridLayout(this);
 
