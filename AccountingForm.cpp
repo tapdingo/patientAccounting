@@ -21,7 +21,6 @@ AccountingForm::AccountingForm(const int& pat_id) : m_patient(pat_id)
 	m_treats = new QSqlRelationalTableModel();
 	m_treats->setTable("treatments");
 	m_treats->select();
-	std::cerr << pat_id << std::endl;
 }
 
 

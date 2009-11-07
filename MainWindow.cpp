@@ -308,23 +308,18 @@ void MainWindow::updateTreatmentView()
 		int id = record.value("id").toInt();
 
 		//Get the treatment view state
-		QString filterString(" AND ");
 		dataModel->setFilter(QString("1"));
+		dataModel->select();
+
+		QString filterString;
 		if (m_acc_state == Qt::Checked)
 		{
-			filterString.append("accounted = 0");
-		}
-		else
-		{
-			//Set the filter to something stupid to disable it
-			//I know it's lame...
-			filterString.append("accounted != 2");
+			filterString.append(" AND accounted = 0");
 		}
 
 		if (m_month_state == Qt::Checked)
 		{
-			filterString.append(" AND ");
-			filterString.append("dateoftreat > '");
+			filterString.append(" AND dateoftreat > '");
 			filterString.append(month->date().toString("yyyy-MM-dd"));
 			filterString.append("'");
 		}

@@ -173,12 +173,13 @@ bool PatientAccounter::addTreatments(QString& Document)
 	{
 		QSqlRecord treatment = m_treats.record(i);
 
-		if (treatment.value(Accounted).toInt() == 1)
+		if (treatment.value(Accounted).toInt() == 1 ||
+				treatment.value(Accounted).toInt() == 2)
 		{
 			continue;
 		}
 
-		treatment.setValue(QString("accounted"), 1);
+		treatment.setValue(QString("accounted"), 2);
 		m_treats.setRecord(i, treatment);
 		treated = true;
 
