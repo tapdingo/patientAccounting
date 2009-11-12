@@ -43,6 +43,7 @@ class TreatmentForm : public QDialog
 			void noDetailsChanged(int number);
 			void warnPaid(int state);
 			void warnAccounted(int state);
+			void updateDetails(const QString& newCost);
 
 	private:
 		QLabel* diagnoseLabel;

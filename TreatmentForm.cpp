@@ -57,6 +57,11 @@ TreatmentForm::TreatmentForm(
 			SIGNAL(stateChanged(int)),
 			this,
 			SLOT(warnAccounted(int)));
+
+	connect(costField,
+			SIGNAL(textChanged(const QString&)),
+			this,
+			SLOT(updateDetails(const QString&)));
 }
 
 void TreatmentForm::saveTreatment()
@@ -357,7 +362,6 @@ void TreatmentForm::initialUpdate()
 
 	QString details_raw = record.value(Details).toString();
 
-	//TODO: USE THE ACTUAL PARSER!
 	reconstructDetailVector(details_raw);
 	std::vector<DetailTuple*>::iterator it;
 
@@ -423,4 +427,32 @@ void TreatmentForm::warnAccounted(int state)
 	QMessageBox::warning(0, tr("Achtung"),
 			tr("Achtung, dieser Wert hat Einfluss auf die Abrechnung!"),
 			QMessageBox::Ok);
+}
+
+void TreatmentForm::updateDetails(const QString& newCost)
+{
+	//The Number of details is no longer the default number,
+	//Don't mess with the number, damnit!
+	if (noOfDetails->value() == 3)
+	{
+		int new_cost = newCost.toInt();
+		double diagCost = new_cost * Constants::diag_part;
+		double anamCost = new_cost * Constants::anam_part;
+		double treatCost = new_cost * Constants::treat_part;
+
+		if (detailFieldsDesc.size() > 2)
+		{
+			QString cost;
+			cost.setNum(diagCost);
+			detailFieldsDesc[0]->costDetField->setText(cost);
+
+			cost.setNum(anamCost);
+			detailFieldsDesc[1]->costDetField->setText(cost);
+
+			cost.setNum(treatCost);
+			detailFieldsDesc[2]->costDetField->setText(cost);
+		}
+		return;
+	}
+
 }
