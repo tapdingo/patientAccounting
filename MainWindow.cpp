@@ -51,7 +51,6 @@ MainWindow::MainWindow()
 
 	patientWidget->setLayout(overall_layout);
 
-
 	unaccountedPatients = new QLabel("Offene Rechnungsbetraege: 000000000 ");
 	unaccountedPatients->setMinimumSize(unaccountedPatients->sizeHint());
 
@@ -114,7 +113,9 @@ void MainWindow::createDataPanel()
 
 	dataModel= new TreatmentModel();
 	dataModel->setTable("treatments");
-	dataModel->setRelation(PatientId, QSqlRelation("patients", "id", "firstname"));
+	dataModel->setRelation(
+			PatientId,
+			QSqlRelation("patients", "id", "firstname"));
 	dataModel->setSort(DateOfTreat, Qt::DescendingOrder);
 
 	//Nice header info ahead!
@@ -350,6 +351,7 @@ void MainWindow::addPatient()
 	{
 		//WARNING! As long as the patients are sorted by name, the new record
 		//will always be row 0
+		//This is a very ugly hack, maybe i'll fix it...
 		QSqlRecord record = patientModel->record(0);
 		int id = record.value("id").toInt();
 		PatientForm editPatient(id, this);
@@ -497,7 +499,8 @@ void MainWindow::about()
 {
 		QMessageBox msgBox;
 		msgBox.about(this, "About PatientAccounting",
-				"PatientAccounting is a programm to manage and account patients\n\n"
+				"PatientAccounting is a programm to manage and"
+				"account patients\n\n"
 				"It was developed open source. "
 				"The GPL applies\n\n"
 				"Support is not foressen ;)\n");

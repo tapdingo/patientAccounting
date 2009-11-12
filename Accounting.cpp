@@ -6,7 +6,8 @@
 #include "Parser.h"
 
 PatientAccounter::PatientAccounter(
-		const QSqlRecord& patient, QSqlRelationalTableModel& treats)
+		const QSqlRecord& patient,
+		QSqlRelationalTableModel& treats)
 : m_patient(patient), m_treats(treats)
 {
 	QSqlTableModel* miscTable = new QSqlTableModel;

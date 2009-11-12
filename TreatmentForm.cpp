@@ -115,15 +115,16 @@ void TreatmentForm::saveTreatment()
 
 void TreatmentForm::durChange()
 {
-	double new_cost = (double(durationField->text().toInt()) / 60) * 75;
+	double new_cost = (double(durationField->text().toInt()) / 60) *
+		Constants::STUNDENSATZ;
 	QString newCost;
 	newCost.setNum(new_cost);
 	costField->setText(newCost);
 
 
-	double diagCost = new_cost * 0.25;
-	double anamCost = new_cost * 0.5;
-	double treatCost = new_cost * 0.25;
+	double diagCost = new_cost * Constants::diag_part;
+	double anamCost = new_cost * Constants::anam_part;
+	double treatCost = new_cost * Constants::treat_part;
 
 	if (detailFieldsDesc.size() > 2)
 	{

@@ -1,6 +1,15 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+
+namespace Constants
+{
+	const int STUNDENSATZ = 75;
+	const double diag_part = 0.25;
+	const double anam_part = 0.5;
+	const double treat_part = 0.25;
+}
+
 enum {
 	HouseNumber = 0,
 	Street = 1,
