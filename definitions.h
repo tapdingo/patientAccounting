@@ -24,6 +24,16 @@ enum {
 	ID = 10
 };
 
+namespace std_treat {
+
+	enum {
+
+		treatName = 0,
+		treatText = 1
+	};
+
+};
+
 enum {
 	Details = 0,
 	Type = 1,

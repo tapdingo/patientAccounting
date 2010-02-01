@@ -8,6 +8,7 @@
 #include "definitions.h"
 #include "Accounting.h"
 #include "diagnoseBrowser.h"
+#include "std_treatBrowser.h"
 #include "patientModel.h"
 #include "treatmentModel.h"
 #include "AccountingForm.h"
@@ -183,6 +184,9 @@ void MainWindow::createActions()
 	browseDiagnosesAction = new QAction(tr("&Diagnosen Browser"), this);
 	browseDiagnosesAction->setStatusTip(tr("Startet den Diagnosen Browser"));
 
+	browseTreatmentsAction = new QAction(tr("&Behandlungs Browser"), this);
+	browseTreatmentsAction->setStatusTip(tr("Startet den Behandlungs Browser"));
+
 	//Accounting related Actions
 	accountAction = new QAction(tr("&Abrechnen"), this);
 	accountAction->setStatusTip(tr("Rechnet einen Patienten ab"));
@@ -219,6 +223,8 @@ void MainWindow::connectSlots()
 			this, SLOT(deleteTreatment()));
 	connect(browseDiagnosesAction, SIGNAL(triggered()),
 			this, SLOT(browseDiagnoses()));
+	connect(browseTreatmentsAction, SIGNAL(triggered()),
+			this, SLOT(browseTreatments()));
 
 	//Accounting related connections
 	connect(accountAction, SIGNAL(triggered()), this, SLOT(accountPatient()));
@@ -259,6 +265,7 @@ void MainWindow::createMenus()
 	treatmentMenu->addAction(editTreatmentAction);
 	treatmentMenu->addAction(deleteTreatmentAction);
 	treatmentMenu->addAction(browseDiagnosesAction);
+	treatmentMenu->addAction(browseTreatmentsAction);
 
 	//Accounting Menu
 	accountingMenu = menuBar()->addMenu(tr("&Abrechnung"));
@@ -492,6 +499,12 @@ void MainWindow::accountPatient()
 void MainWindow::browseDiagnoses()
 {
 	DiagnoseBrowser browser(this);
+	browser.exec();
+}
+
+void MainWindow::browseTreatments()
+{
+	std_TreatBrowser browser(this);
 	browser.exec();
 }
 
