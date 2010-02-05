@@ -44,8 +44,11 @@ class TreatmentForm : public QDialog
 			void warnPaid(int state);
 			void warnAccounted(int state);
 			void updateDetails(const QString& newCost);
+			void std_treatChanged(const QString& newstd_treat);
 
 	private:
+		QLabel* std_treatLabel;
+		QComboBox* std_treatComboBox;
 		QLabel* diagnoseLabel;
 		QComboBox* diagnoseComboBox;
 		QLabel* dateLabel;

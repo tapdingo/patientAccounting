@@ -4,6 +4,8 @@
 
 #include "definitions.h"
 
+#include "std_TreatmentForm.h"
+
 
 std_TreatBrowser::std_TreatBrowser(QWidget* parent) : QDialog(parent)
 {
@@ -12,13 +14,11 @@ std_TreatBrowser::std_TreatBrowser(QWidget* parent) : QDialog(parent)
 	treatmentModel->setSort(DiagnoseName, Qt::AscendingOrder);
 	treatmentModel->select();
 
-	treatmentView = new QTableView();
-	treatmentView->setModel(treatmentModel);
-	treatmentView->setSelectionMode(QAbstractItemView::SingleSelection);
-	treatmentView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	treatmentView->setShowGrid(false);
-	treatmentView->horizontalHeader()->setStretchLastSection(true);
-
+	treatmentComboBox = new QComboBox();
+	treatmentComboBox->setModel(treatmentModel);
+	treatmentComboBox->setCompleter(treatmentComboBox->completer());
+	treatmentComboBox->setModelColumn(0);
+	treatmentComboBox->setEditable(false);
 
 	createButtons();
 
@@ -27,7 +27,7 @@ std_TreatBrowser::std_TreatBrowser(QWidget* parent) : QDialog(parent)
 	buttonLayout->addWidget(deleteButton);
 
 	QVBoxLayout* layout = new QVBoxLayout();
-	layout->addWidget(treatmentView);
+	layout->addWidget(treatmentComboBox);
 	layout->addLayout(buttonLayout);
 
 	setLayout(layout);
@@ -35,6 +35,7 @@ std_TreatBrowser::std_TreatBrowser(QWidget* parent) : QDialog(parent)
 	setWindowTitle(tr("Standard Behandlungs Browser"));
 
 	connect(newButton, SIGNAL(clicked()), this, SLOT(newTreatment()));
+	connect(editButton, SIGNAL(clicked()), this, SLOT(editTreatment()));
 	connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteTreatment()));
 }
 
@@ -42,6 +43,9 @@ void std_TreatBrowser::createButtons()
 {
 	newButton = new QPushButton(tr("&Neue Behandlung"));
 	newButton->setEnabled(true);
+
+	editButton = new QPushButton(tr("&Behandlung bearbeiten"));
+	editButton->setEnabled(true);
 
 	deleteButton = new QPushButton(tr("&Behandlung entfernen"));
 	deleteButton->setEnabled(true);
@@ -53,24 +57,17 @@ void std_TreatBrowser::newTreatment()
 	if (!treatmentModel->insertRow(rc))
 	{
 		QMessageBox msgBox;
-		msgBox.setText("Fehler beim Anlegen der treatment");
+		msgBox.setText("Fehler beim Anlegen der Behandlung");
 		msgBox.exec();
 		return;
 	}
-
 }
 
 void std_TreatBrowser::deleteTreatment()
 {
-	QModelIndex index = treatmentView->currentIndex();
-	if(!index.isValid())
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Keine treatment ausgewaehlt!");
-		msgBox.exec();
-		return;
-	}
-	treatmentModel->removeRow(index.row());
-	treatmentModel->submitAll();
-	treatmentModel->select();
 }
+
+void std_TreatBrowser::editTreatment()
+{
+}
+

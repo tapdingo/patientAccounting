@@ -53,6 +53,7 @@ TreatmentForm::TreatmentForm(
 			SIGNAL(stateChanged(int)),
 			this,
 			SLOT(warnPaid(int)));
+
 	connect(accounted,
 			SIGNAL(stateChanged(int)),
 			this,
@@ -62,6 +63,12 @@ TreatmentForm::TreatmentForm(
 			SIGNAL(textChanged(const QString&)),
 			this,
 			SLOT(updateDetails(const QString&)));
+
+	connect(std_treatComboBox,
+			SIGNAL(currentIndexChanged(const QString&)),
+			this,
+			SLOT(std_treatChanged(const QString&)));
+
 }
 
 void TreatmentForm::saveTreatment()
@@ -150,6 +157,16 @@ void TreatmentForm::createLayout()
 	mainLayout = new QGridLayout(this);
 	setLayout(mainLayout);
 
+	QSqlTableModel* std_treat_model = new QSqlTableModel(this);
+	std_treat_model->setTable("std_treats");
+	std_treat_model->select();
+	std_treatLabel = new QLabel(tr("Standard Behandlung auswaehlen"));
+	std_treatComboBox = new QComboBox;
+	std_treatComboBox->setModel(std_treat_model);
+	std_treatComboBox->setCompleter(std_treatComboBox->completer());
+	std_treatComboBox->setModelColumn(0);
+	std_treatComboBox->setEditable(true);
+
 	QSqlTableModel* diagnose_model = new QSqlTableModel(this);
 	diagnose_model->setTable("diagnoses");
 	diagnose_model->select();
@@ -159,8 +176,10 @@ void TreatmentForm::createLayout()
 	diagnoseComboBox->setCompleter(diagnoseComboBox->completer());
 	diagnoseComboBox->setModelColumn(0);
 	diagnoseComboBox->setEditable(true);
-	mainLayout->addWidget(diagnoseLabel, 0, 0);
-	mainLayout->addWidget(diagnoseComboBox, 0, 1);
+	mainLayout->addWidget(std_treatLabel, 0, 0);
+	mainLayout->addWidget(std_treatComboBox, 0, 1);
+	mainLayout->addWidget(diagnoseLabel, 1, 0);
+	mainLayout->addWidget(diagnoseComboBox, 1, 1);
 	mainLayout->setSizeConstraint(QLayout::SetFixedSize);
 
 
@@ -169,71 +188,71 @@ void TreatmentForm::createLayout()
 	dateEdit->setCalendarPopup(true);
 	dateEdit->setDisplayFormat("dd.MM.yyyy");
 	dateLabel->setBuddy(dateEdit);
-	mainLayout->addWidget(dateLabel, 1, 0);
-	mainLayout->addWidget(dateEdit, 1, 1);
+	mainLayout->addWidget(dateLabel, 2, 0);
+	mainLayout->addWidget(dateEdit, 2, 1);
 
 	durationLabel = new QLabel(tr("Dauer (Minuten)"));
 	durationField = new QLineEdit;
 	durationLabel->setBuddy(durationField);
 	connect(durationField, SIGNAL(textChanged(QString)), this, SLOT(durChange()));
-	mainLayout->addWidget(durationLabel, 2, 0);
-	mainLayout->addWidget(durationField, 2, 1);
+	mainLayout->addWidget(durationLabel, 3, 0);
+	mainLayout->addWidget(durationField, 3, 1);
 
 	costLabel = new QLabel(tr("Kostenpunkt"));
 	costField = new QLineEdit;
 	costLabel->setBuddy(costField);
-	mainLayout->addWidget(costLabel, 3, 0);
-	mainLayout->addWidget(costField, 3, 1);
+	mainLayout->addWidget(costLabel, 4, 0);
+	mainLayout->addWidget(costField, 4, 1);
 
 	nameLabel = new QLabel(tr("Beschreibung"));
 	nameField = new QLineEdit;
 	nameLabel->setBuddy(nameField);
-	mainLayout->addWidget(nameLabel, 4, 0);
-	mainLayout->addWidget(nameField, 4, 1);
+	mainLayout->addWidget(nameLabel, 5, 0);
+	mainLayout->addWidget(nameField, 5, 1);
 
 	telephone = new QRadioButton(tr("Telefonisch"));
 	practice = new QRadioButton(tr("Praxis"));
 	typeButtons = new QButtonGroup();
 	typeButtons->addButton(telephone, Telephone);
 	typeButtons->addButton(practice, Practice);
-	mainLayout->addWidget(telephone, 5, 0);
-	mainLayout->addWidget(practice, 5, 1);
+	mainLayout->addWidget(telephone, 6, 0);
+	mainLayout->addWidget(practice, 6, 1);
 
 	accounted = new QCheckBox("Bereits abgerechnet");
-	mainLayout->addWidget(accounted, 6, 0);
+	mainLayout->addWidget(accounted, 7, 0);
 
 	paid = new QCheckBox("Bereits bezahlt");
-	mainLayout->addWidget(paid, 6, 1);
+	mainLayout->addWidget(paid, 7, 1);
 
 	details = new QCheckBox("Genauere Behandlungsangeben");
 	numLabel = new QLabel(tr("Anzahl Detailfelder"));
 	noOfDetails = new QSpinBox();
-	mainLayout->addWidget(details, 7, 0);
+	mainLayout->addWidget(details, 8, 0);
 
-	mainLayout->addWidget(noOfDetails, 7, 1);
+	mainLayout->addWidget(noOfDetails, 8, 1);
 	noOfDetails->hide();
 
 	detailsLabel = new QLabel("Details");
 	detailsLabel->hide();
-	mainLayout->addWidget(detailsLabel, 8, 0);
+	mainLayout->addWidget(detailsLabel, 9, 0);
 
 	costDetailLabel = new QLabel("Kosten-Details");
 	costDetailLabel->hide();
-	mainLayout->addWidget(costDetailLabel, 8, 1);
+	mainLayout->addWidget(costDetailLabel, 9, 1);
 
 	detailFields = new QVBoxLayout;
-	mainLayout->addLayout(detailFields, 9, 0);
+	mainLayout->addLayout(detailFields, 10, 0);
 
 	costDetailFields = new QVBoxLayout;
-	mainLayout->addLayout(costDetailFields, 9, 1);
+	mainLayout->addLayout(costDetailFields, 10, 1);
 
 	saveButton = new QPushButton(tr("&Speichern"));
 	saveButton->setEnabled(true);
-	mainLayout->addWidget(saveButton, 10, 0);
+	mainLayout->addWidget(saveButton, 11, 0);
 
 	closeButton = new QPushButton(tr("&Abbrecchen"));
 	closeButton->setDefault(true);
-	mainLayout->addWidget(closeButton, 10, 1);
+	mainLayout->addWidget(closeButton, 11, 1);
 
 	setLayout(mainLayout);
 	setWindowTitle(tr("Behandlung bearbeiten..."));
@@ -454,5 +473,9 @@ void TreatmentForm::updateDetails(const QString& newCost)
 		}
 		return;
 	}
+}
 
+void TreatmentForm::std_treatChanged(const QString& newstd_treat)
+{
+	std::cout << "Fix this method ololol" << std::endl;
 }

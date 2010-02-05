@@ -6,7 +6,7 @@
 #include <QSqlDatabase>
 #include <QSqlTableModel>
 
-class QTableView;
+class QComboBox;
 class QAction;
 class QPushButton;
 
@@ -19,15 +19,17 @@ class std_TreatBrowser :public QDialog{
 		private slots:
 			void newTreatment();
 			void deleteTreatment();
+			void editTreatment();
 
 	private:
-		QTableView* treatmentView;
+		QComboBox* treatmentComboBox;
 		QSqlTableModel* treatmentModel;
 		QAction* newTreatmentAction;
 		QAction* deleteTreatmentAction;
 
 		QPushButton* newButton;
 		QPushButton* deleteButton;
+		QPushButton* editButton;
 
 		void createButtons();
 
