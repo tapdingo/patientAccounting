@@ -63,12 +63,6 @@ TreatmentForm::TreatmentForm(
 			SIGNAL(textChanged(const QString&)),
 			this,
 			SLOT(updateDetails(const QString&)));
-
-	connect(std_treatComboBox,
-			SIGNAL(currentIndexChanged(const QString&)),
-			this,
-			SLOT(std_treatChanged(const QString&)));
-
 }
 
 void TreatmentForm::saveTreatment()
@@ -157,16 +151,6 @@ void TreatmentForm::createLayout()
 	mainLayout = new QGridLayout(this);
 	setLayout(mainLayout);
 
-	QSqlTableModel* std_treat_model = new QSqlTableModel(this);
-	std_treat_model->setTable("std_treats");
-	std_treat_model->select();
-	std_treatLabel = new QLabel(tr("Standard Behandlung auswaehlen"));
-	std_treatComboBox = new QComboBox;
-	std_treatComboBox->setModel(std_treat_model);
-	std_treatComboBox->setCompleter(std_treatComboBox->completer());
-	std_treatComboBox->setModelColumn(0);
-	std_treatComboBox->setEditable(true);
-
 	QSqlTableModel* diagnose_model = new QSqlTableModel(this);
 	diagnose_model->setTable("diagnoses");
 	diagnose_model->select();
@@ -176,8 +160,6 @@ void TreatmentForm::createLayout()
 	diagnoseComboBox->setCompleter(diagnoseComboBox->completer());
 	diagnoseComboBox->setModelColumn(0);
 	diagnoseComboBox->setEditable(true);
-	mainLayout->addWidget(std_treatLabel, 0, 0);
-	mainLayout->addWidget(std_treatComboBox, 0, 1);
 	mainLayout->addWidget(diagnoseLabel, 1, 0);
 	mainLayout->addWidget(diagnoseComboBox, 1, 1);
 	mainLayout->setSizeConstraint(QLayout::SetFixedSize);
@@ -473,9 +455,4 @@ void TreatmentForm::updateDetails(const QString& newCost)
 		}
 		return;
 	}
-}
-
-void TreatmentForm::std_treatChanged(const QString& newstd_treat)
-{
-	std::cout << "Fix this method ololol" << std::endl;
 }

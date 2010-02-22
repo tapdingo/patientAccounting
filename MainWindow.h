@@ -113,6 +113,7 @@ class MainWindow : public QMainWindow
 		QAction* aboutQTAction;
 
 		QAction* newTreatmentAction;
+		QAction* newStdTreatmentAction;
 		QAction* editTreatmentAction;
 		QAction* deleteTreatmentAction;
 		QPrinter* printer;
@@ -155,6 +156,12 @@ class MainWindow : public QMainWindow
 		 *
 		 */
 			void addTreatment();
+
+		/*!
+		 * \brief Add a new Standard Treatment to the database
+		 *
+		 */
+			void addStdTreatment();
 
 		/*!
 		 * \brief Delete a Patient from the database

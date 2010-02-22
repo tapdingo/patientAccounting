@@ -12,6 +12,7 @@
 #include "patientModel.h"
 #include "treatmentModel.h"
 #include "AccountingForm.h"
+#include "stdChoice.h"
 
 #include <iostream>
 
@@ -175,6 +176,9 @@ void MainWindow::createActions()
 	newTreatmentAction = new QAction(tr("&Anlegen"), this);
 	newTreatmentAction->setStatusTip(tr("Legt eine Behandlung an"));
 
+	newStdTreatmentAction = new QAction(tr("&Standard Behandlung anlegen"), this);
+	newStdTreatmentAction->setStatusTip(tr("Legt eine Standard Behandlung an"));
+
 	editTreatmentAction = new QAction(tr("&Bearbeiten"), this);
 	editTreatmentAction->setStatusTip(tr("Bearbeitet eine Behandlung"));
 
@@ -184,8 +188,8 @@ void MainWindow::createActions()
 	browseDiagnosesAction = new QAction(tr("&Diagnosen Browser"), this);
 	browseDiagnosesAction->setStatusTip(tr("Startet den Diagnosen Browser"));
 
-	browseTreatmentsAction = new QAction(tr("&Behandlungs Browser"), this);
-	browseTreatmentsAction->setStatusTip(tr("Startet den Behandlungs Browser"));
+	browseTreatmentsAction = new QAction(tr("&Standard Behandlungs Browser"), this);
+	browseTreatmentsAction->setStatusTip(tr("Startet den Standard Behandlungs Browser"));
 
 	//Accounting related Actions
 	accountAction = new QAction(tr("&Abrechnen"), this);
@@ -215,6 +219,8 @@ void MainWindow::connectSlots()
 	//Treatment related connections
 	connect(newTreatmentAction, SIGNAL(triggered()),
 			this, SLOT(addTreatment()));
+	connect(newStdTreatmentAction, SIGNAL(triggered()),
+			this, SLOT(addStdTreatment()));
 	connect(editTreatmentAction, SIGNAL(triggered()),
 			this, SLOT(editTreatment()));
 	connect(deleteTreatmentAction, SIGNAL(triggered()),
@@ -262,6 +268,7 @@ void MainWindow::createMenus()
 	//Treatment Menu
 	treatmentMenu = menuBar()->addMenu(tr("&Behandlungen"));
 	treatmentMenu->addAction(newTreatmentAction);
+	treatmentMenu->addAction(newStdTreatmentAction);
 	treatmentMenu->addAction(editTreatmentAction);
 	treatmentMenu->addAction(deleteTreatmentAction);
 	treatmentMenu->addAction(browseDiagnosesAction);
@@ -431,6 +438,19 @@ void MainWindow::addTreatment()
 	updateTreatmentView();
 	updateStatusBar();
 	patientView->setCurrentIndex(patient);
+}
+
+void MainWindow::addStdTreatment()
+{
+	QModelIndex index = patientView->currentIndex();
+
+	if(index.isValid())
+	{
+		QSqlRecord record = patientModel->record(index.row());
+		int id = record.value("id").toInt();
+		stdChoice add(this, id);
+		add.exec();
+	}
 }
 
 void MainWindow::editTreatment()
