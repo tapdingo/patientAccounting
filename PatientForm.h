@@ -35,9 +35,6 @@ class PatientForm : public QDialog{
 			QLabel* birthdayLabel;
 			QDateEdit* birthdayEdit;
 
-			QLabel* genderLabel;
-			QLineEdit* genderField;
-
 			QLabel* houseNumLabel;
 			QLineEdit* houseNumField;
 

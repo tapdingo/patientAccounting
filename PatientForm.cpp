@@ -48,10 +48,6 @@ PatientForm::PatientForm(
 	birthdayEdit->setDisplayFormat("dd.MM.yyyy");
 	birthdayLabel->setBuddy(birthdayEdit);
 
-	genderLabel = new QLabel(tr("Geschlecht"));
-	genderField = new QLineEdit;
-	genderLabel->setBuddy(genderField);
-
 	m_mapper = new QDataWidgetMapper(this);
 	m_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 	m_mapper->setModel(m_model);
@@ -59,7 +55,6 @@ PatientForm::PatientForm(
 	m_mapper->addMapping(lastNameField, LastName);
 	m_mapper->addMapping(phoneField, Phone);
 	m_mapper->addMapping(birthdayEdit, DateOfBirth);
-	m_mapper->addMapping(genderField, Gender);
 	m_mapper->addMapping(houseNumField, HouseNumber);
 	m_mapper->addMapping(streetField, Street);
 	m_mapper->addMapping(cityField, City);
@@ -97,9 +92,6 @@ PatientForm::PatientForm(
 
 	mainLayout->addWidget(cityLabel, 7, 0);
 	mainLayout->addWidget(cityField, 7, 1);
-
-	mainLayout->addWidget(genderLabel, 8, 0);
-	mainLayout->addWidget(genderField, 8, 1);
 
 	mainLayout->addWidget(birthdayLabel, 9, 0);
 	mainLayout->addWidget(birthdayEdit, 9, 1);

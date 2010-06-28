@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "treatmentModel.h"
+
 stdChoice::stdChoice(QWidget* parent, const int& patientId)
 	: m_patient(patientId)
 {
@@ -45,7 +47,34 @@ void stdChoice::init()
 
 void stdChoice::addStdTreatment()
 {
-	std::cerr << "Patient: " << m_patient;
+	//Get the correct stdTreatmentEntry out of the database
+	QString filter("name = ");
+	filter.append(m_choice->currentText());
+	m_model->setFilter(filter);
+	m_model->select();
+	QSqlRecord treatToAdd = m_model->record(0);
+
+	//Add a blank treatment to the patient
+	TreatmentModel treatments;
+	QString patientFilter("patient_id = ");
+	QString patientId;
+	patientId.setNum(m_patient);
+	patientFilter.append(patientId);
+	treatments.setTable("treatments");
+
+	treatments.setFilter(patientFilter);
+	treatments.select();
+	std::cerr << treatments.rowCount() << std::endl;
+	std::cerr << "Patient: " << patientFilter.toStdString() << std::endl;
+	std::cerr << "Treatment: " << filter.toStdString() << std::endl;
+
+	int treatId = treatments.addNewRelRecord(m_patient);
+
+	//And fill it with live!
+
+	//Restore the old form state
+	m_model->setFilter("");
+	m_model->select();
 }
 
 void stdChoice::cancel()

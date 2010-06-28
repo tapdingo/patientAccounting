@@ -186,7 +186,7 @@ void TreatmentForm::createLayout()
 	mainLayout->addWidget(costLabel, 4, 0);
 	mainLayout->addWidget(costField, 4, 1);
 
-	nameLabel = new QLabel(tr("Beschreibung"));
+	nameLabel = new QLabel(tr("Behandlungsart"));
 	nameField = new QLineEdit;
 	nameLabel->setBuddy(nameField);
 	mainLayout->addWidget(nameLabel, 5, 0);
