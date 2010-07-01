@@ -450,6 +450,8 @@ void MainWindow::addStdTreatment()
 		int id = record.value("id").toInt();
 		stdChoice add(this, id);
 		add.exec();
+		updateTreatmentView();
+		updateStatusBar();
 	}
 }
 

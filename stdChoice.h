@@ -27,6 +27,8 @@ class stdChoice : public QDialog
 
 		void createLayout();
 		void init();
+		void filterModel();
+		void unfilterModel();
 
 		private slots:
 			void addStdTreatment();

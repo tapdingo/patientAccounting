@@ -3,7 +3,8 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET =
+CONFIG += qt debug
 DEPENDPATH += .
 INCLUDEPATH += /home/tapion/projects/doniAbrechnung/. .
 

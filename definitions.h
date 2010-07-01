@@ -28,8 +28,9 @@ namespace std_treat {
 
 	enum {
 
-		treatName = 0,
-		treatText = 1
+		treatId = 0,
+		treatName = 1,
+		treatText = 2
 	};
 
 };

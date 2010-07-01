@@ -4,7 +4,7 @@
 
 #include "definitions.h"
 
-#include "std_TreatmentForm.h"
+#include "stdTreatmentForm.h"
 
 
 std_TreatBrowser::std_TreatBrowser(QWidget* parent) : QDialog(parent)
@@ -17,13 +17,14 @@ std_TreatBrowser::std_TreatBrowser(QWidget* parent) : QDialog(parent)
 	treatmentComboBox = new QComboBox();
 	treatmentComboBox->setModel(treatmentModel);
 	treatmentComboBox->setCompleter(treatmentComboBox->completer());
-	treatmentComboBox->setModelColumn(0);
+	treatmentComboBox->setModelColumn(1);
 	treatmentComboBox->setEditable(false);
 
 	createButtons();
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addWidget(newButton);
+	buttonLayout->addWidget(editButton);
 	buttonLayout->addWidget(deleteButton);
 
 	QVBoxLayout* layout = new QVBoxLayout();
@@ -69,5 +70,7 @@ void std_TreatBrowser::deleteTreatment()
 
 void std_TreatBrowser::editTreatment()
 {
+		stdTreatmentForm editStdTreat(treatmentComboBox->currentIndex() + 1, this);
+		editStdTreat.exec();
 }
 

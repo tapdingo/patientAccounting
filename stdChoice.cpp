@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "treatmentModel.h"
+#include "definitions.h"
 
 stdChoice::stdChoice(QWidget* parent, const int& patientId)
 	: m_patient(patientId)
@@ -39,42 +40,71 @@ void stdChoice::init()
 	m_model->select();
 	m_choice->setModel(m_model);
 	m_choice->setCompleter(m_choice->completer());
-	m_choice->setModelColumn(0);
+	m_choice->setModelColumn(1);
 
 	connect(addButton, SIGNAL(clicked()), this, SLOT(addStdTreatment()));
 	connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
 }
 
+void stdChoice::filterModel()
+{
+	QString filter("name='");
+	filter.append(m_choice->currentText());
+	filter.append("'");
+	m_model->setFilter(filter);
+	m_model->select();
+}
+
+void stdChoice::unfilterModel()
+{
+	m_model->setFilter("");
+	m_model->select();
+}
+
 void stdChoice::addStdTreatment()
 {
 	//Get the correct stdTreatmentEntry out of the database
-	QString filter("name = ");
-	filter.append(m_choice->currentText());
-	m_model->setFilter(filter);
-	m_model->select();
+	filterModel();
 	QSqlRecord treatToAdd = m_model->record(0);
+	QString newText = treatToAdd.value(std_treat::treatText).toString();
+	QString newName = treatToAdd.value(std_treat::treatName).toString();
 
 	//Add a blank treatment to the patient
 	TreatmentModel treatments;
-	QString patientFilter("patient_id = ");
-	QString patientId;
-	patientId.setNum(m_patient);
-	patientFilter.append(patientId);
 	treatments.setTable("treatments");
-
-	treatments.setFilter(patientFilter);
 	treatments.select();
-	std::cerr << treatments.rowCount() << std::endl;
-	std::cerr << "Patient: " << patientFilter.toStdString() << std::endl;
-	std::cerr << "Treatment: " << filter.toStdString() << std::endl;
-
 	int treatId = treatments.addNewRelRecord(m_patient);
+	treatments.select();
 
 	//And fill it with live!
+	//-1 because the id begins to count at the first entry and -1 because the
+	//database begins to count at 0
+	uint32_t treatRow = treatId - 2;
+	QSqlRecord newRecord = treatments.record(treatRow);
+	newRecord.setValue(TreatmentName, newName);
+	newRecord.setValue(Details, newText);
+
+	if (!(treatments.setRecord(treatRow, newRecord)))
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Fehler beim Anlegen der neuen Werte");
+		QSqlError last = treatments.lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
+
+	if (!treatments.submit())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Fehler beim Speichern!");
+		QSqlError last = treatments.lastError();
+		msgBox.setInformativeText(last.text());
+		msgBox.exec();
+	}
 
 	//Restore the old form state
-	m_model->setFilter("");
-	m_model->select();
+	unfilterModel();
+	accept();
 }
 
 void stdChoice::cancel()
