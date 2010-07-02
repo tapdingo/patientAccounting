@@ -12,6 +12,7 @@ class QPushButton;
 class QDataWidgetMapper;
 class QDateEdit;
 class QComboBox;
+class QCheckBox;
 
 class PatientForm : public QDialog{
 
@@ -22,6 +23,7 @@ class PatientForm : public QDialog{
 
 		private slots:
 			void savePatient();
+			void parentCheckToggle(int state);
 	private:
 			QLabel* firstNameLabel;
 			QLineEdit* firstNameField;
@@ -31,6 +33,10 @@ class PatientForm : public QDialog{
 
 			QLabel* phoneLabel;
 			QLineEdit* phoneField;
+
+			QCheckBox* parentCheck;
+			QLabel* parentLabel;
+			QLineEdit* parentField;
 
 			QLabel* birthdayLabel;
 			QDateEdit* birthdayEdit;
@@ -51,6 +57,10 @@ class PatientForm : public QDialog{
 			QPushButton* closeButton;
 			QSqlRelationalTableModel* m_model;
 			QDataWidgetMapper* m_mapper;
+
+			void finishLayout();
+			void showParentAddition();
+			void hideParentAddition();
 };
 
 #endif
