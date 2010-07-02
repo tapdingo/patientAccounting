@@ -67,6 +67,7 @@ void stdTreatmentForm::saveStdTreatment()
 		QSqlError last = m_model->lastError();
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
+		return;
 	}
 
 
@@ -133,7 +134,7 @@ void stdTreatmentForm::createLayout()
 	saveButton->setEnabled(true);
 	mainLayout->addWidget(saveButton, 11, 0);
 
-	closeButton = new QPushButton(tr("&Abbrecchen"));
+	closeButton = new QPushButton(tr("&Abbrechen"));
 	closeButton->setDefault(true);
 	mainLayout->addWidget(closeButton, 11, 1);
 

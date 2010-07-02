@@ -232,7 +232,7 @@ void TreatmentForm::createLayout()
 	saveButton->setEnabled(true);
 	mainLayout->addWidget(saveButton, 11, 0);
 
-	closeButton = new QPushButton(tr("&Abbrecchen"));
+	closeButton = new QPushButton(tr("&Abbrechen"));
 	closeButton->setDefault(true);
 	mainLayout->addWidget(closeButton, 11, 1);
 

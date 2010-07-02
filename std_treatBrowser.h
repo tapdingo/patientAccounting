@@ -32,6 +32,7 @@ class std_TreatBrowser :public QDialog{
 		QPushButton* editButton;
 
 		void createButtons();
+		uint32_t getStdTreatId(const QString& name);
 
 };
 
