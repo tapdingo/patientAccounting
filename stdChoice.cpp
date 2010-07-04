@@ -77,14 +77,18 @@ void stdChoice::addStdTreatment()
 	treatments.select();
 
 	//And fill it with live!
-	//-1 because the id begins to count at the first entry and -1 because the
-	//database begins to count at 0
-	uint32_t treatRow = treatId - 2;
-	QSqlRecord newRecord = treatments.record(treatRow);
+	QString id;
+	id.setNum(treatId);
+	QString filter("id='");
+	filter.append(id);
+	filter.append("'");
+	treatments.setFilter(filter);
+	treatments.select();
+	QSqlRecord newRecord = treatments.record(0);
 	newRecord.setValue(TreatmentName, newName);
 	newRecord.setValue(Details, newText);
 
-	if (!(treatments.setRecord(treatRow, newRecord)))
+	if (!(treatments.setRecord(0, newRecord)))
 	{
 		QMessageBox msgBox;
 		msgBox.setText("Fehler beim Anlegen der neuen Werte");

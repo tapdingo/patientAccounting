@@ -7,10 +7,16 @@ void Parser::reconstructDetails(const QString& data, std::vector<DetailTuple*>& 
 {
 	QStringList splitted = data.split(";", QString::SkipEmptyParts);
 
+	if (splitted.empty())
+	{
+		std::cerr << "EMPTY LIST" << std::endl;
+		return;
+	}
+
 	for (int i = 0; i < splitted.size(); i++)
 	{
 		QStringList line_details = splitted[i].split("||", QString::SkipEmptyParts);
-		if ( line_details.size() > 0)
+		if (2 == line_details.size())
 		{
 			DetailTuple* n_tuple = new DetailTuple;
 			n_tuple->detail = line_details[0];
