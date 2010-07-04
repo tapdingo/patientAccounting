@@ -226,16 +226,10 @@ void stdTreatmentForm::reconstructDetailVector(QString& data)
 {
 	QStringList splitted = data.split(";", QString::SkipEmptyParts);
 
-	if (splitted.empty())
-	{
-		std::cerr << "EMPTY";
-		return;
-	}
-
 	for (int i = 0; i < splitted.size(); i++)
 	{
 		QStringList line_details = splitted[i].split("||", QString::SkipEmptyParts);
-		if ( line_details.size() > 0)
+		if ( line_details.size() > 1)
 		{
 			DetailTuple* n_tuple = new DetailTuple;
 			n_tuple->detail = line_details[0];
