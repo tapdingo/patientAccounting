@@ -27,27 +27,28 @@ enum {
 namespace std_treat {
 
 	enum {
-
-		treatId = 0,
-		treatName = 1,
-		treatText = 2
+		treatDesc = 0,
+		treatId = 1,
+		treatName = 2,
+		treatText = 3
 	};
 
 };
 
 enum {
-	Details = 0,
-	Type = 1,
-	Duration = 2,
-	Diagnose = 3,
-	DurationOfTreat = 4,
-	DateOfTreat = 5,
-	Paid = 6,
-	Accounted = 7,
-	TreatmentID = 8,
-	PatientId = 9,
-	Cost = 10,
-	TreatmentName = 11
+	Desc = 0,
+	Details = 1,
+	Type = 2,
+	Duration = 3,
+	Diagnose = 4,
+	DurationOfTreat = 5,
+	DateOfTreat = 6,
+	Paid = 7,
+	Accounted = 8,
+	TreatmentID = 9,
+	PatientId = 10,
+	Cost = 11,
+	TreatmentName = 12
 };
 
 enum {

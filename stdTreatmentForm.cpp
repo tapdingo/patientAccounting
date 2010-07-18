@@ -63,13 +63,12 @@ void stdTreatmentForm::saveStdTreatment()
 	if (!m_mapper->submit())
 	{
 		QMessageBox msgBox;
-		msgBox.setText("Could not submit treatment");
+		msgBox.setText("Fehler beim speichern der Standard Behandlung!");
 		QSqlError last = m_model->lastError();
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
 		return;
 	}
-
 
 	//Explicitly set some values not covered by the Mapper
 	QSqlRecord record = m_model->record(index);
@@ -80,6 +79,7 @@ void stdTreatmentForm::saveStdTreatment()
 	QString dumpedDetails;
 	dumpDetails(dumpedDetails);
 	record.setValue(std_treat::treatText, dumpedDetails);
+	record.setValue(std_treat::treatDesc, descEdit->toPlainText());
 
 	m_model->setRecord(0, record);
 	if (!m_model->submit())
@@ -130,13 +130,18 @@ void stdTreatmentForm::createLayout()
 	costDetailFields = new QVBoxLayout;
 	mainLayout->addLayout(costDetailFields, 10, 1);
 
+	descLabel = new QLabel("Genaue Beschreibung");
+	descEdit = new QTextEdit();
+	mainLayout->addWidget(descLabel, 11, 0);
+	mainLayout->addWidget(descEdit, 11, 1);
+
 	saveButton = new QPushButton(tr("&Speichern"));
 	saveButton->setEnabled(true);
-	mainLayout->addWidget(saveButton, 11, 0);
+	mainLayout->addWidget(saveButton, 12, 0);
 
 	closeButton = new QPushButton(tr("&Abbrechen"));
 	closeButton->setDefault(true);
-	mainLayout->addWidget(closeButton, 11, 1);
+	mainLayout->addWidget(closeButton, 12, 1);
 
 	setLayout(mainLayout);
 	setWindowTitle(tr("Behandlung bearbeiten..."));
@@ -249,6 +254,8 @@ void stdTreatmentForm::initialUpdate()
 {
 	QSqlRecord record = m_model->record(m_mapper->currentIndex());
 	QString details_raw = record.value(std_treat::treatText).toString();
+
+	descEdit->setText(record.value(std_treat::treatDesc).toString());
 
 	reconstructDetailVector(details_raw);
 	std::vector<DetailTuple*>::iterator it;

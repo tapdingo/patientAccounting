@@ -18,7 +18,7 @@ std_TreatBrowser::std_TreatBrowser(QWidget* parent) : QDialog(parent)
 	treatmentComboBox = new QComboBox();
 	treatmentComboBox->setModel(treatmentModel);
 	treatmentComboBox->setCompleter(treatmentComboBox->completer());
-	treatmentComboBox->setModelColumn(1);
+	treatmentComboBox->setModelColumn(2);
 	treatmentComboBox->setEditable(false);
 
 	createButtons();
