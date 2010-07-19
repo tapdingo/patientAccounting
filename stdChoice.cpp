@@ -40,7 +40,7 @@ void stdChoice::init()
 	m_model->select();
 	m_choice->setModel(m_model);
 	m_choice->setCompleter(m_choice->completer());
-	m_choice->setModelColumn(1);
+	m_choice->setModelColumn(2);
 
 	connect(addButton, SIGNAL(clicked()), this, SLOT(addStdTreatment()));
 	connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -67,6 +67,7 @@ void stdChoice::addStdTreatment()
 	filterModel();
 	QSqlRecord treatToAdd = m_model->record(0);
 	QString newText = treatToAdd.value(std_treat::treatText).toString();
+	QString newDesc = treatToAdd.value(std_treat::treatDesc).toString();
 	QString newName = treatToAdd.value(std_treat::treatName).toString();
 
 	//Add a blank treatment to the patient
@@ -87,6 +88,7 @@ void stdChoice::addStdTreatment()
 	QSqlRecord newRecord = treatments.record(0);
 	newRecord.setValue(TreatmentName, newName);
 	newRecord.setValue(Details, newText);
+	newRecord.setValue(Desc, newDesc);
 
 	if (!(treatments.setRecord(0, newRecord)))
 	{

@@ -97,6 +97,7 @@ void TreatmentForm::saveTreatment()
 	record.setValue(Type, typeButtons->checkedId());
 	record.setValue(Accounted, accounted->checkState());
 	record.setValue(Paid, paid->checkState());
+	record.setValue(Desc, descEdit->toPlainText());
 
 	//DATABASE RAPE AHOY
 	//Push the damn detail vector into the poor database
@@ -228,13 +229,18 @@ void TreatmentForm::createLayout()
 	costDetailFields = new QVBoxLayout;
 	mainLayout->addLayout(costDetailFields, 10, 1);
 
+	descLabel = new QLabel("Genaue Beschreibung");
+	descEdit = new QTextEdit();
+	mainLayout->addWidget(descLabel, 11, 0);
+	mainLayout->addWidget(descEdit, 11, 1);
+
 	saveButton = new QPushButton(tr("&Speichern"));
 	saveButton->setEnabled(true);
-	mainLayout->addWidget(saveButton, 11, 0);
+	mainLayout->addWidget(saveButton, 12, 0);
 
 	closeButton = new QPushButton(tr("&Abbrechen"));
 	closeButton->setDefault(true);
-	mainLayout->addWidget(closeButton, 11, 1);
+	mainLayout->addWidget(closeButton, 12, 1);
 
 	setLayout(mainLayout);
 	setWindowTitle(tr("Behandlung bearbeiten..."));
@@ -355,6 +361,8 @@ void TreatmentForm::initialUpdate()
 	{
 		practice->setChecked(true);
 	}
+
+	descEdit->setText(record.value(Desc).toString());
 
 	paidState = record.value(Paid).toInt();
 	accountedState = record.value(Accounted).toInt();

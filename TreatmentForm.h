@@ -25,6 +25,7 @@ class QSpinBox;
 class QGridLayout;
 class QVBoxLayout;
 class QWidget;
+class QTextEdit;
 
 
 class TreatmentForm : public QDialog
@@ -60,6 +61,9 @@ class TreatmentForm : public QDialog
 		QLineEdit* nameField;
 		QLabel* patientLabel;
 		QLineEdit* patientBox;
+
+		QLabel* descLabel;
+		QTextEdit* descEdit;
 
 		QCheckBox* details;
 		QLabel* numLabel;
