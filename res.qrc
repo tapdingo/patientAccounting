@@ -2,5 +2,7 @@
   <qresource>
     <file>img/accounting.png</file>
     <file>forms/header.html</file>
+    <file>forms/footer.html</file>
+    <file>forms/infoText.html</file>
   </qresource>
 </RCC>

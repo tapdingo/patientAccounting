@@ -32,40 +32,20 @@ void PatientAccounter::printBill()
 {
 	QString Document;
 
-	//Get The document header
-	QString Header;
-	QFile header(":forms/header.html");
-	if (!header.open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		return;
-	}
-
-	QTextStream in(&header);
-	while (!in.atEnd())
-	{
-		Header.append(in.readLine());
-	}
-
-	Document.append(Header);
-
-	//Add the patient Address
-	Document.append("<br>");
-	Document.append("<br>");
-
+	addRTFHeader(Document);
+	addDocumentHeader(Document);
 	addPatientHeader(Document);
-
-	Document.append("<br><br>");
-	Document.append("F&uuml;r meine Bem&uuml;hungen erlaube ich mir nach \
-			der Geb&uuml;hrenordnung f&uuml;r Heilpraktiker \
-			(in Anlehnung an die \
-			 Geb&uuml;hrenordnung f&uuml;r &Auml;rzte) \
-			zu berechnen:<br>");
+	addInfoText(Document);
 
 	if (!addTreatments(Document))
 	{
 		//Again nothing to account, simple return
 		return;
 	}
+	addDocumentFooter(Document);
+	finishRTF(Document);
+
+	//Get The document Footer
 
 	//Create the bill RTF for this patient
 	QString billFile("Abrechnungen/");
@@ -84,16 +64,6 @@ void PatientAccounter::printBill()
 	outStream.open(billFile.toStdString().c_str());
 	outStream << Document.toStdString();
 
-	//Optionally print the document
-	//QPrinter printer;
-	//QPrintDialog printDialog(&printer, 0);
-	//if (printDialog.exec())
-	//{
-		//QTextDocument textDocument;
-		//textDocument.setHtml(Document);
-		//textDocument.print(&printer);
-	//}
-
 	//Increment the Bill Identifier
 	QSqlTableModel* miscTable = new QSqlTableModel;
 	miscTable->setTable("misc");
@@ -107,8 +77,17 @@ void PatientAccounter::printBill()
 
 void PatientAccounter::addPatientHeader(QString& Document)
 {
-	Document.append("<table width=100%><tr>");
-	Document.append("<td>Rechnungs Nummer: ");
+	Document.append("{Patient: "
+			+ m_patient.value(FirstName).toString() + " "
+			+ m_patient.value(LastName).toString() +
+			"\\line ");
+	//Patient Address
+	QString patientAddress;
+	patientAddress.append(generatePatientAddress());
+	Document.append(patientAddress);
+	Document.append("\\line \\line \\line \\line \\par}");
+
+	Document.append("{\\par {\\trowd \\cellx4250 \\cellx8500 Rechnungs Nummer: ");
 	QString IdString;
 	QString billNumber;
 	billNumber.setNum(m_billNumber);
@@ -123,51 +102,32 @@ void PatientAccounter::addPatientHeader(QString& Document)
 	IdString.append(billNumber);
 	Document.append(IdString);
 
-	Document.append("<td>");
+	Document.append("\\ql\\intbl\\cell ");
 
 	//Current Date
-	Document.append("<td>Datum: "
+	Document.append(" Datum: "
 			+ QDate::currentDate().toString(Qt::SystemLocaleShortDate)
-			+ " </td>");
-	Document.append("</tr><tr>");
+			+ "\\qr\\intbl\\cell");
+	Document.append(" \\row ");
+	Document.append("\\trowd \\cellx4250 \\cellx8500 Patient: ");
 
 	//Patient Name
-	Document.append("<td>Patient: "
-			+ m_patient.value(FirstName).toString() + " "
+	Document.append(m_patient.value(FirstName).toString() + " "
 			+ m_patient.value(LastName).toString() +
-			"</td>");
+			"\\ql\\intbl\\cell ");
 
 	//Patient Birth Date
-	Document.append("<td>Geb. Datum: "
+	Document.append("Geb. Datum: "
 			+ m_patient.value(DateOfBirth).toString()
-			+ " </td>");
-	Document.append("</tr><tr>");
-
-	//Patient Address
-	QString patientAddress("Adresse: ");
-	patientAddress.append(generatePatientAddress());
-	Document.append("<td>");
-	Document.append(patientAddress);
-
-	Document.append("</td>");
-	Document.append("<td></td>");
-	Document.append("</tr></table>");
+			+ "\\qr\\intbl\\cell ");
+	Document.append("\\row} \\par}");
 }
 
 bool PatientAccounter::addTreatments(QString& Document)
 {
 	bool treated = false;
-	Document.append("<table width=100%><tr>");
 
 	uint32_t sum = 0;
-
-	Document.append("<br>");
-	Document.append("<td><b>Datum </b></td>");
-	Document.append("<td></td>");
-	Document.append("<td><b>Diagnose</b></td>");
-	Document.append("<td><b>Behandlungsdetails</b></td>");
-	Document.append("<td><b>Kostenpunkt</b></td>");
-	Document.append("</tr>");
 
 	//Iterate over all Treatments
 	for (int i = 0; i < m_treats.rowCount(); i++)
@@ -195,14 +155,8 @@ bool PatientAccounter::addTreatments(QString& Document)
 	//Create the Final Sum Row
 	QString sumString;
 	sumString.setNum(sum);
-	Document.append("<td><b>Endsumme: </b></td>");
-	Document.append("<td></td>");
-	Document.append("<td></td>");
-	Document.append("<td></td>");
-	Document.append("<td>" + sumString + " &euro;</td>");
-	Document.append("</tr></table>");
-
-
+	Document.append("{\\b Endsumme:  ");
+	Document.append(sumString + " Euro \\qr \\par} \\par");
 	return treated;
 }
 
@@ -233,28 +187,29 @@ QString PatientAccounter::addTreatmentRow(
 		typeString = "Praxis Behandlung";
 	}
 
-	treatmentRow.append("<td>" + date.toString(Qt::SystemLocaleShortDate) + "</td>");
-	treatmentRow.append("<td>1(2)</td>");
-	treatmentRow.append("<td>");
-	treatmentRow.append(treatment.value(Diagnose).toString());
-	treatmentRow.append("</td><td>");
+	treatmentRow.append("{{\\trowd \\trkeep \\cellx1000 \\cellx8500  ");
+	treatmentRow.append(date.toString(Qt::SystemLocaleShortDate) + " \\intbl\\cell ");
 
 	//Add all the lovely details
 	std::vector<DetailTuple*>::iterator it;
 	for (it = details.begin(); it != details.end(); it++)
 	{
-		treatmentRow.append((*it)->detail);
-		treatmentRow.append(", ");
+		treatmentRow.append((*it)->detail + "\\ql \\par ");
+		float treatFloat = (*it)->cost;
+		QString floatString;
+		floatString.setNum(treatFloat, 'f', 2);
+		treatmentRow.append(floatString + " Euro \\qr \\par ");
 	}
-	treatmentRow.append(typeString);
 
-	treatmentRow.append("</td>");
-	treatmentRow.append("<td>" + costString + "&euro;</td>");
-	treatmentRow.append("</tr><tr>");
+	treatmentRow.append("\\line " + treatment.value(Desc).toString() + "\\ql \\par");
+	treatmentRow.append("\\line \\line Zeitaufwand inkl. Fallanalysearbeiten: ");
+	treatmentRow.append(treatment.value(Duration).toString() + "min \\line");
+	treatmentRow.append("Diagnose: " + treatment.value(Diagnose).toString());
+
+	treatmentRow.append(" \\ql \\par \\intbl\\cell \\row}} \\par");
 
 	//Clean up the mess...
 	Parser::clearDetails(details);
-
 	return treatmentRow;
 }
 
@@ -271,4 +226,70 @@ QString PatientAccounter::generatePatientAddress()
 	address.append(m_patient.value(City).toString());
 
 	return address;
+}
+
+void PatientAccounter::addRTFHeader(QString& document) const
+{
+	document.append("{\\rtf \\ansicpg1252");
+}
+
+void PatientAccounter::addFooter(QString& document) const
+{
+}
+
+void PatientAccounter::addDocumentHeader(QString& document) const
+{
+	QString Header;
+	QFile header(":forms/header.html");
+	if (!header.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		return;
+	}
+
+	QTextStream in(&header);
+	while (!in.atEnd())
+	{
+		Header.append(in.readLine());
+	}
+	document.append(Header);
+}
+
+void PatientAccounter::addDocumentFooter(QString& document) const
+{
+	QString Footer;
+	QFile footer(":forms/footer.html");
+	if (!footer.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		return;
+	}
+
+	Footer.append("{\\footer ");
+	QTextStream inf(&footer);
+	while (!inf.atEnd())
+	{
+		Footer.append(inf.readLine());
+	}
+	Footer.append("}");
+	document.append(Footer);
+}
+
+void PatientAccounter::finishRTF(QString& document) const
+{
+	document.append("}");
+}
+
+void PatientAccounter::addInfoText(QString& document) const
+{
+	QString Text;
+	QFile Info(":forms/infoText.html");
+	if (!Info.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		return;
+	}
+	QTextStream info(&Info);
+	while (!info.atEnd())
+	{
+		Text.append(info.readLine());
+	}
+	document.append(Text);
 }

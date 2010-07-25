@@ -17,6 +17,12 @@ class PatientAccounter
 		void account();
 
 	private:
+		void addRTFHeader(QString& document) const;
+		void addFooter(QString& document) const;
+		void addDocumentHeader(QString& document) const;
+		void addDocumentFooter(QString& document) const;
+		void addInfoText(QString& document) const;
+		void finishRTF(QString& document) const;
 		void printBill();
 		void addPatientHeader(QString& Document);
 		bool addTreatments(QString& Document);
