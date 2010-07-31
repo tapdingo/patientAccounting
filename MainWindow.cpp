@@ -14,6 +14,7 @@
 #include "AccountingForm.h"
 #include "stdChoice.h"
 #include "treatModifier.h"
+#include "treatDelegator.h"
 
 #include <iostream>
 
@@ -131,6 +132,10 @@ void MainWindow::createDataPanel()
 	dataModel->select();
 
 	dataView = new QTableView();
+
+	TreatDelegator* delegator = new TreatDelegator(dataModel);
+	dataView->setItemDelegate(delegator);
+
 	dataView->setModel(dataModel);
 	dataView->resizeColumnsToContents();
 	dataView->setSelectionMode(

@@ -7,6 +7,7 @@
 
 class QDialogButtonBox;
 class QTableView;
+class treatDelegate;
 class QLabel;
 class QPushButton;
 class QToolBar;
