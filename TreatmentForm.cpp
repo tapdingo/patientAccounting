@@ -67,7 +67,6 @@ TreatmentForm::TreatmentForm(
 
 void TreatmentForm::saveTreatment()
 {
-
 	if (!checkForDetails())
 	{
 		QMessageBox msgBox;

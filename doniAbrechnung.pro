@@ -14,10 +14,11 @@ HEADERS += TreatmentForm.h Accounting.h diagnoseBrowser.h
 HEADERS += patientModel.h modelAbstraction.h
 HEADERS += treatmentModel.h datatypes.h AccountingForm.h Parser.h
 HEADERS += std_treatBrowser.h stdTreatmentForm.h stdChoice.h
+HEADERS += treatModifier.h
 
 SOURCES += main.cpp MainWindow.cpp PatientForm.cpp TreatmentForm.cpp AccountingForm.cpp
 SOURCES += Accounting.cpp diagnoseBrowser.cpp patientModel.cpp modelAbstraction.cpp
-SOURCES += treatmentModel.cpp Parser.cpp
+SOURCES += treatmentModel.cpp Parser.cpp treatModifier.cpp
 SOURCES += std_treatBrowser.cpp stdTreatmentForm.cpp stdChoice.cpp
 RESOURCES += res.qrc
 QT += sql

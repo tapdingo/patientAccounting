@@ -125,6 +125,8 @@ class MainWindow : public QMainWindow
 		QCheckBox* monthCheckbox;
 		QDateEdit* month;
 
+		QPushButton* changeAccounted;
+
 		int m_acc_state;
 		int m_month_state;
 
@@ -136,8 +138,12 @@ class MainWindow : public QMainWindow
 			void updateTreatmentView();
 
 		/*!
+		 * \brief toggle the accounted state of a treatment
+		 */
+		void toggleAccounted();
+
+		/*!
 		 * \brief Add a new Patient to the database
-		 *
 		 */
 			void addPatient();
 
@@ -163,9 +169,7 @@ class MainWindow : public QMainWindow
 		 */
 			void addStdTreatment();
 
-		/*!
-		 * \brief Delete a Patient from the database
-		 */
+
 			void deleteTreatment();
 
 		/*!
@@ -202,6 +206,18 @@ class MainWindow : public QMainWindow
 		 * \brief Set the Month filter
 		 */
 		void setMonthFilter(int state);
+
+		/*!
+		 * \brief Set the colors of the treatment data
+		 */
+		void setDataColors();
+
+		/*!
+		 * \brief Get the id of the currently selected treatment
+		 *
+		 * @return CurrentID, -1 if none selected
+		 */
+		int getCurrentTreatId() const;
 
 };
 

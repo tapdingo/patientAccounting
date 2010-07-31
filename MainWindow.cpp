@@ -13,6 +13,7 @@
 #include "treatmentModel.h"
 #include "AccountingForm.h"
 #include "stdChoice.h"
+#include "treatModifier.h"
 
 #include <iostream>
 
@@ -231,6 +232,7 @@ void MainWindow::connectSlots()
 			this, SLOT(browseDiagnoses()));
 	connect(browseTreatmentsAction, SIGNAL(triggered()),
 			this, SLOT(browseTreatments()));
+	connect(changeAccounted, SIGNAL(clicked()), this, SLOT(toggleAccounted()));
 
 	//Accounting related connections
 	connect(accountAction, SIGNAL(triggered()), this, SLOT(accountPatient()));
@@ -297,6 +299,11 @@ void MainWindow::createToolBar()
 	month = new QDateEdit();
 	month->setDisplayFormat(QString("MM.yyyy"));
 	fileToolBar->addWidget(month);
+
+	QToolBar* topToolBar = new QToolBar("SpecialActions");
+	addToolBar(Qt::TopToolBarArea, topToolBar);
+	changeAccounted = new QPushButton("Abrechnungszustand aendern");
+	topToolBar->addWidget(changeAccounted);
 }
 
 bool MainWindow::connectToDB()
@@ -339,7 +346,6 @@ void MainWindow::updateTreatmentView()
 			filterString.append("'");
 		}
 
-
 		//construct the filter string
 		QString patientId;
 		patientId.setNum(id);
@@ -348,11 +354,10 @@ void MainWindow::updateTreatmentView()
 		filter.append(filterString);
 		dataModel->setFilter(filter);
 	}
-
 	dataModel->select();
 	dataView->horizontalHeader()->setVisible(dataModel->rowCount() > 0);
+	setDataColors();
 	patientView->setCurrentIndex(index);
-
 }
 
 void MainWindow::addPatient()
@@ -457,16 +462,11 @@ void MainWindow::addStdTreatment()
 
 void MainWindow::editTreatment()
 {
-	QModelIndex patient = patientView->currentIndex();
-	QModelIndex index = dataView->currentIndex();
-	if (!index.isValid())
+	const int id = getCurrentTreatId();
+	if (-1 == id)
 	{
 		return;
 	}
-	QSqlRecord record = dataModel->record(index.row());
-
-	//GET THE TREATMENTS A PRIMARY KEY
-	int id = record.value(TreatmentID).toInt();
 
 	TreatmentForm editTreatment(id, this);
 	editTreatment.exec();
@@ -475,7 +475,6 @@ void MainWindow::editTreatment()
 	patientModel->select();
 	updateTreatmentView();
 	updateStatusBar();
-	patientView->setCurrentIndex(patient);
 }
 
 void MainWindow::deleteTreatment()
@@ -562,4 +561,56 @@ void MainWindow::setMonthFilter(int state)
 {
 	m_month_state = state;
 	updateTreatmentView();
+}
+
+void MainWindow::setDataColors()
+{
+	QModelIndex index = dataModel->index(1, 0);
+	dataModel->setData(index, QColor(Qt::red), Qt::BackgroundColorRole);
+	dataModel->setData(index, Qt::red, Qt::TextColorRole);
+
+	index = patientView->currentIndex();
+	dataModel->setData(index, QColor(Qt::red), Qt::BackgroundColorRole);
+	dataModel->setData(index, Qt::red, Qt::TextColorRole);
+}
+
+void MainWindow::toggleAccounted()
+{
+	const int id = getCurrentTreatId();
+
+	if (-1 == id)
+	{
+		return;
+	}
+
+	const QModelIndex treatment = dataView->currentIndex();
+	const int row = treatment.row();
+
+	TreatModifier modifier;
+	QSqlRecord curTreat = dataModel->record(row);
+	const int newValue = curTreat.value(Accounted).toInt() ^ 2;
+	modifier.setAccounted(&curTreat, newValue);
+	dataModel->setRecord(row, curTreat);
+	dataModel->submit();
+
+	dataModel->select();
+	patientModel->select();
+	updateTreatmentView();
+	updateStatusBar();
+}
+
+int MainWindow::getCurrentTreatId() const
+{
+	QModelIndex patient = patientView->currentIndex();
+	QModelIndex index = dataView->currentIndex();
+	if (!index.isValid())
+	{
+		return -1;
+	}
+	QSqlRecord record = dataModel->record(index.row());
+
+	//GET THE TREATMENTS A PRIMARY KEY
+	int id = record.value(TreatmentID).toInt();
+
+	return id;
 }
