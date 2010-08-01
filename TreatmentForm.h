@@ -94,6 +94,7 @@ class TreatmentForm : public QDialog
 		std::vector<LayoutTuple*> detailFieldsDesc;
 
 		void createLayout();
+		void checkDiagnose();
 
 		void dumpDetails(QString& result);
 		void reconstructDetailVector(QString& data);
@@ -103,5 +104,7 @@ class TreatmentForm : public QDialog
 
 		int paidState;
 		int accountedState;
+
+		QSqlTableModel* m_diagnose_model;
 };
 #endif

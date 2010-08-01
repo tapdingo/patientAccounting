@@ -79,7 +79,6 @@ void TreatmentForm::saveTreatment()
 
 	int index = m_mapper->currentIndex();
 
-
 	if (!m_mapper->submit())
 	{
 		QMessageBox msgBox;
@@ -114,6 +113,9 @@ void TreatmentForm::saveTreatment()
 		msgBox.exec();
 	}
 	m_mapper->setCurrentIndex(index);
+
+	//Add non existent Diagnostics to the diagnose browser
+	checkDiagnose();
 
 	//Close the window
 	accept();
@@ -151,12 +153,12 @@ void TreatmentForm::createLayout()
 	mainLayout = new QGridLayout(this);
 	setLayout(mainLayout);
 
-	QSqlTableModel* diagnose_model = new QSqlTableModel(this);
-	diagnose_model->setTable("diagnoses");
-	diagnose_model->select();
+	m_diagnose_model = new QSqlTableModel(this);
+	m_diagnose_model->setTable("diagnoses");
+	m_diagnose_model->select();
 	diagnoseLabel = new QLabel(tr("Diagnose"));
 	diagnoseComboBox = new QComboBox;
-	diagnoseComboBox->setModel(diagnose_model);
+	diagnoseComboBox->setModel(m_diagnose_model);
 	diagnoseComboBox->setCompleter(diagnoseComboBox->completer());
 	diagnoseComboBox->setModelColumn(0);
 	diagnoseComboBox->setEditable(true);
@@ -367,6 +369,7 @@ void TreatmentForm::initialUpdate()
 	accountedState = record.value(Accounted).toInt();
 	paid->setChecked(record.value(Paid).toInt());
 	accounted->setChecked(record.value(Accounted).toInt());
+	diagnoseComboBox->setEditText(record.value(Diagnose).toString());
 
 	QString details_raw = record.value(Details).toString();
 
@@ -461,5 +464,32 @@ void TreatmentForm::updateDetails(const QString& newCost)
 			detailFieldsDesc[2]->costDetField->setText(cost);
 		}
 		return;
+	}
+}
+
+void TreatmentForm::checkDiagnose()
+{
+	const QString inputTreat = diagnoseComboBox->currentText();
+	const int rows = m_diagnose_model->rowCount();
+	QSqlRecord newDiag = m_diagnose_model->record(0);
+	bool found = false;
+	for (int i = 0; i < rows; i++)
+	{
+		QSqlRecord diag = m_diagnose_model->record(i);
+		if (inputTreat == diag.value(DiagnoseName))
+		{
+			found = true;
+			break;
+		}
+	}
+	if (!found)
+	{
+		newDiag.setValue(DiagnoseName, inputTreat);
+		m_diagnose_model->insertRecord(-1, newDiag);
+		m_diagnose_model->submitAll();
+		m_diagnose_model->select();
+		QMessageBox msgBox;
+		msgBox.setText("Diagnose wurde in den Diagnosen Browser gespeichert!");
+		msgBox.exec();
 	}
 }
