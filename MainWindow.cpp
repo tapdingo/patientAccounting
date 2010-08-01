@@ -79,6 +79,7 @@ void MainWindow::createPatientPanel()
 	patientModel->setHeaderData(FirstName, Qt::Horizontal, tr("Vorname"));
 	patientModel->setHeaderData(LastName, Qt::Horizontal, tr("Nachname"));
 	patientModel->setHeaderData(DateOfBirth, Qt::Horizontal, tr("Geburtsdatum"));
+	patientModel->setHeaderData(Phone, Qt::Horizontal, tr("Telefon"));
 
 	patientModel->select();
 
@@ -90,7 +91,7 @@ void MainWindow::createPatientPanel()
 			QAbstractItemView::SingleSelection);
 	patientView->setSelectionBehavior(
 			QAbstractItemView::SelectRows);
-	patientView->horizontalHeader()->setStretchLastSection(true);
+	//patientView->horizontalHeader()->setStretchLastSection(true);
 	patientView->verticalHeader()->hide();
 	patientView->setShowGrid(false);
 
@@ -101,11 +102,18 @@ void MainWindow::createPatientPanel()
 	patientView->setColumnHidden(PostalCode, true);
 	patientView->setColumnHidden(Parent, true);
 	patientView->setColumnHidden(Gender, true);
-	patientView->setColumnHidden(Phone, true);
 	patientView->setColumnHidden(ID, true);
 
 	patientLabel = new QLabel(tr("&Patienten"));
 	patientLabel->setBuddy(patientView);
+
+	patientView->horizontalHeader()->moveSection(9,0);
+	patientView->horizontalHeader()->moveSection(9,1);
+	patientView->horizontalHeader()->moveSection(9,2);
+	patientView->resizeColumnsToContents();
+	patientView->setSortingEnabled(true);
+
+	patientView->resize(patientView->sizeHint());
 
 	//Disable Editing in the View
 	patientView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -158,9 +166,9 @@ void MainWindow::createDataPanel()
 	dataView->setColumnHidden(PatientId, true);
 	dataView->setColumnHidden(TreatmentName, true);
 
+
 	//Disable Editing in the View
 	dataView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
 }
 
 void MainWindow::createActions()
