@@ -20,7 +20,7 @@ stdChoice::stdChoice(QWidget* parent, const int& patientId)
 void stdChoice::createLayout()
 {
 	QGridLayout* mainLayout = new QGridLayout;
-	stdLabel = new QLabel(tr("Standard Behandlung"));
+	stdLabel = new QLabel(tr("Behandlungsvorlage"));
 	m_choice = new QComboBox;
 	mainLayout->addWidget(stdLabel, 0, 0);
 	mainLayout->addWidget(m_choice, 0, 1);

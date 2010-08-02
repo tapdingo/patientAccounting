@@ -164,7 +164,9 @@ void MainWindow::createDataPanel()
 	dataView->setColumnHidden(DurationOfTreat, true);
 	dataView->setColumnHidden(TreatmentID, true);
 	dataView->setColumnHidden(PatientId, true);
-	dataView->setColumnHidden(TreatmentName, true);
+	dataView->setColumnHidden(Desc, true);
+	dataView->setColumnHidden(Paid, true);
+	dataView->horizontalHeader()->moveSection(12, 0);
 
 
 	//Disable Editing in the View
@@ -186,12 +188,8 @@ void MainWindow::createActions()
 	deleteAction = new QAction(tr("&Entfernen"), this);
 	deleteAction->setStatusTip(tr("Entfernt einen Patienten"));
 
-	//Treatment related Actions
-	newTreatmentAction = new QAction(tr("&Anlegen"), this);
-	newTreatmentAction->setStatusTip(tr("Legt eine Behandlung an"));
-
-	newStdTreatmentAction = new QAction(tr("&Standard Behandlung anlegen"), this);
-	newStdTreatmentAction->setStatusTip(tr("Legt eine Standard Behandlung an"));
+	newStdTreatmentAction = new QAction(tr("&Behandlung anlegen"), this);
+	newStdTreatmentAction->setStatusTip(tr("Legt eine Behandlung an"));
 
 	editTreatmentAction = new QAction(tr("&Bearbeiten"), this);
 	editTreatmentAction->setStatusTip(tr("Bearbeitet eine Behandlung"));
@@ -231,8 +229,6 @@ void MainWindow::connectSlots()
 	connect(editAction, SIGNAL(triggered()), this, SLOT(editPatient()));
 
 	//Treatment related connections
-	connect(newTreatmentAction, SIGNAL(triggered()),
-			this, SLOT(addTreatment()));
 	connect(newStdTreatmentAction, SIGNAL(triggered()),
 			this, SLOT(addStdTreatment()));
 	connect(editTreatmentAction, SIGNAL(triggered()),
@@ -282,7 +278,6 @@ void MainWindow::createMenus()
 
 	//Treatment Menu
 	treatmentMenu = menuBar()->addMenu(tr("&Behandlungen"));
-	treatmentMenu->addAction(newTreatmentAction);
 	treatmentMenu->addAction(newStdTreatmentAction);
 	treatmentMenu->addAction(editTreatmentAction);
 	treatmentMenu->addAction(deleteTreatmentAction);
@@ -429,33 +424,6 @@ void MainWindow::editPatient()
 	PatientForm editPatient(id, this);
 	editPatient.exec();
 	patientModel->select();
-}
-
-void MainWindow::addTreatment()
-{
-	QModelIndex patient = patientView->currentIndex();
-	QModelIndex index = patientView->currentIndex();
-	if (!index.isValid())
-	{
-		return;
-	}
-	QSqlRecord patientRecord = patientModel->record(index.row());
-	int id = patientRecord.value(ID).toInt();
-	int treatId = dynamic_cast<TreatmentModel*>(dataModel)->addNewRelRecord(id);
-
-	//Send the new patient for editing purposes to the form
-	if (treatId)
-	{
-		dataModel->select();
-		TreatmentForm editTreatment(treatId, this);
-		editTreatment.exec();
-	}
-
-	dataModel->select();
-	patientModel->select();
-	updateTreatmentView();
-	updateStatusBar();
-	patientView->setCurrentIndex(patient);
 }
 
 void MainWindow::addStdTreatment()

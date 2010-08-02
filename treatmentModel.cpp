@@ -16,7 +16,7 @@ bool TreatmentModel::deleteRecord(const int& id)
 {
 	QSqlDatabase::database().transaction();
 	int r = QMessageBox::warning(0, tr("Behandlung entfernen"),
-			tr("die Behandlung wirklich entfernen?"),
+			tr("Die Behandlung wirklich entfernen?"),
 			QMessageBox::Yes | QMessageBox::No);
 
 	if (r == QMessageBox::No)
