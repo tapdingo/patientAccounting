@@ -200,8 +200,8 @@ void MainWindow::createActions()
 	browseDiagnosesAction = new QAction(tr("&Diagnosen Browser"), this);
 	browseDiagnosesAction->setStatusTip(tr("Startet den Diagnosen Browser"));
 
-	browseTreatmentsAction = new QAction(tr("&Standard Behandlungs Browser"), this);
-	browseTreatmentsAction->setStatusTip(tr("Startet den Standard Behandlungs Browser"));
+	browseTreatmentsAction = new QAction(tr("&Behandlungs Vorlagen Browser"), this);
+	browseTreatmentsAction->setStatusTip(tr("Startet den Behandlungs Vorlagen Browser"));
 
 	//Accounting related Actions
 	accountAction = new QAction(tr("&Abrechnen"), this);
@@ -379,7 +379,7 @@ void MainWindow::addPatient()
 		//WARNING! As long as the patients are sorted by name, the new record
 		//will always be row 0
 		//This is a very ugly hack, maybe i'll fix it...
-		QSqlRecord record = patientModel->record(0);
+		QSqlRecord record = patientModel->record(patientModel->rowCount() - 1);
 		int id = record.value("id").toInt();
 		PatientForm editPatient(id, this);
 		editPatient.exec();

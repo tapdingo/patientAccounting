@@ -51,7 +51,7 @@ void stdTreatmentForm::saveStdTreatment()
 	if (!checkForDetails())
 	{
 		QMessageBox msgBox;
-		msgBox.setText("Fehler: Die Detailkosten passen nicht zu den Gesamtkosten!");
+		msgBox.setText("Fehler: Die Aufteilung der Kosten ergibt keine 100%");
 		QSqlError last = m_model->lastError();
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();

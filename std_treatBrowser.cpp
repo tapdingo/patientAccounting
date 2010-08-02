@@ -34,7 +34,7 @@ std_TreatBrowser::std_TreatBrowser(QWidget* parent) : QDialog(parent)
 
 	setLayout(layout);
 	setFixedHeight(sizeHint().height());
-	setWindowTitle(tr("Standard Behandlungs Browser"));
+	setWindowTitle(tr("Behandlungs Vorlagen Browser"));
 
 	connect(newButton, SIGNAL(clicked()), this, SLOT(newTreatment()));
 	connect(editButton, SIGNAL(clicked()), this, SLOT(editTreatment()));
