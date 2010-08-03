@@ -21,6 +21,7 @@ int PatientModel::addNewRecord()
 
 	rec = this->record(rc);
 	rec.setValue(QString("gender"), QString("m"));
+	rec.setValue(QString("lastname"), QString("__!!__"));
 	this->setRecord(rc, rec);
 
 	if (!this->submitAll())

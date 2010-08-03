@@ -379,7 +379,12 @@ void MainWindow::addPatient()
 		//WARNING! As long as the patients are sorted by name, the new record
 		//will always be row 0
 		//This is a very ugly hack, maybe i'll fix it...
-		QSqlRecord record = patientModel->record(patientModel->rowCount() - 1);
+		filterPatientModel("lastname='__!!__'");
+		QSqlRecord record = patientModel->record(0);
+		record.setValue(QString("lastname"), "");
+		patientModel->setRecord(0, record);
+		patientModel->submit();
+		clearPatientModel();
 		int id = record.value("id").toInt();
 		PatientForm editPatient(id, this);
 		editPatient.exec();
@@ -594,4 +599,16 @@ int MainWindow::getCurrentTreatId() const
 	int id = record.value(TreatmentID).toInt();
 
 	return id;
+}
+
+void MainWindow::filterPatientModel(const QString value)
+{
+	patientModel->setFilter(value);
+	patientModel->select();
+}
+
+void MainWindow::clearPatientModel()
+{
+	patientModel->setFilter("");
+	patientModel->select();
 }

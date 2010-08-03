@@ -202,6 +202,16 @@ class MainWindow : public QMainWindow
 		void setMonthFilter(int state);
 
 		/*!
+		 * \brief Filter the PatientModel for editing purposed
+		 */
+		void filterPatientModel(const QString value);
+
+		/*!
+		 * \brief Clear all filters from the patient model
+		 */
+		void clearPatientModel();
+
+		/*!
 		 * \brief Set the colors of the treatment data
 		 */
 		void setDataColors();
