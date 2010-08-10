@@ -70,7 +70,7 @@ void TreatmentForm::saveTreatment()
 	if (!checkForDetails())
 	{
 		QMessageBox msgBox;
-		msgBox.setText("Fehler: Die Detailkosten passen nicht zu den Gesamtkosten!");
+		msgBox.setText("Fehler: Die Kostenaufteilung ergibt keine 100 Prozent!");
 		QSqlError last = m_model->lastError();
 		msgBox.setInformativeText(last.text());
 		msgBox.exec();
@@ -405,14 +405,14 @@ bool TreatmentForm::checkForDetails()
 	}
 	std::vector<LayoutTuple*>::iterator it;
 
-	float total_cost = 0;
+	int total_cost = 0;
 
 	for (it = detailFieldsDesc.begin(); it != detailFieldsDesc.end(); it++)
 	{
-		total_cost += (*it)->costDetField->text().toFloat();
+		total_cost += (*it)->costDetField->text().toInt();
 	}
 
-	if (costField->text().toFloat() == total_cost)
+	if (100 == total_cost)
 	{
 		return true;
 	}

@@ -30,7 +30,7 @@ class PatientAccounter
 		QSqlRelationalTableModel& m_treats;
 		QString addTreatmentRow(
 				const QSqlRecord& treatment,
-				uint32_t& sum);
+				double& sum);
 
 		QString generatePatientAddress();
 

@@ -127,7 +127,7 @@ bool PatientAccounter::addTreatments(QString& Document)
 {
 	bool treated = false;
 
-	uint32_t sum = 0;
+	 double sum = 0;
 
 	//Iterate over all Treatments
 	for (int i = 0; i < m_treats.rowCount(); i++)
@@ -154,7 +154,7 @@ bool PatientAccounter::addTreatments(QString& Document)
 
 	//Create the Final Sum Row
 	QString sumString;
-	sumString.setNum(sum);
+	sumString.setNum(sum, 'f', 2);
 	Document.append("{\\b Endsumme:  ");
 	Document.append(sumString + " Euro \\qr \\par} \\par");
 	return treated;
@@ -162,12 +162,12 @@ bool PatientAccounter::addTreatments(QString& Document)
 
 QString PatientAccounter::addTreatmentRow(
 		const QSqlRecord& treatment,
-		uint32_t& sum)
+		double& sum)
 {
 	QString treatmentRow;
-	int treatCost = treatment.value(Cost).toInt();
+	double treatCost = treatment.value(Cost).toDouble();
 	QString costString;
-	costString.setNum(treatCost);
+	costString.setNum(treatCost, 'f', 2);
 	sum += treatCost;
 
 	QDate date = treatment.value(DateOfTreat).toDate();
@@ -190,12 +190,14 @@ QString PatientAccounter::addTreatmentRow(
 	treatmentRow.append("{{\\trowd \\trkeep \\cellx1000 \\cellx8500  ");
 	treatmentRow.append(date.toString(Qt::SystemLocaleShortDate) + " \\intbl\\cell ");
 
+	float totalCost = treatment.value(Cost).toDouble();
+
 	//Add all the lovely details
 	std::vector<DetailTuple*>::iterator it;
 	for (it = details.begin(); it != details.end(); it++)
 	{
 		treatmentRow.append((*it)->detail + "\\ql \\par ");
-		float treatFloat = (*it)->cost;
+		float treatFloat = ((*it)->cost / 100)  * totalCost ;
 		QString floatString;
 		floatString.setNum(treatFloat, 'f', 2);
 		treatmentRow.append(floatString + " Euro \\qr \\par ");
@@ -203,7 +205,7 @@ QString PatientAccounter::addTreatmentRow(
 
 	treatmentRow.append("\\line " + treatment.value(Desc).toString() + "\\ql \\par");
 	treatmentRow.append("\\line \\line Zeitaufwand inkl. Fallanalysearbeiten: ");
-	treatmentRow.append(treatment.value(Duration).toString() + "min \\line");
+	treatmentRow.append(treatment.value(Duration).toString() + "min \\line ");
 	treatmentRow.append("Diagnose: " + treatment.value(Diagnose).toString());
 
 	treatmentRow.append(" \\ql \\par \\intbl\\cell \\row}} \\par");
