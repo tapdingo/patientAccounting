@@ -401,14 +401,24 @@ void TreatmentForm::initialUpdate()
 		i++;
 	}
 
+	noOfDetails->hide();
+	detailsLabel->hide();
+	costDetailLabel->hide();
+
+	//Throw all the crap away
+	std::vector<LayoutTuple*>::iterator itt;
+	for (itt = detailFieldsDesc.begin(); itt != detailFieldsDesc.end(); itt++)
+	{
+		(*itt)->detField->hide();
+		(*itt)->costDetField->hide();
+	}
+	details->setChecked(Qt::Unchecked);
+
 	//Set the default values for a new treatment
 	if (detailVector.empty())
 	{
-		details->setChecked(Qt::Checked);
-		noOfDetails->setValue(3);
-		detailFieldsDesc[0]->detField->setText("Anamese");
-		detailFieldsDesc[1]->detField->setText("Diagnose");
-		detailFieldsDesc[2]->detField->setText("Mittelfindung");
+		details->setChecked(Qt::Unchecked);
+		noOfDetails->setValue(0);
 	}
 }
 
