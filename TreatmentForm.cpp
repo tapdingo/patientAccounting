@@ -208,19 +208,19 @@ void TreatmentForm::createLayout()
 	paid = new QCheckBox("Bereits bezahlt");
 	mainLayout->addWidget(paid, 7, 1);
 
-	details = new QCheckBox("Genauere Behandlungsangeben");
-	numLabel = new QLabel(tr("Anzahl Detailfelder"));
+	details = new QCheckBox("Kostenaufteilung anzeigen");
+	numLabel = new QLabel(tr("Anzahl Detailposten"));
 	noOfDetails = new QSpinBox();
 	mainLayout->addWidget(details, 8, 0);
 
 	mainLayout->addWidget(noOfDetails, 8, 1);
 	noOfDetails->hide();
 
-	detailsLabel = new QLabel("Details");
+	detailsLabel = new QLabel("Detailposten");
 	detailsLabel->hide();
 	mainLayout->addWidget(detailsLabel, 9, 0);
 
-	costDetailLabel = new QLabel("Kosten-Details");
+	costDetailLabel = new QLabel("Gesamtkosten-Anteil in Prozent");
 	costDetailLabel->hide();
 	mainLayout->addWidget(costDetailLabel, 9, 1);
 
@@ -232,6 +232,8 @@ void TreatmentForm::createLayout()
 
 	descLabel = new QLabel("Genaue Beschreibung");
 	descEdit = new QTextEdit();
+	//descEdit->setMinimumWidth(400);
+	descEdit->setMaximumHeight(75);
 	mainLayout->addWidget(descLabel, 11, 0);
 	mainLayout->addWidget(descEdit, 11, 1);
 
@@ -257,16 +259,31 @@ void TreatmentForm::expandHideDetails(int state)
 		detailsLabel->show();
 		costDetailLabel->show();
 
-		//Create a new tuple for showing
-		LayoutTuple* n_tuple = new LayoutTuple;
-		n_tuple->detField = new QLineEdit;
-		n_tuple->costDetField = new QLineEdit;
-		detailFieldsDesc.push_back(n_tuple);
-		detailFields->addWidget(n_tuple->detField);
-		costDetailFields->addWidget(n_tuple->costDetField);
+		if (0 < noOfDetails->value())
+		{
+			//Throw all the crap away
+			std::vector<LayoutTuple*>::iterator it;
+			for (it = detailFieldsDesc.begin(); it != detailFieldsDesc.end(); it++)
+			{
+				(*it)->detField->show();
+				(*it)->costDetField->show();
+			}
+		}
+		else
+		{
+			//Create a new tuple for showing
+			LayoutTuple* n_tuple = new LayoutTuple;
+			n_tuple->detField = new QTextEdit;
+			n_tuple->detField->setMinimumWidth(400);
+			n_tuple->detField->setMaximumHeight(75);
+			n_tuple->costDetField = new QLineEdit;
+			detailFieldsDesc.push_back(n_tuple);
+			detailFields->addWidget(n_tuple->detField);
+			costDetailFields->addWidget(n_tuple->costDetField);
 
-		//Set the correct value
-		noOfDetails->setValue(1);
+			//Set the correct value
+			noOfDetails->setValue(1);
+		}
 	}
 	else
 	{
@@ -280,9 +297,7 @@ void TreatmentForm::expandHideDetails(int state)
 		{
 			(*it)->detField->hide();
 			(*it)->costDetField->hide();
-			delete *it;
 		}
-		detailFieldsDesc.clear();
 	}
 }
 
@@ -292,7 +307,7 @@ void TreatmentForm::noDetailsChanged(int number)
 	{
 		//Create a new tuple for showing
 		LayoutTuple* n_tuple = new LayoutTuple;
-		n_tuple->detField = new QLineEdit;
+		n_tuple->detField = new QTextEdit;
 		n_tuple->costDetField = new QLineEdit;
 		detailFieldsDesc.push_back(n_tuple);
 		detailFields->addWidget(n_tuple->detField);
@@ -321,7 +336,7 @@ void TreatmentForm::dumpDetails(QString& result)
 
 	for (it = detailFieldsDesc.begin(); it != detailFieldsDesc.end(); it++)
 	{
-		result.append((*it)->detField->text());
+		result.append((*it)->detField->toPlainText());
 		result.append("||");
 		result.append((*it)->costDetField->text());
 		result.append(";");

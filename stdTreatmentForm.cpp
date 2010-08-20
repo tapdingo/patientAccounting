@@ -158,7 +158,7 @@ void stdTreatmentForm::expandHideDetails(int state)
 
 		//Create a new tuple for showing
 		LayoutTuple* n_tuple = new LayoutTuple;
-		n_tuple->detField = new QLineEdit;
+		n_tuple->detField = new QTextEdit;
 		n_tuple->costDetField = new QLineEdit;
 		detailFieldsDesc.push_back(n_tuple);
 		detailFields->addWidget(n_tuple->detField);
@@ -191,7 +191,7 @@ void stdTreatmentForm::noDetailsChanged(int number)
 	{
 		//Create a new tuple for showing
 		LayoutTuple* n_tuple = new LayoutTuple;
-		n_tuple->detField = new QLineEdit;
+		n_tuple->detField = new QTextEdit;
 		n_tuple->costDetField = new QLineEdit;
 		detailFieldsDesc.push_back(n_tuple);
 		detailFields->addWidget(n_tuple->detField);
@@ -220,7 +220,7 @@ void stdTreatmentForm::dumpDetails(QString& result)
 
 	for (it = detailFieldsDesc.begin(); it != detailFieldsDesc.end(); it++)
 	{
-		result.append((*it)->detField->text());
+		result.append((*it)->detField->toPlainText());
 		result.append("||");
 		result.append((*it)->costDetField->text());
 		result.append(";");

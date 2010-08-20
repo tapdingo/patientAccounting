@@ -4,6 +4,7 @@
 #include <QString>
 
 class QLineEdit;
+class QTextEdit;
 
 struct DetailTuple
 {
@@ -13,7 +14,7 @@ struct DetailTuple
 
 struct LayoutTuple
 {
-	QLineEdit* detField;
+	QTextEdit* detField;
 	QLineEdit* costDetField;
 };
 
