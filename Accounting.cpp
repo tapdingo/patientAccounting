@@ -232,7 +232,7 @@ QString PatientAccounter::generatePatientAddress()
 
 void PatientAccounter::addRTFHeader(QString& document) const
 {
-	document.append("{\\rtf \\ansicpg1252");
+	document.append("{\\rtf \\ansicpg1252 {\\fonttbl {\fswiss}}");
 }
 
 void PatientAccounter::addFooter(QString& document) const
