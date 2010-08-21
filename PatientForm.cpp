@@ -22,7 +22,7 @@ PatientForm::PatientForm(
 	lastNameField = new QLineEdit;
 	lastNameLabel->setBuddy(lastNameField);
 
-	streetLabel = new QLabel(tr("Stra&szlig;ße"));
+	streetLabel = new QLabel(tr("Straße"));
 	streetField = new QLineEdit;
 	streetLabel->setBuddy(streetField);
 

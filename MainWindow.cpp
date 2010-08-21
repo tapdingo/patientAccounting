@@ -166,7 +166,7 @@ void MainWindow::createDataPanel()
 	dataView->setColumnHidden(PatientId, true);
 	dataView->setColumnHidden(Desc, true);
 	dataView->setColumnHidden(Paid, true);
-	dataView->horizontalHeader()->moveSection(12, 0);
+	dataView->horizontalHeader()->moveSection(6, 0);
 
 
 	//Disable Editing in the View
