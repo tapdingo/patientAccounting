@@ -77,7 +77,7 @@ void PatientAccounter::printBill()
 
 void PatientAccounter::addPatientHeader(QString& Document)
 {
-	Document.append("{Patient: "
+	Document.append("{\\fs24 Patient: "
 			+ m_patient.value(FirstName).toString() + " "
 			+ m_patient.value(LastName).toString() +
 			"\\line ");
@@ -85,9 +85,9 @@ void PatientAccounter::addPatientHeader(QString& Document)
 	QString patientAddress;
 	patientAddress.append(generatePatientAddress());
 	Document.append(patientAddress);
-	Document.append("\\line \\line \\line \\line \\par}");
+	Document.append("\\line \\line \\par}");
 
-	Document.append("{\\par {\\trowd \\cellx4250 \\cellx8500 Rechnungs Nummer: ");
+	Document.append("{\\par \\fs20 {\\trowd \\cellx4250 \\cellx8500 Rechnungs Nummer: ");
 	QString IdString;
 	QString billNumber;
 	billNumber.setNum(m_billNumber);
@@ -187,7 +187,7 @@ QString PatientAccounter::addTreatmentRow(
 		typeString = "Praxis Behandlung";
 	}
 
-	treatmentRow.append("{{\\trowd \\trkeep \\cellx1000 \\cellx8500  ");
+	treatmentRow.append("\\fs20 {{\\trowd \\trkeep \\cellx1000 \\cellx8500  ");
 	treatmentRow.append(date.toString(Qt::SystemLocaleShortDate) + " \\intbl\\cell ");
 
 	float totalCost = treatment.value(Cost).toDouble();
@@ -222,7 +222,7 @@ QString PatientAccounter::generatePatientAddress()
 	address.append(m_patient.value(Street).toString());
 	address.append(" ");
 	address.append(m_patient.value(HouseNumber).toString());
-	address.append(", ");
+	address.append("\\line ");
 	address.append(m_patient.value(PostalCode).toString());
 	address.append(" ");
 	address.append(m_patient.value(City).toString());
