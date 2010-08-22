@@ -6,6 +6,8 @@ TEMPLATE = app
 TARGET =
 CONFIG += qt debug
 DEPENDPATH += .
+CODECFORSRC = UTF-8
+CODECFORTR = UTF-8
 INCLUDEPATH += /home/tapion/projects/doniAbrechnung/. .
 INCLUDEPATH += /home/tapion/projects/doniAbrechnung/reimp .
 

@@ -54,7 +54,7 @@ void AccountingForm::createLayout()
 	m_progLabel->hide();
 	m_progBar->hide();
 
-	m_thisPatient->setChecked(true);
+	m_allPatients->setChecked(true);
 	setLayout(m_layout);
 }
 
