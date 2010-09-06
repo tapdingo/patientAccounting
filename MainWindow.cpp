@@ -441,6 +441,13 @@ void MainWindow::addStdTreatment()
 		int id = record.value("id").toInt();
 		stdChoice add(this, id);
 		add.exec();
+		int returned = add.result();
+
+		TreatmentForm editTreatment(returned, this);
+		editTreatment.exec();
+
+		dataModel->select();
+		patientModel->select();
 		updateTreatmentView();
 		updateStatusBar();
 	}

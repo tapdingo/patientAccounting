@@ -77,6 +77,8 @@ void stdChoice::addStdTreatment()
 	int treatId = treatments.addNewRelRecord(m_patient);
 	treatments.select();
 
+	setResult(treatId);
+
 	//And fill it with live!
 	QString id;
 	id.setNum(treatId);
@@ -110,7 +112,7 @@ void stdChoice::addStdTreatment()
 
 	//Restore the old form state
 	unfilterModel();
-	accept();
+	done(treatId);
 }
 
 void stdChoice::cancel()
