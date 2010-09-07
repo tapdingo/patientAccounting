@@ -24,6 +24,7 @@ class AccountingForm : public QDialog
 		void makeConnections();
 		void accPatient();
 		bool accountPatient(const int patientRow);
+		void initialUpdate();
 
 		QProgressBar* m_progBar;
 		QGridLayout* m_layout;

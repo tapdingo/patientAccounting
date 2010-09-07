@@ -21,6 +21,8 @@ AccountingForm::AccountingForm(const int& pat_id) : m_patient(pat_id)
 	m_treats = new QSqlRelationalTableModel();
 	m_treats->setTable("treatments");
 	m_treats->select();
+
+	initialUpdate();
 }
 
 
@@ -135,4 +137,18 @@ bool AccountingForm::accountPatient(const int patientRow)
 	delete accounter;
 
 	return true;
+}
+
+void AccountingForm::initialUpdate()
+{
+	QSqlRecord latestTreat = m_treats->record(m_treats->rowCount() - 1);
+	if (latestTreat.isEmpty())
+	{
+		return;
+	}
+
+	QString lastDate = latestTreat.value("dateoftreat").toString();
+	QStringList splittedDate = lastDate.split("-");
+	QDate curDate(splittedDate[0].toInt(), splittedDate[1].toInt(), splittedDate[2].toInt());
+	m_dateEdit->setDate(curDate);
 }
