@@ -7,6 +7,7 @@
 class QSqlRecord;
 class QSqlRelationalTableModel;
 class QString;
+class QDate;
 
 class PatientAccounter
 {
@@ -14,7 +15,7 @@ class PatientAccounter
 		PatientAccounter(
 				const QSqlRecord& patient,
 				QSqlRelationalTableModel& treats);
-		void account();
+		void account(const QDate& date);
 
 	private:
 		void addRTFHeader(QString& document) const;
@@ -23,7 +24,7 @@ class PatientAccounter
 		void addDocumentFooter(QString& document) const;
 		void addInfoText(QString& document) const;
 		void finishRTF(QString& document) const;
-		void printBill();
+		void printBill(const QDate& date);
 		void addPatientHeader(QString& Document);
 		bool addTreatments(QString& Document);
 		const QSqlRecord& m_patient;
@@ -31,6 +32,7 @@ class PatientAccounter
 		QString addTreatmentRow(
 				const QSqlRecord& treatment,
 				double& sum);
+		QString createBillFile(const QDate& date);
 
 		QString generatePatientAddress();
 

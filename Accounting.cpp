@@ -3,6 +3,8 @@
 #include <QtSql>
 #include <iostream>
 #include <fstream>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "Parser.h"
 
 PatientAccounter::PatientAccounter(
@@ -18,17 +20,17 @@ PatientAccounter::PatientAccounter(
 	delete miscTable;
 }
 
-void PatientAccounter::account()
+void PatientAccounter::account(const QDate& date)
 {
 	if (m_treats.rowCount() == 0)
 	{
 		//Nothing to account, simple return
 		return;
 	}
-	printBill();
+	printBill(date);
 }
 
-void PatientAccounter::printBill()
+void PatientAccounter::printBill(const QDate& date)
 {
 	QString Document;
 
@@ -37,6 +39,8 @@ void PatientAccounter::printBill()
 	addPatientHeader(Document);
 	addInfoText(Document);
 
+	QString billFile = createBillFile(date);
+	std::cerr << "Target: " << billFile.toStdString() << std::endl;
 	if (!addTreatments(Document))
 	{
 		//Again nothing to account, simple return
@@ -46,20 +50,6 @@ void PatientAccounter::printBill()
 	finishRTF(Document);
 
 	//Get The document Footer
-
-	//Create the bill RTF for this patient
-	QString billFile("Abrechnungen/");
-	billFile.append(m_patient.value(FirstName).toString());
-	billFile.append(m_patient.value(LastName).toString());
-
-	QString monthString;
-	monthString.setNum(QDate::currentDate().month());
-	QString yearString;
-	yearString.setNum(QDate::currentDate().year());
-
-	billFile.append(yearString);
-	billFile.append(monthString);
-	billFile.append(".rtf");
 	std::ofstream outStream;
 	outStream.open(billFile.toStdString().c_str());
 	outStream << Document.toStdString();
@@ -294,4 +284,32 @@ void PatientAccounter::addInfoText(QString& document) const
 		Text.append(info.readLine());
 	}
 	document.append(Text);
+}
+
+QString PatientAccounter::createBillFile(const QDate& date)
+{
+	// \todo This emethod actually needs the current accounted date
+	// instead of the current actual date Otherwise this only shows the month
+	// and year when the accounting happened
+	//Create the bill RTF for this patient
+	//Format shall be: Abrechnungen/Date/patientName.rtf
+	QString monthString;
+	monthString.setNum(date.month());
+	QString yearString;
+	yearString.setNum(date.year());
+
+	QString billFile("Abrechnungen/");
+
+	billFile.append(yearString);
+	billFile.append(monthString);
+	mkdir(billFile.toStdString().c_str(), 0777);
+	billFile.append("/");
+
+	//\todo What to do when two people have the same name?
+	//Possible: if_exists: add: _no. to the fileName
+	billFile.append(m_patient.value(FirstName).toString());
+	billFile.append(m_patient.value(LastName).toString());
+
+	billFile.append(".rtf");
+	return billFile;
 }

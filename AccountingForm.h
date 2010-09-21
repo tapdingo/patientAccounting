@@ -2,6 +2,7 @@
 #define ACCOUNTINGFORM_H
 
 #include <QDialog>
+#include <QDate>
 
 class QProgressBar;
 class QGridLayout;
@@ -23,8 +24,12 @@ class AccountingForm : public QDialog
 		void createLayout();
 		void makeConnections();
 		void accPatient();
-		bool accountPatient(const int patientRow);
+		bool accountPatient(const int patientRow, const QDate date = QDate::currentDate());
 		void initialUpdate();
+		void disableButtons();
+		void enableButtons();
+		QDate getFirstUnaccMonth();
+		int getMonthDiff(const QDate& startDate, const QDate& endDate) const;
 
 		QProgressBar* m_progBar;
 		QGridLayout* m_layout;
@@ -33,6 +38,7 @@ class AccountingForm : public QDialog
 		QLabel* m_progLabel;
 		QPushButton* m_okButton;
 		QPushButton* m_cancelButton;
+		QPushButton* m_accountAll;
 		QRadioButton* m_thisPatient;
 		QRadioButton* m_allPatients;
 		QSqlRelationalTableModel* m_patients;
@@ -42,6 +48,7 @@ class AccountingForm : public QDialog
 
 		private slots:
 			void performAccounting();
+			void accountEverything();
 };
 
 #endif
