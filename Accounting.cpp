@@ -40,7 +40,7 @@ void PatientAccounter::printBill(const QDate& date)
 	addInfoText(Document);
 
 	QString billFile = createBillFile(date);
-	std::cerr << "Target: " << billFile.toStdString() << std::endl;
+	//std::cerr << "Target: " << billFile.toStdString() << std::endl;
 	if (!addTreatments(Document))
 	{
 		//Again nothing to account, simple return

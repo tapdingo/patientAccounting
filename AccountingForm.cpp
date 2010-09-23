@@ -13,7 +13,19 @@ AccountingForm::AccountingForm(const int& pat_id) : m_patient(pat_id)
 {
 	createLayout();
 	makeConnections();
+	initDB();
+	initialUpdate();
+}
 
+AccountingForm::AccountingForm() : m_patient(0)
+{
+	createReducedLayout();
+	makeReducedConnections();
+	initDB();
+}
+
+void AccountingForm::initDB()
+{
 	m_patients = new QSqlRelationalTableModel();
 	m_patients->setTable("patients");
 	m_patients->select();
@@ -21,8 +33,6 @@ AccountingForm::AccountingForm(const int& pat_id) : m_patient(pat_id)
 	m_treats = new QSqlRelationalTableModel();
 	m_treats->setTable("treatments");
 	m_treats->select();
-
-	initialUpdate();
 }
 
 
@@ -60,6 +70,38 @@ void AccountingForm::createLayout()
 
 	m_allPatients->setChecked(true);
 	setLayout(m_layout);
+}
+
+void AccountingForm::createReducedLayout()
+{
+	m_layout = new QGridLayout(this);
+
+	m_accountAll = new QPushButton("Starten!");
+	m_layout->addWidget(m_accountAll, 1, 0);
+
+	m_progLabel = new QLabel("Abrechnung laueft...");
+	m_progBar = new QProgressBar();
+	m_layout->addWidget(m_progLabel, 2, 0);
+	m_layout->addWidget(m_progBar, 2, 1);
+	m_progLabel->hide();
+	m_progBar->hide();
+
+	//Convenience Additions
+	//These Elements are just initialised to keep an unified accounting
+	//progress
+	m_okButton = new QPushButton("");
+	m_cancelButton = new QPushButton("");
+	m_dateLabel = new QLabel(tr(""));
+	m_dateEdit = new QDateEdit;
+	m_thisPatient = new QRadioButton("");
+	m_allPatients = new QRadioButton("");
+
+	setLayout(m_layout);
+}
+
+void AccountingForm::makeReducedConnections()
+{
+	connect(m_accountAll, SIGNAL(clicked()), this, SLOT(accountEverything()));
 }
 
 void AccountingForm::disableButtons()
@@ -173,10 +215,17 @@ void AccountingForm::initialUpdate()
 void AccountingForm::accountEverything()
 {
 	disableButtons();
+
 	m_progLabel->show();
+	QDate firstUnaccMonth = getFirstUnaccMonth();
+	if (!firstUnaccMonth.isValid())
+	{
+		m_progLabel->setText("Keine offenen Abrechnungsposten!");
+		return;
+	}
+
 	m_progBar->show();
 
-	QDate firstUnaccMonth = getFirstUnaccMonth();
 	m_progBar->setMaximum(m_patients->rowCount());
 
 	//get all Patients...
@@ -187,16 +236,15 @@ void AccountingForm::accountEverything()
 		patName.append(" ");
 		patName.append(curPat.value(LastName).toString());
 		m_progLabel->setText(patName);
-		std::cerr << "Accounting Patient: " << patName.toStdString() << std::endl;
+		//std::cerr << "Accounting Patient: " << patName.toStdString() << std::endl;
 		m_progBar->setValue(i + 1);
 
 		//Iterate over all open accounting dates for this patient
 		QDate curDate = QDate::currentDate();
 		int yearDiff = curDate.year() - firstUnaccMonth.year();
 		int monthDiff = curDate.month() - firstUnaccMonth.month();
-		std::cerr << "First unacc: " << firstUnaccMonth.toString().toStdString() << std::endl;
-		std::cerr << "Cur: " << curDate.toString().toStdString() << std::endl;
-		std::cerr << "Months Difference: " << getMonthDiff(firstUnaccMonth, curDate) << std::endl;
+		//std::cerr << "First unacc: " << firstUnaccMonth.toString().toStdString() << std::endl;
+		//std::cerr << "Cur: " << curDate.toString().toStdString() << std::endl;
 		QDate tempDate = firstUnaccMonth;
 		while (tempDate < curDate)
 		{
@@ -208,11 +256,7 @@ void AccountingForm::accountEverything()
 		//Update the view of the form
 		update();
 	}
-	std::cerr << "Accounting everything finished" << std::endl;
-	//PatientAccounter* accounter = new PatientAccounter(patient, *m_treats);
-	//accounter->account();
-	//delete accounter;
-	enableButtons();
+	//std::cerr << "Accounting everything finished" << std::endl;
 }
 
 QDate AccountingForm::getFirstUnaccMonth()
@@ -224,32 +268,7 @@ QDate AccountingForm::getFirstUnaccMonth()
 	QSqlRecord latestTreat = m_treats->record(0);
 
 	QString dateString = latestTreat.value("dateoftreat").toString();
-	std::cerr << "DateString: " << dateString.toStdString() << std::endl;
 	QDate date = QDate::fromString(dateString, "yyyy-MM-dd");
-	std::cerr << date.toString().toStdString() << " found!" << std::endl;
 	date.setDate(date.year(), date.month(), 1);
 	return date;
-}
-
-int AccountingForm::getMonthDiff(const QDate& startDate, const QDate& endDate) const
-{
-	const int yearDiff =  endDate.year() - startDate.year();
-	const int monthDiff = endDate.month() - startDate.month();
-
-	//Both dates are in the same year
-	if (0 == yearDiff)
-	{
-		return monthDiff;
-	}
-
-	std::cerr << "Year Diff: " << yearDiff << std::endl;
-
-	int dateDiff = endDate.month();
-	for (int i = 0; i < yearDiff; i ++)
-	{
-		dateDiff += 12;
-	}
-	dateDiff += (12 - startDate.month());
-
-	return dateDiff;
 }

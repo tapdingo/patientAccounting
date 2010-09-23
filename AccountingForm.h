@@ -19,17 +19,20 @@ class AccountingForm : public QDialog
 
 	public:
 		AccountingForm(const int& pat_id);
+		AccountingForm();
 
 	private:
 		void createLayout();
+		void createReducedLayout();
 		void makeConnections();
+		void makeReducedConnections();
 		void accPatient();
 		bool accountPatient(const int patientRow, const QDate date = QDate::currentDate());
 		void initialUpdate();
 		void disableButtons();
 		void enableButtons();
+		void initDB();
 		QDate getFirstUnaccMonth();
-		int getMonthDiff(const QDate& startDate, const QDate& endDate) const;
 
 		QProgressBar* m_progBar;
 		QGridLayout* m_layout;

@@ -110,6 +110,7 @@ class MainWindow : public QMainWindow
 		QAction* browseDiagnosesAction;
 		QAction* browseTreatmentsAction;
 		QAction* accountAction;
+		QAction* accountAllAction;
 		QAction* aboutAction;
 		QAction* aboutQTAction;
 
@@ -175,6 +176,11 @@ class MainWindow : public QMainWindow
 		 * \brief Account a patient
 		 */
 		void accountPatient();
+
+		/*!
+		 * \brief Account all open treatments
+		 */
+		void accountAll();
 
 		/*!
 		 * \brief Opens the Diagnose browser

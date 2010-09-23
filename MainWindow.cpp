@@ -204,9 +204,13 @@ void MainWindow::createActions()
 	browseTreatmentsAction->setStatusTip(tr("Startet den Behandlungs Vorlagen Browser"));
 
 	//Accounting related Actions
-	accountAction = new QAction(tr("&Abrechnen"), this);
+	accountAction = new QAction(tr("&Einzelabrechnung"), this);
 	accountAction->setStatusTip(tr("Rechnet einen Patienten ab"));
 	accountAction->setIcon(QIcon(":/img/accounting.png"));
+
+	accountAllAction = new QAction(tr("&Alles Abrechnen"), this);
+	accountAllAction->setStatusTip(tr("Rechnet alle Patienten ab"));
+	accountAllAction->setIcon(QIcon(":/img/accounting.png"));
 
 	//Misc related Actions
 	aboutAction = new QAction(tr("About"), this);
@@ -245,6 +249,7 @@ void MainWindow::connectSlots()
 
 	//Accounting related connections
 	connect(accountAction, SIGNAL(triggered()), this, SLOT(accountPatient()));
+	connect(accountAllAction, SIGNAL(triggered()), this, SLOT(accountAll()));
 
 	//Misc related connections
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
@@ -287,6 +292,7 @@ void MainWindow::createMenus()
 	//Accounting Menu
 	accountingMenu = menuBar()->addMenu(tr("&Abrechnung"));
 	accountingMenu->addAction(accountAction);
+	accountingMenu->addAction(accountAllAction);
 
 	//Misc Menu
 	miscMenu = menuBar()->addMenu(tr("&Sonstiges"));
@@ -618,4 +624,16 @@ void MainWindow::clearPatientModel()
 {
 	patientModel->setFilter("");
 	patientModel->select();
+}
+
+void MainWindow::accountAll()
+{
+	AccountingForm* acc_window = new AccountingForm();
+	acc_window->exec();
+
+	//Dunno if i have to delete this here...
+	delete acc_window;
+
+	updateTreatmentView();
+	updateStatusBar();
 }
