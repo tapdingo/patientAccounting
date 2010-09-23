@@ -67,7 +67,7 @@ void PatientAccounter::printBill(const QDate& date)
 
 void PatientAccounter::addPatientHeader(QString& Document)
 {
-	Document.append("{\\fs24 Patient: "
+	Document.append("{\\fs24 "
 			+ m_patient.value(FirstName).toString() + " "
 			+ m_patient.value(LastName).toString() +
 			"\\line ");
@@ -92,11 +92,11 @@ void PatientAccounter::addPatientHeader(QString& Document)
 	IdString.append(billNumber);
 	Document.append(IdString);
 
-	Document.append("\\ql\\intbl\\cell ");
+	Document.append(" \\line Bitte bei Bezahlung angeben! \\line\\ql\\intbl\\cell ");
 
 	//Current Date
 	Document.append(" Datum: "
-			+ QDate::currentDate().toString(Qt::SystemLocaleShortDate)
+			+ QDate::currentDate().toString("dd.MM.yyyy")
 			+ "\\qr\\intbl\\cell");
 	Document.append(" \\row ");
 	Document.append("\\trowd \\cellx4250 \\cellx8500 Patient: ");
@@ -108,7 +108,7 @@ void PatientAccounter::addPatientHeader(QString& Document)
 
 	//Patient Birth Date
 	Document.append("Geb. Datum: "
-			+ m_patient.value(DateOfBirth).toString()
+			+ QDate::fromString(m_patient.value(DateOfBirth).toString(), "yyyy-MM-dd").toString("dd.MM.yyyy")
 			+ "\\qr\\intbl\\cell ");
 	Document.append("\\row} \\par}");
 }
