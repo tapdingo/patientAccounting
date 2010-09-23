@@ -94,6 +94,7 @@ void MainWindow::createPatientPanel()
 	//patientView->horizontalHeader()->setStretchLastSection(true);
 	patientView->verticalHeader()->hide();
 	patientView->setShowGrid(false);
+	patientView->sortByColumn(LastName, Qt::AscendingOrder);
 
 	//Hide some unneccessary info here
 	patientView->setColumnHidden(HouseNumber, true);
@@ -166,7 +167,9 @@ void MainWindow::createDataPanel()
 	dataView->setColumnHidden(PatientId, true);
 	dataView->setColumnHidden(Desc, true);
 	dataView->setColumnHidden(Paid, true);
+	dataView->setColumnHidden(Accounted, true);
 	dataView->horizontalHeader()->moveSection(6, 0);
+	patientView->sortByColumn(DateOfTreat, Qt::AscendingOrder);
 
 
 	//Disable Editing in the View
