@@ -241,8 +241,8 @@ void AccountingForm::accountEverything()
 
 		//Iterate over all open accounting dates for this patient
 		QDate curDate = QDate::currentDate();
-		int yearDiff = curDate.year() - firstUnaccMonth.year();
-		int monthDiff = curDate.month() - firstUnaccMonth.month();
+		//int yearDiff = curDate.year() - firstUnaccMonth.year();
+		//int monthDiff = curDate.month() - firstUnaccMonth.month();
 		//std::cerr << "First unacc: " << firstUnaccMonth.toString().toStdString() << std::endl;
 		//std::cerr << "Cur: " << curDate.toString().toStdString() << std::endl;
 		QDate tempDate = firstUnaccMonth;
